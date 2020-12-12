@@ -5,6 +5,7 @@ from multiselectfield import MultiSelectField
 from django.conf import settings
 import datetime
 
+
 # STATUSES = (('none', 'Статус отсутствует'),
 #             ('Нападающий', 'Нападающий'),
 #             ('Защитник', 'Защитник'),
@@ -12,36 +13,19 @@ import datetime
 #             ('Главный тренер', 'Главный тренер'),
 #             ('Помощник тренера', 'Помощник тренера'),
 #             ('Тренер вратарей', 'Тренер вратарей'),)
-#
-#
-# class Category(models.Model):
-#     name = models.CharField(_("Название"), max_length=100)
-#
-#     class Meta:
-#         verbose_name = 'Категория'
-#         verbose_name_plural = 'Категории'
-#
-#     def __str__(self):
-#         return self.name
-#
-#
-# class Product(models.Model):
-#     img = models.ImageField(_("Фотография"), null=True, upload_to='Products')
-#     name = models.CharField(_("Название"), max_length=100)
-#     description = models.TextField(_("Описание"), max_length=1000)
-#     price = models.IntegerField(_("Цена"), null=True)
-#     sale_price = models.IntegerField(_("Цена по скидке"), blank=True, null=True, default=0)
-#     is_contract_price = models.BooleanField(_("Договорная цена"), default=False)
-#
-#     category = models.ForeignKey('Category', on_delete=models.SET_NULL, verbose_name='Категория',
-#                                  related_name='products', null=True)
-#
-#     class Meta:
-#         verbose_name = 'Товар'
-#         verbose_name_plural = 'Товары'
-#
-#     def __str__(self):
-#         return self.name
+
+class Artifact(models.Model):
+    name = models.CharField(_("Название"), max_length=100)
+    img = models.ImageField(_("Фотография"), null=True, upload_to='Products', blank=True)
+    audio = models.FileField(_("Аудио"), blank=True)
+    description = models.TextField(_("Описание"), max_length=1000, blank=True)
+
+    class Meta:
+        verbose_name = 'Экспонат'
+        verbose_name_plural = 'Экспонаты'
+
+    def __str__(self):
+        return self.name
 
 # class School(models.Model):
 #     img = models.ImageField(_("Прикреплённое фото"), null=True, upload_to='schools')

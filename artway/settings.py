@@ -161,12 +161,3 @@ DJOSER = {
     # 'LOGIN_FIELD': arenas_and_teams.models.User.email,
     'SET_PASSWORD_RETYPE': True,
 }
-
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = 'hockeyarena777@gmail.com'
-# EMAIL_HOST_PASSWORD = "ejapgjqgikyeetkd"
-# EMAIL_USE_TLS = True
-# DEFAULT_FROM_EMAIL = 'hockeyarena777@gmail.com'
-# DEFAULT_ADMIN_EMAIL = 'hockey-arena-sport@mail.ru'

@@ -2,18 +2,11 @@ from rest_framework import serializers
 from .models import *
 
 
-# class CategorySerializer(serializers.ModelSerializer):
-#     class Meta:
-#         depth = 2
-#         model = Category
-#         fields = '__all__'
-#
-#
-# class ProductSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         depth = 2
-#         model = Product
-#         fields = '__all__'
+class ArtifactSerializer(serializers.ModelSerializer):
+    class Meta:
+        depth = 2
+        model = Artifact
+        fields = '__all__'
 
 # class AccountSerializer(serializers.ModelSerializer):
 #     class Meta:

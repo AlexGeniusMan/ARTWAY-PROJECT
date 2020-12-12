@@ -6,16 +6,7 @@ from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
 
 from .models import *
 
-
-# class ProductAdmin(admin.ModelAdmin):
-#     search_fields = ('name',)
-#     list_filter = ('category',)
-#     list_display = ('name', 'category',)
-#     pass
-#
-#
-# admin.site.register(Category)
-# admin.site.register(Product, ProductAdmin)
+admin.site.register(Artifact)
 
 # class SchoolAdmin(admin.ModelAdmin):
 #     # list_filter = ('city',)

@@ -23,6 +23,17 @@ from django.shortcuts import render, redirect
 # from .forms import ContactForm
 # from project.settings import DEFAULT_FROM_EMAIL, DEFAULT_ADMIN_EMAIL
 
+class ShowArtifactView(APIView):
+    """
+    Shows current artifact
+    """
+
+    def get(self, request, artifact_pk):
+        categories = Artifact.objects.get(pk=artifact_pk)
+        serializer = ArtifactSerializer(categories, context={'request': request})
+
+        return Response(serializer.data)
+
 # class ShowProductsView(APIView):
 #     """
 #     Shows all products of current category (searching by letters available)
