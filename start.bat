@@ -1,3 +1,3 @@
 python manage.py makemigrations
 python manage.py migrate
-python manage.py runserver
+python devmanage.py runserver

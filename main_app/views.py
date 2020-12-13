@@ -34,6 +34,24 @@ class ShowArtifactView(APIView):
 
         return Response(serializer.data)
 
+
+class ReactAppView(View):
+
+    def get(self, request):
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+        try:
+            with open(os.path.join(BASE_DIR, 'frontend', 'build', 'index.html')) as file:
+                return HttpResponse(file.read())
+
+        except:
+            return HttpResponse(
+                """
+                index.html not found ! build your React app !!
+                """,
+                status=501,
+            )
+
 # class ShowProductsView(APIView):
 #     """
 #     Shows all products of current category (searching by letters available)
@@ -96,21 +114,3 @@ class ShowArtifactView(APIView):
 #         serializer = ProductSerializer(product, context={'request': request})
 #
 #         return Response(serializer.data)
-#
-#
-# class ReactAppView(View):
-#
-#     def get(self, request):
-#         BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-#
-#         try:
-#             with open(os.path.join(BASE_DIR, 'frontend', 'build', 'index.html')) as file:
-#                 return HttpResponse(file.read())
-#
-#         except:
-#             return HttpResponse(
-#                 """
-#                 index.html not found ! build your React app !!
-#                 """,
-#                 status=501,
-#             )
