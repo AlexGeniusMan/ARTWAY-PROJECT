@@ -37,6 +37,7 @@ class ShowQRCodeOfCurrentArtifactView(APIView):
 
     def get(self, request, artifact_pk):
         artifact = Artifact.objects.get(pk=artifact_pk)
+        artifact.save()
         qr_code = QRCodeSerializer(artifact, context={'request': request})
 
         return Response(qr_code.data)
