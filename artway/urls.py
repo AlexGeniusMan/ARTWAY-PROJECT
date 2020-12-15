@@ -30,6 +30,12 @@ urlpatterns = [
     # Получить выбранный экспонат
     path('api/artifacts/<int:artifact_pk>', views.ShowArtifactView.as_view()),
 
+    # Получить все экспонаты
+    # path('api/artifacts', views.ShowArtifactView.as_view()),
+
+    # Получить QR-код выбранного экспоната
+    path('api/artifacts/<int:artifact_pk>/qr-code', views.ShowQRCodeOfCurrentArtifactView.as_view()),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
