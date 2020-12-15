@@ -6,4 +6,11 @@ class ArtifactSerializer(serializers.ModelSerializer):
     class Meta:
         depth = 2
         model = Artifact
-        fields = '__all__'
+        exclude = ('qr_code',)
+
+
+class QRCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        depth = 2
+        model = Artifact
+        fields = ('qr_code',)

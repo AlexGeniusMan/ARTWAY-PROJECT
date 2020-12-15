@@ -3,12 +3,19 @@ from django.views.generic.base import View
 from rest_framework.views import APIView
 from django.http import HttpResponse
 from .serializers import *
-from io import BytesIO
-import qrcode
 import os
-from PIL import Image
-import json
-import base64
+
+
+class ShowAllArtifactsView(APIView):
+    """
+    Shows all artifacts
+    """
+
+    def get(self, request):
+        artifacts = Artifact.objects.all()
+        serializer = ArtifactSerializer(artifacts, context={'request': request}, many=True)
+
+        return Response(serializer.data)
 
 
 class ShowArtifactView(APIView):
@@ -17,8 +24,8 @@ class ShowArtifactView(APIView):
     """
 
     def get(self, request, artifact_pk):
-        categories = Artifact.objects.get(pk=artifact_pk)
-        serializer = ArtifactSerializer(categories, context={'request': request})
+        artifact = Artifact.objects.get(pk=artifact_pk)
+        serializer = ArtifactSerializer(artifact, context={'request': request})
 
         return Response(serializer.data)
 
@@ -29,12 +36,10 @@ class ShowQRCodeOfCurrentArtifactView(APIView):
     """
 
     def get(self, request, artifact_pk):
-        img = qrcode.make('Some data here')
-        image_64_encode = base64.encodestring(img)
-        # buffered = BytesIO()
-        # image.save(buffered, format="JPEG")
-        # img_str = base64.b64encode(buffered.getvalue())
-        return Response(image_64_encode)
+        artifact = Artifact.objects.get(pk=artifact_pk)
+        qr_code = QRCodeSerializer(artifact, context={'request': request})
+
+        return Response(qr_code.data)
 
 
 class ReactAppView(View):

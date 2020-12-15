@@ -22,12 +22,12 @@ class Artifact(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        qr = qrcode.QRCode(version=1, box_size=5, border=5)
+        qr = qrcode.QRCode(version=1, box_size=15, border=2)
         qr.add_data('https://devgang.ru/artifact/' + str(self.id))
         qr.make(fit=True)
         img = qr.make_image(fill='black', back_color='white')
 
-        canvas = Image.new('RGB', (256, 256), 'white')
+        canvas = Image.new('RGB', (500, 500), 'white')
         canvas.paste(img)
         fname = f'qr_code-{self.id}.png'
         buffer = BytesIO()
