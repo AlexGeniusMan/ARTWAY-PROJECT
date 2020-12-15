@@ -3,7 +3,7 @@ from django.db import models
 import qrcode
 from io import BytesIO
 from django.core.files import File
-from PIL import Image, ImageDraw
+from PIL import Image
 
 
 class Artifact(models.Model):
@@ -23,7 +23,7 @@ class Artifact(models.Model):
 
     def save(self, *args, **kwargs):
         qr = qrcode.QRCode(version=1, box_size=15, border=2)
-        qr.add_data('https://devgang.ru/artifact/' + str(self.id))
+        qr.add_data('https://devgang.ru/artifacts/' + str(self.id))
         qr.make(fit=True)
         img = qr.make_image(fill='black', back_color='white')
 
