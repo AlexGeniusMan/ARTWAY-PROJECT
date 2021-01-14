@@ -11,6 +11,7 @@ class ShowAllArtifactsView(APIView):
     Shows all artifacts
     """
 
+    # @staticmethod
     def get(self, request):
         artifacts = Artifact.objects.all()
         serializer = AllArtifactsSerializer(artifacts, context={'request': request}, many=True)
