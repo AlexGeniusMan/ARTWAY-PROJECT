@@ -5,7 +5,7 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
     openapi.Info(
-        title="ARTWAY-PROJECT-2021-CORE-BACKEND",
+        title="ARTWAY-PROJECT-CORE-BACKEND",
         default_version='v1',
         description="Convenient documentation specially for you",
         license=openapi.License(name="BSD License"),
