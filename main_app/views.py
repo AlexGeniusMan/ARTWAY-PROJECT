@@ -12,11 +12,22 @@ class SwapArtifactsView(APIView):
     """
 
     def post(self, request):
-        artifact_1 = Artifact.objects.get(pk=request.data['artifact_1'])
-        artifact_2 = Artifact.objects.get(pk=request.data['artifact_2'])
+        artifact_id = Artifact.objects.get(pk=request.data['artifact_id'])
+        swap_type = request.data['swap_type']
 
-        print(artifact_1)
-        print(artifact_2)
+        current = Artifact.objects.get(pk=artifact_id)
+        prev = Artifact.objects.get(pk=current.prev_artifact)
+        next = Artifact.objects.get(prev_artifact=artifact_id)
+
+        temp_prev_cur = current.prev_artifact
+        temp_prev_prev = prev.prev_artifact
+        current.prev_artifact = temp_prev_prev
+        prev.prev_artifact = temp_prev_cur
+        next.prev_artifact = prev.id
+
+        # if swap_type == 'up':
+        #     temp_next_artifact = artifact.next_artifact
+        #     artifact
 
         return Response(True)
 
@@ -28,15 +39,18 @@ class ShowAllArtifactsView(APIView):
 
     def get(self, request):
 
-        artifacts = list()
-        artifact = Artifact.objects.get(next_artifact=None)
-        artifacts.append(artifact)
+        list_of_artifacts = list()
+        artifact = Artifact.objects.get(prev_artifact=None)
+        list_of_artifacts.append(artifact)
 
         for i in range(len(Artifact.objects.all()) - 1):
-            artifact = Artifact.objects.get(next_artifact=artifact.id)
-            artifacts.append(artifact)
+            artifact = Artifact.objects.get(prev_artifact=artifact.id)
+            list_of_artifacts.append(artifact)
 
-        serializer = AllArtifactsSerializer(artifacts, context={'request': request}, many=True)
+        if len(list_of_artifacts) == 1:
+            serializer = AllArtifactsSerializer(list_of_artifacts, context={'request': request})
+        else:
+            serializer = AllArtifactsSerializer(list_of_artifacts, context={'request': request}, many=True)
 
         return Response(serializer.data)
 
