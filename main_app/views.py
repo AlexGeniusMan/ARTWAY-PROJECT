@@ -27,39 +27,44 @@ class SwapArtifactsView(APIView):
                 cur.prev_artifact = up.prev_artifact
                 up.prev_artifact = cur.id
 
-                print(cur.prev_artifact)
-                print(up.prev_artifact)
-                print(down.prev_artifact)
                 cur.save()
                 up.save()
                 down.save()
+
             except:  # exception only if 'cur' is the last el in the list (then obj 'down' doesn't exists)
                 cur.prev_artifact = up.prev_artifact
                 up.prev_artifact = cur.id
-                print(cur.prev_artifact)
-                print(up.prev_artifact)
+
                 cur.save()
                 up.save()
+
         elif swap_type == 'down':
 
             cur = Artifact.objects.get(prev_artifact=request.data['artifact_id'])
             up = Artifact.objects.get(pk=cur.prev_artifact)
-            down = Artifact.objects.get(prev_artifact=cur.id)
+            try:
+                down = Artifact.objects.get(prev_artifact=cur.id)
 
-            # deleting obj from list
-            cur.prev_artifact = None
-            down.prev_artifact = up.id
-            # adding obj to list
-            cur.prev_artifact = up.prev_artifact
-            up.prev_artifact = cur.id
+                # deleting obj from list
+                cur.prev_artifact = None
+                down.prev_artifact = up.id
+                # adding obj to list
+                cur.prev_artifact = up.prev_artifact
+                up.prev_artifact = cur.id
 
-            print(cur.prev_artifact)
-            print(up.prev_artifact)
-            print(down.prev_artifact)
+                cur.save()
+                up.save()
+                down.save()
 
-            cur.save()
-            up.save()
-            down.save()
+            except:
+                cur = Artifact.objects.get(prev_artifact=request.data['artifact_id'])
+                up = Artifact.objects.get(pk=request.data['artifact_id'])
+
+                cur.prev_artifact = up.prev_artifact
+                up.prev_artifact = cur.id
+
+                cur.save()
+                up.save()
         else:
             return Response(False)
 
