@@ -12,22 +12,56 @@ class SwapArtifactsView(APIView):
     """
 
     def post(self, request):
-        artifact_id = Artifact.objects.get(pk=request.data['artifact_id'])
         swap_type = request.data['swap_type']
 
-        current = Artifact.objects.get(pk=artifact_id)
-        prev = Artifact.objects.get(pk=current.prev_artifact)
-        next = Artifact.objects.get(prev_artifact=artifact_id)
+        if swap_type == 'up':
 
-        temp_prev_cur = current.prev_artifact
-        temp_prev_prev = prev.prev_artifact
-        current.prev_artifact = temp_prev_prev
-        prev.prev_artifact = temp_prev_cur
-        next.prev_artifact = prev.id
+            cur = Artifact.objects.get(pk=request.data['artifact_id'])
+            up = Artifact.objects.get(pk=cur.prev_artifact)
+            try:
+                down = Artifact.objects.get(prev_artifact=cur.id)
+                # deleting obj from list
+                cur.prev_artifact = None
+                down.prev_artifact = up.id
+                # adding obj to list
+                cur.prev_artifact = up.prev_artifact
+                up.prev_artifact = cur.id
 
-        # if swap_type == 'up':
-        #     temp_next_artifact = artifact.next_artifact
-        #     artifact
+                print(cur.prev_artifact)
+                print(up.prev_artifact)
+                print(down.prev_artifact)
+                cur.save()
+                up.save()
+                down.save()
+            except:  # exception only if 'cur' is the last el in the list (then obj 'down' doesn't exists)
+                cur.prev_artifact = up.prev_artifact
+                up.prev_artifact = cur.id
+                print(cur.prev_artifact)
+                print(up.prev_artifact)
+                cur.save()
+                up.save()
+        elif swap_type == 'down':
+
+            cur = Artifact.objects.get(prev_artifact=request.data['artifact_id'])
+            up = Artifact.objects.get(pk=cur.prev_artifact)
+            down = Artifact.objects.get(prev_artifact=cur.id)
+
+            # deleting obj from list
+            cur.prev_artifact = None
+            down.prev_artifact = up.id
+            # adding obj to list
+            cur.prev_artifact = up.prev_artifact
+            up.prev_artifact = cur.id
+
+            print(cur.prev_artifact)
+            print(up.prev_artifact)
+            print(down.prev_artifact)
+
+            cur.save()
+            up.save()
+            down.save()
+        else:
+            return Response(False)
 
         return Response(True)
 
@@ -51,6 +85,9 @@ class ShowAllArtifactsView(APIView):
             serializer = AllArtifactsSerializer(list_of_artifacts, context={'request': request})
         else:
             serializer = AllArtifactsSerializer(list_of_artifacts, context={'request': request}, many=True)
+
+        # objs = Artifact.objects.all()
+        # serializer = AllArtifactsSerializer(objs, context={'request': request}, many=True)
 
         return Response(serializer.data)
 

@@ -12,7 +12,7 @@ class Artifact(models.Model):
     audio = models.FileField(_("Аудио"), upload_to='Artifact audios', blank=True)
     description = models.TextField(_("Описание"), max_length=10000, blank=True)
 
-    prev_artifact = models.IntegerField(_("Предыдущий экспонат"), null=True, blank=True)
+    prev_artifact = models.IntegerField(_("Экспонат выше"), null=True, blank=True)
 
     qr_code = models.ImageField(_('QR code'), upload_to='Artifact QR-codes', blank=True)
 
