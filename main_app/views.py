@@ -6,6 +6,21 @@ from .serializers import *
 import os
 
 
+class SwapArtifactsView(APIView):
+    """
+    Swaps two current artifacts
+    """
+
+    def post(self, request):
+        artifact_1 = Artifact.objects.get(pk=request.data['artifact_1'])
+        artifact_2 = Artifact.objects.get(pk=request.data['artifact_2'])
+
+        print(artifact_1)
+        print(artifact_2)
+
+        return Response(True)
+
+
 class ShowAllArtifactsView(APIView):
     """
     Shows all artifacts
@@ -13,13 +28,17 @@ class ShowAllArtifactsView(APIView):
 
     def get(self, request):
 
-        artifact = Artifact.objects.filter(next_artifact=None)
-        print(artifact)
-        # artifacts = Artifact.objects.all()
-        # serializer = AllArtifactsSerializer(artifacts, context={'request': request}, many=True)
+        artifacts = list()
+        artifact = Artifact.objects.get(next_artifact=None)
+        artifacts.append(artifact)
 
-        # return Response(serializer.data)
-        return Response(True)
+        for i in range(len(Artifact.objects.all()) - 1):
+            artifact = Artifact.objects.get(next_artifact=artifact.id)
+            artifacts.append(artifact)
+
+        serializer = AllArtifactsSerializer(artifacts, context={'request': request}, many=True)
+
+        return Response(serializer.data)
 
 
 class ShowArtifactView(APIView):

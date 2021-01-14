@@ -33,6 +33,9 @@ urlpatterns = [
     # Получить все экспонаты
     path('api/artifacts', views.ShowAllArtifactsView.as_view()),
 
+    # Поменять два выбранных экспоната местами
+    path('api/swap', views.SwapArtifactsView.as_view()),
+
     # Получить QR-код выбранного экспоната
     path('api/artifacts/<int:artifact_pk>/qr-code', views.ShowQRCodeOfCurrentArtifactView.as_view()),
 
