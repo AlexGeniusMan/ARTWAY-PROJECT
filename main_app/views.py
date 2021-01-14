@@ -12,10 +12,14 @@ class ShowAllArtifactsView(APIView):
     """
 
     def get(self, request):
-        artifacts = Artifact.objects.all()
-        serializer = AllArtifactsSerializer(artifacts, context={'request': request}, many=True)
 
-        return Response(serializer.data)
+        artifact = Artifact.objects.filter(next_artifact=None)
+        print(artifact)
+        # artifacts = Artifact.objects.all()
+        # serializer = AllArtifactsSerializer(artifacts, context={'request': request}, many=True)
+
+        # return Response(serializer.data)
+        return Response(True)
 
 
 class ShowArtifactView(APIView):
