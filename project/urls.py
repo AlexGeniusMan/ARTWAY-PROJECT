@@ -39,8 +39,8 @@ urlpatterns = [
     # Получить QR-код выбранного экспоната
     path('api/artifacts/<int:artifact_pk>/qr-code', views.ShowQRCodeOfCurrentArtifactView.as_view()),
 
-    # Получить музей, к которому привязан данный администратор
-    path('api/m-admin', views.ShowCurrentMuseum.as_view()),
+    # Получить или изменить музей, к которому привязан данный администратор
+    path('api/m-admin', views.CurrentMuseumView.as_view()),
 
     # Авторизация
     url(r'^auth/', include('djoser.urls')),
