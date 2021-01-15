@@ -10,12 +10,12 @@ class LocationSerializer(serializers.ModelSerializer):
 
 
 class MuseumSerializer(serializers.ModelSerializer):
-    locations = LocationSerializer(read_only=True, many=True)
+    # locations = LocationSerializer(read_only=True, many=True)
 
     class Meta:
         depth = 2
         model = Museum
-        fields = ('id', 'name', 'img', 'description', 'locations')
+        fields = '__all__'
 
 
 class AllArtifactsSerializer(serializers.ModelSerializer):

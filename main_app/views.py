@@ -35,10 +35,24 @@ class CurrentLocationView(APIView):
         location = Location.objects.get(pk=location_pk)
         location.delete()
 
-        museum = Museum.objects.get(admins=request.user)
-        serializer = MuseumSerializer(museum, context={'request': request})
+        list_of_locations = list()
+        location = Location.objects.get(prev_location=None)
+        list_of_locations.append(location)
+        for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
+            location = Location.objects.get(prev_location=location.id)
+            list_of_locations.append(location)
+        if len(list_of_locations) == 1:
+            locations_serializer = LocationSerializer(list_of_locations, context={'request': request})
+        else:
+            locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
 
-        return Response(serializer.data)
+        museum = Museum.objects.get(admins=request.user)
+        museum_serializer = MuseumSerializer(museum, context={'request': request})
+
+        return Response({
+            'museum': museum_serializer.data,
+            'locations': locations_serializer.data
+        })
 
 
 class CurrentMuseumView(APIView):
@@ -47,10 +61,25 @@ class CurrentMuseumView(APIView):
     """
 
     def get(self, request):
-        museum = Museum.objects.get(admins=request.user)
-        serializer = MuseumSerializer(museum, context={'request': request})
 
-        return Response(serializer.data)
+        list_of_locations = list()
+        location = Location.objects.get(prev_location=None)
+        list_of_locations.append(location)
+        for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
+            location = Location.objects.get(prev_location=location.id)
+            list_of_locations.append(location)
+        if len(list_of_locations) == 1:
+            locations_serializer = LocationSerializer(list_of_locations, context={'request': request})
+        else:
+            locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
+
+        museum = Museum.objects.get(admins=request.user)
+        museum_serializer = MuseumSerializer(museum, context={'request': request})
+
+        return Response({
+            'museum': museum_serializer.data,
+            'locations': locations_serializer.data
+        })
 
     def post(self, request):
         name = request.data['name']
@@ -60,10 +89,24 @@ class CurrentMuseumView(APIView):
         new_location = Location.objects.create(name=name, img=img, description=description, museum=request.user.museum.id)
         new_location.save()
 
-        museum = Museum.objects.get(admins=request.user)
-        serializer = MuseumSerializer(museum, context={'request': request})
+        list_of_locations = list()
+        location = Location.objects.get(prev_location=None)
+        list_of_locations.append(location)
+        for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
+            location = Location.objects.get(prev_location=location.id)
+            list_of_locations.append(location)
+        if len(list_of_locations) == 1:
+            locations_serializer = LocationSerializer(list_of_locations, context={'request': request})
+        else:
+            locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
 
-        return Response(serializer.data)
+        museum = Museum.objects.get(admins=request.user)
+        museum_serializer = MuseumSerializer(museum, context={'request': request})
+
+        return Response({
+            'museum': museum_serializer.data,
+            'locations': locations_serializer.data
+        })
 
     def put(self, request):
         museum = Museum.objects.get(pk=request.user.museum.id)
@@ -79,10 +122,24 @@ class CurrentMuseumView(APIView):
             pass
         museum.save()
 
-        museum = Museum.objects.get(admins=request.user)
-        serializer = MuseumSerializer(museum, context={'request': request})
+        list_of_locations = list()
+        location = Location.objects.get(prev_location=None)
+        list_of_locations.append(location)
+        for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
+            location = Location.objects.get(prev_location=location.id)
+            list_of_locations.append(location)
+        if len(list_of_locations) == 1:
+            locations_serializer = LocationSerializer(list_of_locations, context={'request': request})
+        else:
+            locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
 
-        return Response(serializer.data)
+        museum = Museum.objects.get(admins=request.user)
+        museum_serializer = MuseumSerializer(museum, context={'request': request})
+
+        return Response({
+            'museum': museum_serializer.data,
+            'locations': locations_serializer.data
+        })
 
 
 class SwapArtifactsView(APIView):
