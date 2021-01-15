@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.conf.urls import url
 from django.conf import settings
-from django.urls import path
+from django.urls import path, include
 from .yasg import urlpatterns as doc_url
 from django.conf.urls.static import static
 
@@ -39,8 +39,15 @@ urlpatterns = [
     # Получить QR-код выбранного экспоната
     path('api/artifacts/<int:artifact_pk>/qr-code', views.ShowQRCodeOfCurrentArtifactView.as_view()),
 
+    # Получить QR-код выбранного экспоната
+    path('api/m-admin', views.ShowCurrentMuseum.as_view()),
+
+    # Авторизация
+    url(r'^auth/', include('djoser.urls')),
+    url(r'^auth/', include('djoser.urls.jwt')),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-urlpatterns += doc_url
+# urlpatterns += doc_url
 urlpatterns.append(url(r'^', views.ReactAppView.as_view()))

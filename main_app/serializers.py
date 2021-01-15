@@ -2,6 +2,13 @@ from rest_framework import serializers
 from .models import *
 
 
+class MuseumSerializer(serializers.ModelSerializer):
+    class Meta:
+        depth = 2
+        model = Museum
+        fields = '__all__'
+
+
 class AllArtifactsSerializer(serializers.ModelSerializer):
     class Meta:
         depth = 2

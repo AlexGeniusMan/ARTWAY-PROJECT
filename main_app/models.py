@@ -1,9 +1,23 @@
+from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 import qrcode
 from io import BytesIO
 from django.core.files import File
 from PIL import Image
+
+
+class Museum(models.Model):
+    name = models.CharField(_("Название"), max_length=100)
+    img = models.ImageField(_("Фотография"), null=True, upload_to='Artifact photos', blank=True)
+    description = models.TextField(_("Описание"), max_length=10000, blank=True)
+
+    class Meta:
+        verbose_name = 'Музей'
+        verbose_name_plural = 'Музеи'
+
+    def __str__(self):
+        return self.name
 
 
 class Artifact(models.Model):
@@ -37,3 +51,21 @@ class Artifact(models.Model):
         self.qr_code.save(fname, File(buffer), save=False)
         canvas.close()
         super().save(*args, **kwargs)
+
+
+class User(AbstractUser):
+    last_name = models.CharField(_("Фамилия"), max_length=50)
+    first_name = models.CharField(_("Имя"), max_length=50)
+    middle_name = models.CharField(_("Отчество"), max_length=50)
+
+    museum = models.ForeignKey('Museum', on_delete=models.SET_NULL, verbose_name='Музей',
+                               related_name='admins', null=True)
+
+    REQUIRED_FIELDS = ['email', 'last_name', 'first_name', 'middle_name']
+
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
+    def __str__(self):
+        return f'{self.last_name} {self.first_name} {self.middle_name}'

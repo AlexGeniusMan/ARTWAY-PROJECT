@@ -6,6 +6,18 @@ from .serializers import *
 import os
 
 
+class ShowCurrentMuseum(APIView):
+    """
+    Shows all artifacts
+    """
+
+    def get(self, request):
+        museum = Museum.objects.get(admins=request.user)
+        serializer = AllArtifactsSerializer(museum, context={'request': request})
+
+        return Response(serializer.data)
+
+
 class SwapArtifactsView(APIView):
     """
     Swaps two current artifacts
