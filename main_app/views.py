@@ -10,11 +10,23 @@ class CurrentLocationView(APIView):
     """
     Shows or changes or deletes current location
     """
+
     def get(self, request):
         locations = Location.objects.filter(museum=request.user.museum)
         serializer = SpecialLocationSerializer(locations, context={'request': request}, many=True)
         return Response(serializer.data)
-    # def post(self, request):
+
+    def post(self, request):
+        name = request.data['name']
+        img = request.FILES['img']
+        description = request.data['description']
+
+        new_location = Location.objects.create(name=name, img=img, description=description, museum=request.user.museum)
+        new_location.save()
+
+        locations = Location.objects.filter(museum=request.user.museum)
+        serializer = SpecialLocationSerializer(locations, context={'request': request}, many=True)
+        return Response(serializer.data)
     # def put(self, request):
     # def delete(self, request):
 
