@@ -28,10 +28,14 @@ class CurrentLocationView(APIView):
         serializer = LocationSerializer(location, context={'request': request})
         return Response(serializer.data)
 
-    # def delete(self, request, location_pk):
-    #     location = Location.objects.get(pk=request.data['location_id'])
-    #     locations = Location.objects.filter(museum=request.user.museum)
-    #     serializer = LocationSerializer(locations, context={'request': request}, many=True)
+    def delete(self, request, location_pk):
+        location = Location.objects.get(pk=location_pk)
+        location.delete()
+
+        museum = Museum.objects.get(admins=request.user)
+        serializer = MuseumSerializer(museum, context={'request': request})
+
+        return Response(serializer.data)
 
 
 class CurrentMuseumView(APIView):
