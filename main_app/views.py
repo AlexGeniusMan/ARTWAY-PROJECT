@@ -98,36 +98,26 @@ class CurrentMuseumView(APIView):
 def change_and_save(swap_type, request):
     if swap_type == 'up':
         cur = Artifact.objects.get(pk=request.data['artifact_id'])
-        up = Artifact.objects.get(pk=cur.prev_artifact)
     elif swap_type == 'down':
         cur = Artifact.objects.get(prev_artifact=request.data['artifact_id'])
-        up = Artifact.objects.get(pk=cur.prev_artifact)
+    up = Artifact.objects.get(pk=cur.prev_artifact)
     try:
         down = Artifact.objects.get(prev_artifact=cur.id)
-        # deleting obj from list
-        cur.prev_artifact = None
+        cur.prev_artifact = None  # deleting obj from list
         down.prev_artifact = up.id
-        # adding obj to list
-        cur.prev_artifact = up.prev_artifact
+        cur.prev_artifact = up.prev_artifact  # adding obj to list
         up.prev_artifact = cur.id
         cur.save()
         up.save()
         down.save()
-
     except:  # exception only if 'cur' is the last el in the list (then obj 'down' doesn't exists)
-        if swap_type == 'up':
-            cur.prev_artifact = up.prev_artifact
-            up.prev_artifact = cur.id
-            cur.save()
-            up.save()
-        elif swap_type == 'down':
+        if swap_type == 'down':
             cur = Artifact.objects.get(prev_artifact=request.data['artifact_id'])
             up = Artifact.objects.get(pk=request.data['artifact_id'])
-            cur.prev_artifact = up.prev_artifact
-            up.prev_artifact = cur.id
-            cur.save()
-            up.save()
-
+        cur.prev_artifact = up.prev_artifact
+        up.prev_artifact = cur.id
+        cur.save()
+        up.save()
     return True
 
 
