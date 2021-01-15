@@ -51,6 +51,9 @@ urlpatterns = [
     # Поменять две выбранных локации местами
     path('api/swap_locations', views.SwapLocationsView.as_view()),
 
+    # Поменять две выбранных локации местами
+    path('api/all', views.AllLocationsView.as_view()),
+
     # Получить, добавить или изменить локацию
     # path('api/m-admin/<int:location_pk>/<int:hall_pk>', views.CurrentLocationView.as_view()),
 
