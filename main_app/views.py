@@ -31,8 +31,7 @@ class CurrentMuseumView(APIView):
             museum.save()
             return Response(True)
         else:
-            return Response('FILE EXTENSION IS NOT VALID')
-
+            return Response('FILE_EXTENSION_IS_NOT_VALID')
 
 
 class SwapArtifactsView(APIView):
