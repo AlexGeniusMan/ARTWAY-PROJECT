@@ -7,6 +7,22 @@ from django.core.files import File
 from PIL import Image
 
 
+class Location(models.Model):
+    name = models.CharField(_("Название"), max_length=100)
+    img = models.ImageField(_("Фотография"), null=True, upload_to='Artifact photos', blank=True)
+    description = models.TextField(_("Описание"), max_length=10000, blank=True)
+
+    museum = models.ForeignKey('Museum', on_delete=models.PROTECT, verbose_name='Музей',
+                               related_name='location', null=True)
+
+    class Meta:
+        verbose_name = 'Локация'
+        verbose_name_plural = 'Локации'
+
+    def __str__(self):
+        return self.name
+
+
 class Museum(models.Model):
     name = models.CharField(_("Название"), max_length=100)
     img = models.ImageField(_("Фотография"), null=True, upload_to='Artifact photos', blank=True)

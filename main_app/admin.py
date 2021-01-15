@@ -9,4 +9,5 @@ class ArtifactAdmin(admin.ModelAdmin):
 
 admin.site.register(Artifact, ArtifactAdmin)
 admin.site.register(Museum)
+admin.site.register(Location)
 admin.site.register(User)

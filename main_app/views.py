@@ -13,7 +13,7 @@ class ShowCurrentMuseum(APIView):
 
     def get(self, request):
         museum = Museum.objects.get(admins=request.user)
-        serializer = AllArtifactsSerializer(museum, context={'request': request})
+        serializer = MuseumSerializer(museum, context={'request': request})
 
         return Response(serializer.data)
 
