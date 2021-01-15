@@ -28,7 +28,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Получить выбранный экспонат
-    path('api/artifacts/<int:artifact_pk>', views.ShowArtifactView.as_view()),
+    path('api/artifacts/<int:artifact_pk>', views.ShowCurrentArtifactView.as_view()),
 
     # Получить все экспонаты
     path('api/artifacts', views.ShowAllArtifactsView.as_view()),

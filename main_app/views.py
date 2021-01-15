@@ -6,6 +6,27 @@ from .serializers import *
 import os
 
 
+def serialize_museum_and_locations(request):
+    list_of_locations = list()
+    location = Location.objects.get(prev_location=None)
+    list_of_locations.append(location)
+    for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
+        location = Location.objects.get(prev_location=location.id)
+        list_of_locations.append(location)
+    if len(list_of_locations) == 1:
+        locations_serializer = LocationSerializer(list_of_locations, context={'request': request})
+    else:
+        locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
+
+    museum = Museum.objects.get(admins=request.user)
+    museum_serializer = MuseumSerializer(museum, context={'request': request})
+
+    return {
+        'museum': museum_serializer.data,
+        'locations': locations_serializer.data
+    }
+
+
 class CurrentLocationView(APIView):
     """
     Shows or changes or deletes current location
@@ -35,24 +56,7 @@ class CurrentLocationView(APIView):
         location = Location.objects.get(pk=location_pk)
         location.delete()
 
-        list_of_locations = list()
-        location = Location.objects.get(prev_location=None)
-        list_of_locations.append(location)
-        for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
-            location = Location.objects.get(prev_location=location.id)
-            list_of_locations.append(location)
-        if len(list_of_locations) == 1:
-            locations_serializer = LocationSerializer(list_of_locations, context={'request': request})
-        else:
-            locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
-
-        museum = Museum.objects.get(admins=request.user)
-        museum_serializer = MuseumSerializer(museum, context={'request': request})
-
-        return Response({
-            'museum': museum_serializer.data,
-            'locations': locations_serializer.data
-        })
+        return Response(serialize_museum_and_locations(request))
 
 
 class CurrentMuseumView(APIView):
@@ -61,52 +65,18 @@ class CurrentMuseumView(APIView):
     """
 
     def get(self, request):
-
-        list_of_locations = list()
-        location = Location.objects.get(prev_location=None)
-        list_of_locations.append(location)
-        for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
-            location = Location.objects.get(prev_location=location.id)
-            list_of_locations.append(location)
-        if len(list_of_locations) == 1:
-            locations_serializer = LocationSerializer(list_of_locations, context={'request': request})
-        else:
-            locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
-
-        museum = Museum.objects.get(admins=request.user)
-        museum_serializer = MuseumSerializer(museum, context={'request': request})
-
-        return Response({
-            'museum': museum_serializer.data,
-            'locations': locations_serializer.data
-        })
+        return Response(serialize_museum_and_locations(request))
 
     def post(self, request):
         name = request.data['name']
         img = request.FILES['img']
         description = request.data['description']
 
-        new_location = Location.objects.create(name=name, img=img, description=description, museum=request.user.museum.id)
+        new_location = Location.objects.create(name=name, img=img, description=description,
+                                               museum=request.user.museum.id)
         new_location.save()
 
-        list_of_locations = list()
-        location = Location.objects.get(prev_location=None)
-        list_of_locations.append(location)
-        for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
-            location = Location.objects.get(prev_location=location.id)
-            list_of_locations.append(location)
-        if len(list_of_locations) == 1:
-            locations_serializer = LocationSerializer(list_of_locations, context={'request': request})
-        else:
-            locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
-
-        museum = Museum.objects.get(admins=request.user)
-        museum_serializer = MuseumSerializer(museum, context={'request': request})
-
-        return Response({
-            'museum': museum_serializer.data,
-            'locations': locations_serializer.data
-        })
+        return Response(serialize_museum_and_locations(request))
 
     def put(self, request):
         museum = Museum.objects.get(pk=request.user.museum.id)
@@ -122,25 +92,73 @@ class CurrentMuseumView(APIView):
             pass
         museum.save()
 
-        list_of_locations = list()
-        location = Location.objects.get(prev_location=None)
-        list_of_locations.append(location)
-        for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
-            location = Location.objects.get(prev_location=location.id)
-            list_of_locations.append(location)
-        if len(list_of_locations) == 1:
-            locations_serializer = LocationSerializer(list_of_locations, context={'request': request})
-        else:
-            locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
+        return Response(serialize_museum_and_locations(request))
 
-        museum = Museum.objects.get(admins=request.user)
-        museum_serializer = MuseumSerializer(museum, context={'request': request})
 
-        return Response({
-            'museum': museum_serializer.data,
-            'locations': locations_serializer.data
-        })
+def change_and_save(swap_type, request):
+    if swap_type == 'up':
+        cur = Artifact.objects.get(pk=request.data['artifact_id'])
+        up = Artifact.objects.get(pk=cur.prev_artifact)
+    elif swap_type == 'down':
+        cur = Artifact.objects.get(prev_artifact=request.data['artifact_id'])
+        up = Artifact.objects.get(pk=cur.prev_artifact)
+    try:
+        down = Artifact.objects.get(prev_artifact=cur.id)
+        # deleting obj from list
+        cur.prev_artifact = None
+        down.prev_artifact = up.id
+        # adding obj to list
+        cur.prev_artifact = up.prev_artifact
+        up.prev_artifact = cur.id
+        cur.save()
+        up.save()
+        down.save()
 
+    except:  # exception only if 'cur' is the last el in the list (then obj 'down' doesn't exists)
+        if swap_type == 'up':
+            cur.prev_artifact = up.prev_artifact
+            up.prev_artifact = cur.id
+            cur.save()
+            up.save()
+        elif swap_type == 'down':
+            cur = Artifact.objects.get(prev_artifact=request.data['artifact_id'])
+            up = Artifact.objects.get(pk=request.data['artifact_id'])
+            cur.prev_artifact = up.prev_artifact
+            up.prev_artifact = cur.id
+            cur.save()
+            up.save()
+
+    return True
+
+
+# def change_and_save(swap_type, request):
+#     if swap_type == 'up':
+#         cur = Artifact.objects.get(pk=request.data['artifact_id'])
+#     else:
+#         cur = Artifact.objects.get(prev_artifact=request.data['artifact_id'])
+#     up = Artifact.objects.get(pk=cur.prev_artifact)
+#     try:
+#         down = Artifact.objects.get(prev_artifact=cur.id)
+#         # deleting obj from list
+#         cur.prev_artifact = None
+#         down.prev_artifact = up.id
+#         # adding obj to list
+#         cur.prev_artifact = up.prev_artifact
+#         up.prev_artifact = cur.id
+#         cur.save()
+#         up.save()
+#         down.save()
+#
+#     except:  # exception only if 'cur' is the last el in the list (then obj 'down' doesn't exists)
+#         if swap_type == 'up':
+#             cur = Artifact.objects.get(prev_artifact=request.data['artifact_id'])
+#             up = Artifact.objects.get(pk=request.data['artifact_id'])
+#         cur.prev_artifact = up.prev_artifact
+#         up.prev_artifact = cur.id
+#         cur.save()
+#         up.save()
+#
+#     return True
 
 class SwapArtifactsView(APIView):
     """
@@ -149,62 +167,75 @@ class SwapArtifactsView(APIView):
 
     def post(self, request):
         swap_type = request.data['swap_type']
-
-        if swap_type == 'up':
-
-            cur = Artifact.objects.get(pk=request.data['artifact_id'])
-            up = Artifact.objects.get(pk=cur.prev_artifact)
-            try:
-                down = Artifact.objects.get(prev_artifact=cur.id)
-                # deleting obj from list
-                cur.prev_artifact = None
-                down.prev_artifact = up.id
-                # adding obj to list
-                cur.prev_artifact = up.prev_artifact
-                up.prev_artifact = cur.id
-
-                cur.save()
-                up.save()
-                down.save()
-
-            except:  # exception only if 'cur' is the last el in the list (then obj 'down' doesn't exists)
-                cur.prev_artifact = up.prev_artifact
-                up.prev_artifact = cur.id
-
-                cur.save()
-                up.save()
-
-        elif swap_type == 'down':
-
-            cur = Artifact.objects.get(prev_artifact=request.data['artifact_id'])
-            up = Artifact.objects.get(pk=cur.prev_artifact)
-            try:
-                down = Artifact.objects.get(prev_artifact=cur.id)
-
-                # deleting obj from list
-                cur.prev_artifact = None
-                down.prev_artifact = up.id
-                # adding obj to list
-                cur.prev_artifact = up.prev_artifact
-                up.prev_artifact = cur.id
-
-                cur.save()
-                up.save()
-                down.save()
-
-            except:
-                cur = Artifact.objects.get(prev_artifact=request.data['artifact_id'])
-                up = Artifact.objects.get(pk=request.data['artifact_id'])
-
-                cur.prev_artifact = up.prev_artifact
-                up.prev_artifact = cur.id
-
-                cur.save()
-                up.save()
-        else:
-            return Response(False)
-
+        change_and_save(swap_type, request)
         return Response(True)
+
+
+# class SwapArtifactsView(APIView):
+#     """
+#     Swaps two current artifacts
+#     """
+#
+#     def post(self, request):
+#         swap_type = request.data['swap_type']
+#
+#         if swap_type == 'up':
+#
+#             cur = Artifact.objects.get(pk=request.data['artifact_id'])
+#             up = Artifact.objects.get(pk=cur.prev_artifact)
+#             print(1)
+#
+#             try:
+#                 down = Artifact.objects.get(prev_artifact=cur.id)
+#                 # deleting obj from list
+#                 cur.prev_artifact = None
+#                 down.prev_artifact = up.id
+#                 # adding obj to list
+#                 cur.prev_artifact = up.prev_artifact
+#                 up.prev_artifact = cur.id
+#
+#                 cur.save()
+#                 up.save()
+#                 down.save()
+#
+#             except:  # exception only if 'cur' is the last el in the list (then obj 'down' doesn't exists)
+#                 cur.prev_artifact = up.prev_artifact
+#                 up.prev_artifact = cur.id
+#
+#                 cur.save()
+#                 up.save()
+#
+#         elif swap_type == 'down':
+#
+#             cur = Artifact.objects.get(prev_artifact=request.data['artifact_id'])
+#             up = Artifact.objects.get(pk=cur.prev_artifact)
+#             try:
+#                 down = Artifact.objects.get(prev_artifact=cur.id)
+#
+#                 # deleting obj from list
+#                 cur.prev_artifact = None
+#                 down.prev_artifact = up.id
+#                 # adding obj to list
+#                 cur.prev_artifact = up.prev_artifact
+#                 up.prev_artifact = cur.id
+#
+#                 cur.save()
+#                 up.save()
+#                 down.save()
+#
+#             except:
+#                 cur = Artifact.objects.get(prev_artifact=request.data['artifact_id'])
+#                 up = Artifact.objects.get(pk=request.data['artifact_id'])
+#
+#                 cur.prev_artifact = up.prev_artifact
+#                 up.prev_artifact = cur.id
+#
+#                 cur.save()
+#                 up.save()
+#         else:
+#             return Response(False)
+#
+#         return Response(True)
 
 
 class ShowAllArtifactsView(APIView):
@@ -233,7 +264,7 @@ class ShowAllArtifactsView(APIView):
         return Response(serializer.data)
 
 
-class ShowArtifactView(APIView):
+class ShowCurrentArtifactView(APIView):
     """
     Shows current artifact
     """
