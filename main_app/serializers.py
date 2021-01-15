@@ -15,7 +15,7 @@ class MuseumSerializer(serializers.ModelSerializer):
     class Meta:
         depth = 2
         model = Museum
-        fields = ('name', 'img', 'description', 'locations')
+        fields = ('id', 'name', 'img', 'description', 'locations')
 
 
 class AllArtifactsSerializer(serializers.ModelSerializer):
