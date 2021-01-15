@@ -12,6 +12,8 @@ class Location(models.Model):
     img = models.ImageField(_("Фотография"), null=True, upload_to='locations', blank=True)
     description = models.TextField(_("Описание"), max_length=10000, blank=True)
 
+    prev_location = models.IntegerField(_("Локация выше"), null=True, blank=True)
+
     museum = models.ForeignKey('Museum', on_delete=models.PROTECT, verbose_name='Музей',
                                related_name='locations', null=True)
 

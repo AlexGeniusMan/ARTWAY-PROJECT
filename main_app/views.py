@@ -21,7 +21,10 @@ class CurrentLocationView(APIView):
 
         location.name = request.data['name']
         location.description = request.data['description']
-        location.img = request.FILES['img']
+        try:
+            location.img = request.FILES['img']
+        except:
+            pass
         location.save()
 
         location = Location.objects.get(pk=location_pk)
@@ -70,7 +73,10 @@ class CurrentMuseumView(APIView):
 
         museum.name = request.data['name']
         museum.description = request.data['description']
-        museum.img = request.FILES['img']
+        try:
+            museum.img = request.FILES['img']
+        except:
+            pass
         museum.save()
 
         museum = Museum.objects.get(admins=request.user)
