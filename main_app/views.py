@@ -61,7 +61,8 @@ class SwapLocationsView(APIView):
     def post(self, request):
         swap_type = request.data['swap_type']
         swap_and_save_location(swap_type, request)
-        return Response(True)
+        # return Response(True)
+        return Response(serialize_museum_and_locations(request))
 
 
 class CurrentLocationView(APIView):
