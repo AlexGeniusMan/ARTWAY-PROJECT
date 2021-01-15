@@ -130,9 +130,12 @@ class CurrentMuseumView(APIView):
         img = request.FILES['img']
         description = request.data['description']
 
-        new_location = Location.objects.create(name=name, img=img, description=description,
-                                               museum=request.user.museum.id)
-        new_location.save()
+        location = Location.objects.get(prev=None)
+        for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
+            location = Location.objects.get(prev=location.id)
+
+        Location.objects.create(name=name, img=img, description=description, museum=request.user.museum,
+                                prev=location.id)
 
         return Response(serialize_museum_and_locations(request))
 
