@@ -55,10 +55,12 @@ def swap_and_save_location(swap_type, request):
 
 def delete_location(request, location_pk):
     cur = Location.objects.get(pk=location_pk)
-    down = Location.objects.get(prev=cur.id)
-
-    down.prev = cur.prev
-    down.save()
+    try:
+        down = Location.objects.get(prev=cur.id)
+        down.prev = cur.prev
+        down.save()
+    except:
+        pass
     cur.delete()
     return True
 
