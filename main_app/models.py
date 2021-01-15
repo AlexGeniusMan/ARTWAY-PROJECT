@@ -9,11 +9,11 @@ from PIL import Image
 
 class Location(models.Model):
     name = models.CharField(_("Название"), max_length=100)
-    img = models.ImageField(_("Фотография"), null=True, upload_to='Artifact photos', blank=True)
+    img = models.ImageField(_("Фотография"), null=True, upload_to='locations', blank=True)
     description = models.TextField(_("Описание"), max_length=10000, blank=True)
 
     museum = models.ForeignKey('Museum', on_delete=models.PROTECT, verbose_name='Музей',
-                               related_name='location', null=True)
+                               related_name='locations', null=True)
 
     class Meta:
         verbose_name = 'Локация'
@@ -25,7 +25,7 @@ class Location(models.Model):
 
 class Museum(models.Model):
     name = models.CharField(_("Название"), max_length=100)
-    img = models.ImageField(_("Фотография"), null=True, upload_to='Artifact photos', blank=True)
+    img = models.ImageField(_("Фотография"), null=True, upload_to='museums', blank=True)
     description = models.TextField(_("Описание"), max_length=10000, blank=True)
 
     class Meta:
@@ -38,13 +38,13 @@ class Museum(models.Model):
 
 class Artifact(models.Model):
     name = models.CharField(_("Название"), max_length=100)
-    img = models.ImageField(_("Фотография"), null=True, upload_to='Artifact photos', blank=True)
-    audio = models.FileField(_("Аудио"), upload_to='Artifact audios', blank=True)
+    img = models.ImageField(_("Фотография"), null=True, upload_to='artifact_photos', blank=True)
+    audio = models.FileField(_("Аудио"), upload_to='artifact_audios', blank=True)
     description = models.TextField(_("Описание"), max_length=10000, blank=True)
 
     prev_artifact = models.IntegerField(_("Экспонат выше"), null=True, blank=True)
 
-    qr_code = models.ImageField(_('QR code'), upload_to='Artifact QR-codes', blank=True)
+    qr_code = models.ImageField(_('QR code'), upload_to='artifact_qrs', blank=True)
 
     class Meta:
         verbose_name = 'Экспонат'

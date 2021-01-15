@@ -13,7 +13,11 @@ class ShowCurrentMuseum(APIView):
 
     def get(self, request):
         museum = Museum.objects.get(admins=request.user)
+        # museum = Museum.objects.get(pk=1)
         serializer = MuseumSerializer(museum, context={'request': request})
+
+        # locations = Location.objects.filter(museum=1)
+        # serializer = LocationSerializer(locations, context={'request': request}, many=True)
 
         return Response(serializer.data)
 
