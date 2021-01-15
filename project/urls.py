@@ -43,7 +43,13 @@ urlpatterns = [
     path('api/m-admin', views.CurrentMuseumView.as_view()),
 
     # Получить, добавить или изменить локацию
-    path('api/locations', views.CurrentLocationView.as_view()),
+    # path('api/locations', views.CurrentLocationView.as_view()),
+
+    # Получить, добавить или изменить локацию
+    path('api/m-admin/<int:location_pk>', views.CurrentLocationView.as_view()),
+
+    # Получить, добавить или изменить локацию
+    # path('api/m-admin/<int:location_pk>/<int:hall_pk>', views.CurrentLocationView.as_view()),
 
     # Авторизация
     url(r'^auth/', include('djoser.urls')),

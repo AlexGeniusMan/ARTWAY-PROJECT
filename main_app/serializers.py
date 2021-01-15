@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import *
 
 
-class SpecialLocationSerializer(serializers.ModelSerializer):
+class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         depth = 2
         model = Location
@@ -10,7 +10,7 @@ class SpecialLocationSerializer(serializers.ModelSerializer):
 
 
 class MuseumSerializer(serializers.ModelSerializer):
-    locations = SpecialLocationSerializer(read_only=True, many=True)
+    locations = LocationSerializer(read_only=True, many=True)
 
     class Meta:
         depth = 2

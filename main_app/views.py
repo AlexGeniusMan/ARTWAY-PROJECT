@@ -11,36 +11,27 @@ class CurrentLocationView(APIView):
     Shows or changes or deletes current location
     """
 
-    def get(self, request):
-        locations = Location.objects.filter(museum=request.user.museum)
-        serializer = SpecialLocationSerializer(locations, context={'request': request}, many=True)
+    def get(self, request, location_pk):
+        location = Location.objects.get(pk=location_pk)
+        serializer = LocationSerializer(location, context={'request': request})
         return Response(serializer.data)
 
-    def post(self, request):
-        name = request.data['name']
-        img = request.FILES['img']
-        description = request.data['description']
-
-        new_location = Location.objects.create(name=name, img=img, description=description, museum=request.user.museum)
-        new_location.save()
-
-        locations = Location.objects.filter(museum=request.user.museum)
-        serializer = SpecialLocationSerializer(locations, context={'request': request}, many=True)
-        return Response(serializer.data)
-
-    def put(self, request):
-        location = Location.objects.get(pk=request.data['location_id'])
+    def put(self, request, location_pk):
+        location = Location.objects.get(pk=location_pk)
 
         location.name = request.data['name']
         location.description = request.data['description']
         location.img = request.FILES['img']
         location.save()
 
-        locations = Location.objects.filter(museum=request.user.museum)
-        serializer = SpecialLocationSerializer(locations, context={'request': request}, many=True)
+        location = Location.objects.get(pk=location_pk)
+        serializer = LocationSerializer(location, context={'request': request})
         return Response(serializer.data)
 
-    # def delete(self, request):
+    # def delete(self, request, location_pk):
+    #     location = Location.objects.get(pk=request.data['location_id'])
+    #     locations = Location.objects.filter(museum=request.user.museum)
+    #     serializer = LocationSerializer(locations, context={'request': request}, many=True)
 
 
 class CurrentMuseumView(APIView):
@@ -54,8 +45,21 @@ class CurrentMuseumView(APIView):
 
         return Response(serializer.data)
 
+    def post(self, request):
+        name = request.data['name']
+        img = request.FILES['img']
+        description = request.data['description']
+
+        new_location = Location.objects.create(name=name, img=img, description=description, museum=request.user.museum.id)
+        new_location.save()
+
+        museum = Museum.objects.get(admins=request.user)
+        serializer = MuseumSerializer(museum, context={'request': request})
+
+        return Response(serializer.data)
+
     def put(self, request):
-        museum = Museum.objects.get(pk=request.data['museum_id'])
+        museum = Museum.objects.get(pk=request.user.museum.id)
 
         # img = request.FILES['img']
         # img_extension = img.name.split(".")[-1].lower()
