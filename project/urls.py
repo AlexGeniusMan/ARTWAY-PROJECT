@@ -34,7 +34,7 @@ urlpatterns = [
     path('api/artifacts', views.ShowAllArtifactsView.as_view()),
 
     # Поменять два выбранных экспоната местами
-    path('api/swap', views.SwapArtifactsView.as_view()),
+    path('api/swap_artifacts', views.SwapArtifactsView.as_view()),
 
     # Получить QR-код выбранного экспоната
     path('api/artifacts/<int:artifact_pk>/qr-code', views.ShowQRCodeOfCurrentArtifactView.as_view()),
@@ -47,6 +47,9 @@ urlpatterns = [
 
     # Получить, добавить или изменить локацию
     path('api/m-admin/<int:location_pk>', views.CurrentLocationView.as_view()),
+
+    # Поменять две выбранных локации местами
+    path('api/swap_locations', views.SwapLocationsView.as_view()),
 
     # Получить, добавить или изменить локацию
     # path('api/m-admin/<int:location_pk>/<int:hall_pk>', views.CurrentLocationView.as_view()),

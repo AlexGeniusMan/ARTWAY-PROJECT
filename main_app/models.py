@@ -12,7 +12,7 @@ class Location(models.Model):
     img = models.ImageField(_("Фотография"), null=True, upload_to='locations', blank=True)
     description = models.TextField(_("Описание"), max_length=10000, blank=True)
 
-    prev_location = models.IntegerField(_("Локация выше"), null=True, blank=True)
+    prev = models.IntegerField(_("Локация выше"), null=True, blank=True)
 
     museum = models.ForeignKey('Museum', on_delete=models.PROTECT, verbose_name='Музей',
                                related_name='locations', null=True)
@@ -44,7 +44,7 @@ class Artifact(models.Model):
     audio = models.FileField(_("Аудио"), upload_to='artifact_audios', blank=True)
     description = models.TextField(_("Описание"), max_length=10000, blank=True)
 
-    prev_artifact = models.IntegerField(_("Экспонат выше"), null=True, blank=True)
+    prev = models.IntegerField(_("Экспонат выше"), null=True, blank=True)
 
     qr_code = models.ImageField(_('QR code'), upload_to='artifact_qrs', blank=True)
 
