@@ -42,6 +42,9 @@ urlpatterns = [
     # Получить или изменить музей, к которому привязан данный администратор
     path('api/m-admin', views.CurrentMuseumView.as_view()),
 
+    # Получить, добавить или изменить локацию
+    path('api/locations', views.CurrentLocationView.as_view()),
+
     # Авторизация
     url(r'^auth/', include('djoser.urls')),
     url(r'^auth/', include('djoser.urls.jwt')),

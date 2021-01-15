@@ -6,9 +6,22 @@ from .serializers import *
 import os
 
 
+class CurrentLocationView(APIView):
+    """
+    Shows or changes or deletes current location
+    """
+    def get(self, request):
+        locations = Location.objects.filter(museum=request.user.museum)
+        serializer = SpecialLocationSerializer(locations, context={'request': request}, many=True)
+        return Response(serializer.data)
+    # def post(self, request):
+    # def put(self, request):
+    # def delete(self, request):
+
+
 class CurrentMuseumView(APIView):
     """
-    Shows current museum
+    Shows or changes current museum
     """
 
     def get(self, request):
@@ -19,19 +32,19 @@ class CurrentMuseumView(APIView):
 
     def put(self, request):
         museum = Museum.objects.get(pk=request.data['museum_id'])
+
+        # img = request.FILES['img']
+        # img_extension = img.name.split(".")[-1].lower()
+
         museum.name = request.data['name']
         museum.description = request.data['description']
+        museum.img = request.FILES['img']
+        museum.save()
 
-        img = request.FILES['img']
-        img_extension = img.name.split(".")[-1].lower()
-        print(img_extension)
+        museum = Museum.objects.get(admins=request.user)
+        serializer = MuseumSerializer(museum, context={'request': request})
 
-        if img_extension == 'png' or img_extension == 'jpg' or img_extension == 'jpeg':
-            museum.img = img
-            museum.save()
-            return Response(True)
-        else:
-            return Response('FILE_EXTENSION_IS_NOT_VALID')
+        return Response(serializer.data)
 
 
 class SwapArtifactsView(APIView):
