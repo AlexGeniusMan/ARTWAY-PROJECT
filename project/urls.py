@@ -39,7 +39,7 @@ urlpatterns = [
     # Получить QR-код выбранного экспоната
     path('api/artifacts/<int:artifact_pk>/qr-code', views.ShowQRCodeOfCurrentArtifactView.as_view()),
 
-    # Получить QR-код выбранного экспоната
+    # Получить музей, к которому привязан данный администратор
     path('api/m-admin', views.ShowCurrentMuseum.as_view()),
 
     # Авторизация

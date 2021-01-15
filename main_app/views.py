@@ -8,7 +8,7 @@ import os
 
 class ShowCurrentMuseum(APIView):
     """
-    Shows all artifacts
+    Shows current museum
     """
 
     def get(self, request):
