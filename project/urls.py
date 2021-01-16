@@ -49,7 +49,7 @@ urlpatterns = [
     # Получить все залы или же изменить или удалить выбранный зал
     path('api/m-admin/<int:location_pk>/<int:hall_pk>', views.CurrentHallView.as_view()),
     # Поменять две выбранных зала местами
-    # path('api/swap_locations', views.SwapLocationsView.as_view()),
+    path('api/swap_halls', views.SwapHallsView.as_view()),
     # Получить все залы
     path('api/all_halls', views.AllHallView.as_view()),
 

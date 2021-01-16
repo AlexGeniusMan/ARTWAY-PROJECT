@@ -7,6 +7,43 @@ from .serializers import *
 import os
 
 
+class SwapHallsView(APIView):
+    """
+    Swaps current hall with upper or lower hall
+    """
+
+    def swap_and_save_hall(self, swap_type, request):
+        if swap_type == 'up':
+            cur = Hall.objects.get(pk=request.data['obj_id'])
+        elif swap_type == 'down':
+            cur = Hall.objects.get(prev=request.data['obj_id'])
+        up = Hall.objects.get(pk=cur.prev)
+        try:
+            down = Hall.objects.get(prev=cur.id)
+            cur.prev = None  # deleting obj from list
+            down.prev = up.id
+            cur.prev = up.prev  # adding obj to list
+            up.prev = cur.id
+            cur.save()
+            up.save()
+            down.save()
+        except:  # exception only if 'cur' is the last el in the list (then obj 'down' doesn't exists)
+            if swap_type == 'down':
+                cur = Hall.objects.get(prev=request.data['obj_id'])
+                up = Hall.objects.get(pk=request.data['obj_id'])
+            cur.prev = up.prev
+            up.prev = cur.id
+            cur.save()
+            up.save()
+        return True
+
+    def post(self, request):
+        swap_type = request.data['swap_type']
+        self.swap_and_save_hall(swap_type, request)
+        location_pk = Hall.objects.get(pk=request.data['obj_id']).location.id
+        return Response(serialize_location_and_halls(request, location_pk))
+
+
 class CurrentHallView(APIView):
     """
     Shows or changes or deletes current hall
