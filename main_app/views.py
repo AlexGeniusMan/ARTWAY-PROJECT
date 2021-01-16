@@ -100,7 +100,6 @@ def delete_location(request, location_pk):
 def serialize_location_and_halls(request, location_pk):
     list_of_halls = list()
     hall = Hall.objects.filter(location=location_pk).get(prev=None)
-    print(hall)
     list_of_halls.append(hall)
     for i in range(len(Hall.objects.filter(location=location_pk)) - 1):
         hall = Hall.objects.get(prev=hall.id)
@@ -132,14 +131,14 @@ class CurrentLocationView(APIView):
         img = request.FILES['img']
         description = request.data['description']
 
-        location = Location.objects.get(prev=None)
-        for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
-            location = Location.objects.get(prev=location.id)
+        hall = Hall.objects.filter(location=location_pk).get(prev=None)
+        for i in range(len(Hall.objects.filter(location=location_pk)) - 1):
+            hall = Hall.objects.get(prev=hall.id)
 
-        Location.objects.create(name=name, img=img, description=description, museum=request.user.museum,
-                                prev=location.id)
+        location = Location.objects.get(pk=location_pk)
+        Hall.objects.create(name=name, img=img, description=description, location=location, prev=hall.id)
 
-        return Response(serialize_museum_and_locations(request))
+        return Response(serialize_location_and_halls(request, location_pk))
 
     def put(self, request, location_pk):
         location = Location.objects.get(pk=location_pk)
