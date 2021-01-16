@@ -199,10 +199,11 @@ class CurrentLocationView(APIView):
         except:
             pass
         location.save()
+        return Response(serialize_location_and_halls(request, location_pk))
 
-        location = Location.objects.get(pk=location_pk)
-        serializer = LocationSerializer(location, context={'request': request})
-        return Response(serializer.data)
+        # location = Location.objects.get(pk=location_pk)
+        # serializer = LocationSerializer(location, context={'request': request})
+        # return Response(serializer.data)
 
     def delete(self, request, location_pk):
         delete_location(request, location_pk)
