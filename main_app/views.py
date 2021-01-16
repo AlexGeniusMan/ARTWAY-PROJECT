@@ -150,23 +150,36 @@ def serialize_location_and_halls(request, location_pk):
     location = Location.objects.get(pk=location_pk)
     location_serializer = LocationSerializer(location, context={'request': request})
 
-    if len(Hall.objects.filter(location=location_pk)) > 0:
+    temp_len = len(Hall.objects.filter(location=location_pk))
+    print(temp_len)
+
+    if temp_len > 1:
         list_of_halls = list()
         hall = Hall.objects.filter(location=location_pk).get(prev=None)
         list_of_halls.append(hall)
-        print(len(Hall.objects.filter(location=location_pk)) - 1)
+
         for i in range(len(Hall.objects.filter(location=location_pk)) - 1):
             print('ok')
             hall = Hall.objects.get(prev=hall.id)
             list_of_halls.append(hall)
-        if len(list_of_halls) == 1:
-            halls_serializer = HallSerializer(list_of_halls, context={'request': request})
-        else:
-            halls_serializer = HallSerializer(list_of_halls, context={'request': request}, many=True)
+
+        halls_serializer = HallSerializer(list_of_halls, context={'request': request}, many=True)
         return {
             'location': location_serializer.data,
             'halls': halls_serializer.data
         }
+    elif temp_len == 1:
+        # location = Location.objects.get(pk=location_pk)
+        print('ok')
+        hall = Hall.objects.get(location=location)
+        print('ok')
+        halls_serializer = HallSerializer(hall, context={'request': request})
+        print('ok')
+        return {
+            'location': location_serializer.data,
+            'halls': [halls_serializer.data]
+        }
+        return True
     else:
         return {
             'location': location_serializer.data,
@@ -180,19 +193,25 @@ class CurrentLocationView(APIView):
     """
 
     def get(self, request, location_pk):
-        return Response(serialize_location_and_halls(request, location_pk))
+        aaa = serialize_location_and_halls(request, location_pk)
+        print('ok')
+        return Response(aaa)
 
     def post(self, request, location_pk):
         name = request.data['name']
         img = request.FILES['img']
         description = request.data['description']
 
-        hall = Hall.objects.filter(location=location_pk).get(prev=None)
-        for i in range(len(Hall.objects.filter(location=location_pk)) - 1):
-            hall = Hall.objects.get(prev=hall.id)
+        try:
+            hall = Hall.objects.filter(location=location_pk).get(prev=None)
+            for i in range(len(Hall.objects.filter(location=location_pk)) - 1):
+                hall = Hall.objects.get(prev=hall.id)
 
-        location = Location.objects.get(pk=location_pk)
-        Hall.objects.create(name=name, img=img, description=description, location=location, prev=hall.id)
+            location = Location.objects.get(pk=location_pk)
+            Hall.objects.create(name=name, img=img, description=description, location=location, prev=hall.id)
+        except:
+            location = Location.objects.get(pk=location_pk)
+            Hall.objects.create(name=name, img=img, description=description, location=location, prev=None)
 
         return Response(serialize_location_and_halls(request, location_pk))
 
