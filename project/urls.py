@@ -36,17 +36,17 @@ urlpatterns = [
     # # Получить QR-код выбранного экспоната
     # path('api/artifacts/<int:artifact_pk>/qr-code', views.ShowQRCodeOfCurrentArtifactView.as_view()),
 
-    # Получить или изменить музей, к которому привязан данный администратор, а также добавить новую локацию
+    # Получить музей со всеми его локациями, или изменить музей, или добавить новую локацию
     path('api/m-admin', views.CurrentMuseumView.as_view()),
 
-    # Получить все локации или же изменить или удалить выбранную локацию, а также добавить новый зал
+    # Получить локацию со всеми её залами, или изменить/удалить выбранную локацию, или добавить новый зал
     path('api/m-admin/<int:location_pk>', views.CurrentLocationView.as_view()),
     # Поменять две выбранных локации местами
     path('api/swap_locations', views.SwapLocationsView.as_view()),
     # Получить все локации
     path('api/all_locations', views.AllLocationsView.as_view()),
 
-    # Получить все залы или же изменить или удалить выбранный зал
+    # Получить выбранный зал, или изменить/удалить выбранный зал
     path('api/m-admin/<int:location_pk>/<int:hall_pk>', views.CurrentHallView.as_view()),
     # Поменять две выбранных зала местами
     path('api/swap_halls', views.SwapHallsView.as_view()),
