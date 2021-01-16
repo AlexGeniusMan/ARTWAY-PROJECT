@@ -17,6 +17,17 @@ class CurrentHallView(APIView):
         serializer = HallSerializer(hall, context={'request': request})
         return serializer.data
 
+    def delete_hall(self, request, location_pk, hall_pk):
+        cur = Hall.objects.get(pk=hall_pk)
+        try:
+            down = Hall.objects.get(prev=cur.id)
+            down.prev = cur.prev
+            down.save()
+        except:
+            pass
+        cur.delete()
+        return True
+
     def get(self, request, location_pk, hall_pk):
         return Response(self.get_hall(request, location_pk, hall_pk))
 
@@ -33,9 +44,9 @@ class CurrentHallView(APIView):
 
         return Response(self.get_hall(request, location_pk, hall_pk))
 
-    # def delete(self, request, location_pk):
-    #     delete_location(request, location_pk)
-    #     return Response(serialize_museum_and_locations(request))
+    def delete(self, request, location_pk, hall_pk):
+        self.delete_hall(request, location_pk, hall_pk)
+        return Response(serialize_location_and_halls(request, location_pk))
 
 
 class AllHallView(APIView):
