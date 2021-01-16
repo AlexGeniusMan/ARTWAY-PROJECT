@@ -225,14 +225,17 @@ def serialize_museum_and_locations(request):
     list_of_locations = list()
     location = Location.objects.get(prev=None)
     list_of_locations.append(location)
+    print('ok')
     for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
         location = Location.objects.get(prev=location.id)
         list_of_locations.append(location)
+    print('ok')
     if len(list_of_locations) == 1:
         locations_serializer = LocationSerializer(list_of_locations, context={'request': request})
     else:
         locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
 
+    print('ok')
     museum = Museum.objects.get(admins=request.user)
     museum_serializer = MuseumSerializer(museum, context={'request': request})
 
