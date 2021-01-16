@@ -147,24 +147,31 @@ def delete_location(request, location_pk):
 
 
 def serialize_location_and_halls(request, location_pk):
-    list_of_halls = list()
-    hall = Hall.objects.filter(location=location_pk).get(prev=None)
-    list_of_halls.append(hall)
-    for i in range(len(Hall.objects.filter(location=location_pk)) - 1):
-        hall = Hall.objects.get(prev=hall.id)
-        list_of_halls.append(hall)
-    if len(list_of_halls) == 1:
-        halls_serializer = HallSerializer(list_of_halls, context={'request': request})
-    else:
-        halls_serializer = HallSerializer(list_of_halls, context={'request': request}, many=True)
-
     location = Location.objects.get(pk=location_pk)
     location_serializer = LocationSerializer(location, context={'request': request})
 
-    return {
-        'location': location_serializer.data,
-        'halls': halls_serializer.data
-    }
+    if len(Hall.objects.filter(location=location_pk)) > 0:
+        list_of_halls = list()
+        hall = Hall.objects.filter(location=location_pk).get(prev=None)
+        list_of_halls.append(hall)
+        print(len(Hall.objects.filter(location=location_pk)) - 1)
+        for i in range(len(Hall.objects.filter(location=location_pk)) - 1):
+            print('ok')
+            hall = Hall.objects.get(prev=hall.id)
+            list_of_halls.append(hall)
+        if len(list_of_halls) == 1:
+            halls_serializer = HallSerializer(list_of_halls, context={'request': request})
+        else:
+            halls_serializer = HallSerializer(list_of_halls, context={'request': request}, many=True)
+        return {
+            'location': location_serializer.data,
+            'halls': halls_serializer.data
+        }
+    else:
+        return {
+            'location': location_serializer.data,
+            'halls': []
+        }
 
 
 class CurrentLocationView(APIView):
@@ -225,17 +232,16 @@ def serialize_museum_and_locations(request):
     list_of_locations = list()
     location = Location.objects.get(prev=None)
     list_of_locations.append(location)
-    print('ok')
+
     for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
         location = Location.objects.get(prev=location.id)
         list_of_locations.append(location)
-    print('ok')
+
     if len(list_of_locations) == 1:
         locations_serializer = LocationSerializer(list_of_locations, context={'request': request})
     else:
         locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
 
-    print('ok')
     museum = Museum.objects.get(admins=request.user)
     museum_serializer = MuseumSerializer(museum, context={'request': request})
 
