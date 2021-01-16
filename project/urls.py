@@ -39,16 +39,16 @@ urlpatterns = [
     # Получить или изменить музей, к которому привязан данный администратор
     path('api/m-admin', views.CurrentMuseumView.as_view()),
 
-    # Получить, добавить или изменить локацию
+    # Получить все локации или же добавить или изменить выбранную локацию
     path('api/m-admin/<int:location_pk>', views.CurrentLocationView.as_view()),
     # Поменять две выбранных локации местами
     path('api/swap_locations', views.SwapLocationsView.as_view()),
     # Получить все локации
     path('api/all_locations', views.AllLocationsView.as_view()),
 
-    # Получить, добавить или изменить зал
+    # Получить все залы или же добавить или изменить выбранный зал
     path('api/m-admin/<int:location_pk>/<int:hall_pk>', views.CurrentHallView.as_view()),
-    # Поменять две выбранных залы местами
+    # Поменять две выбранных зала местами
     # path('api/swap_locations', views.SwapLocationsView.as_view()),
     # Получить все залы
     path('api/all_halls', views.AllHallView.as_view()),

@@ -127,6 +127,20 @@ class CurrentLocationView(APIView):
     def get(self, request, location_pk):
         return Response(serialize_location_and_halls(request, location_pk))
 
+    def post(self, request, location_pk):
+        name = request.data['name']
+        img = request.FILES['img']
+        description = request.data['description']
+
+        location = Location.objects.get(prev=None)
+        for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
+            location = Location.objects.get(prev=location.id)
+
+        Location.objects.create(name=name, img=img, description=description, museum=request.user.museum,
+                                prev=location.id)
+
+        return Response(serialize_museum_and_locations(request))
+
     def put(self, request, location_pk):
         location = Location.objects.get(pk=location_pk)
 
