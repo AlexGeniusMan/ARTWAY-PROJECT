@@ -7,6 +7,24 @@ from django.core.files import File
 from PIL import Image
 
 
+class Hall(models.Model):
+    name = models.CharField(_("Название"), max_length=100)
+    img = models.ImageField(_("Фотография"), null=True, upload_to='halls', blank=True)
+    description = models.TextField(_("Описание"), max_length=10000, blank=True)
+
+    prev = models.IntegerField(_("Зал выше"), null=True, blank=True)
+
+    location = models.ForeignKey('Location', on_delete=models.PROTECT, verbose_name='Локация',
+                                 related_name='halls', null=True)
+
+    class Meta:
+        verbose_name = 'Зал'
+        verbose_name_plural = 'Залы'
+
+    def __str__(self):
+        return self.name
+
+
 class Location(models.Model):
     name = models.CharField(_("Название"), max_length=100)
     img = models.ImageField(_("Фотография"), null=True, upload_to='locations', blank=True)

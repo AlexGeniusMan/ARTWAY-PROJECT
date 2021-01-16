@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework.response import Response
 from django.views.generic.base import View
 from rest_framework.views import APIView
@@ -6,25 +7,45 @@ from .serializers import *
 import os
 
 
-def serialize_museum_and_locations(request):
-    list_of_locations = list()
-    location = Location.objects.get(prev=None)
-    list_of_locations.append(location)
-    for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
-        location = Location.objects.get(prev=location.id)
-        list_of_locations.append(location)
-    if len(list_of_locations) == 1:
-        locations_serializer = LocationSerializer(list_of_locations, context={'request': request})
-    else:
-        locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
+class CurrentHallView(APIView):
+    """
+    Shows or changes or deletes current hall
+    """
 
-    museum = Museum.objects.get(admins=request.user)
-    museum_serializer = MuseumSerializer(museum, context={'request': request})
+    # def get(self, request, location_pk):
+    #     location = Location.objects.get(pk=location_pk)
+    #     serializer = LocationSerializer(location, context={'request': request})
+    #     return Response(serializer.data)
 
-    return {
-        'museum': museum_serializer.data,
-        'locations': locations_serializer.data
-    }
+    # def put(self, request, location_pk):
+    #     location = Location.objects.get(pk=location_pk)
+    #
+    #     location.name = request.data['name']
+    #     location.description = request.data['description']
+    #     try:
+    #         location.img = request.FILES['img']
+    #     except:
+    #         pass
+    #     location.save()
+    #
+    #     location = Location.objects.get(pk=location_pk)
+    #     serializer = LocationSerializer(location, context={'request': request})
+    #     return Response(serializer.data)
+
+    # def delete(self, request, location_pk):
+    #     delete_location(request, location_pk)
+    #     return Response(serialize_museum_and_locations(request))
+
+
+class AllHallView(APIView):
+    """
+    Shows all halls
+    """
+
+    def get(self, request):
+        halls = Hall.objects.all()
+        serializer = LocationSerializer(halls, context={'request': request}, many=True)
+        return Response(serializer.data)
 
 
 def swap_and_save_location(swap_type, request):
@@ -53,6 +74,17 @@ def swap_and_save_location(swap_type, request):
     return True
 
 
+class SwapLocationsView(APIView):
+    """
+    Swaps current location with upper or lower location
+    """
+
+    def post(self, request):
+        swap_type = request.data['swap_type']
+        swap_and_save_location(swap_type, request)
+        return Response(serialize_museum_and_locations(request))
+
+
 def delete_location(request, location_pk):
     cur = Location.objects.get(pk=location_pk)
     try:
@@ -65,26 +97,26 @@ def delete_location(request, location_pk):
     return True
 
 
-class SwapLocationsView(APIView):
-    """
-    Swaps current location with upper or lower location
-    """
+def serialize_location_and_halls(request, location_pk):
+    list_of_halls = list()
+    hall = Hall.objects.filter(location=location_pk).get(prev=None)
+    print(hall)
+    list_of_halls.append(hall)
+    for i in range(len(Hall.objects.filter(location=location_pk)) - 1):
+        hall = Hall.objects.get(prev=hall.id)
+        list_of_halls.append(hall)
+    if len(list_of_halls) == 1:
+        halls_serializer = HallSerializer(list_of_halls, context={'request': request})
+    else:
+        halls_serializer = HallSerializer(list_of_halls, context={'request': request}, many=True)
 
-    def post(self, request):
-        swap_type = request.data['swap_type']
-        swap_and_save_location(swap_type, request)
-        return Response(serialize_museum_and_locations(request))
+    location = Location.objects.get(pk=location_pk)
+    location_serializer = LocationSerializer(location, context={'request': request})
 
-
-class AllLocationsView(APIView):
-    """
-    Shows or changes or deletes current location
-    """
-
-    def get(self, request):
-        locations = Location.objects.all()
-        serializer = LocationSerializer(locations, context={'request': request}, many=True)
-        return Response(serializer.data)
+    return {
+        'location': location_serializer.data,
+        'halls': halls_serializer.data
+    }
 
 
 class CurrentLocationView(APIView):
@@ -93,9 +125,7 @@ class CurrentLocationView(APIView):
     """
 
     def get(self, request, location_pk):
-        location = Location.objects.get(pk=location_pk)
-        serializer = LocationSerializer(location, context={'request': request})
-        return Response(serializer.data)
+        return Response(serialize_location_and_halls(request, location_pk))
 
     def put(self, request, location_pk):
         location = Location.objects.get(pk=location_pk)
@@ -115,6 +145,38 @@ class CurrentLocationView(APIView):
     def delete(self, request, location_pk):
         delete_location(request, location_pk)
         return Response(serialize_museum_and_locations(request))
+
+
+class AllLocationsView(APIView):
+    """
+    Shows all locations
+    """
+
+    def get(self, request):
+        locations = Location.objects.all()
+        serializer = LocationSerializer(locations, context={'request': request}, many=True)
+        return Response(serializer.data)
+
+
+def serialize_museum_and_locations(request):
+    list_of_locations = list()
+    location = Location.objects.get(prev=None)
+    list_of_locations.append(location)
+    for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
+        location = Location.objects.get(prev=location.id)
+        list_of_locations.append(location)
+    if len(list_of_locations) == 1:
+        locations_serializer = LocationSerializer(list_of_locations, context={'request': request})
+    else:
+        locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
+
+    museum = Museum.objects.get(admins=request.user)
+    museum_serializer = MuseumSerializer(museum, context={'request': request})
+
+    return {
+        'museum': museum_serializer.data,
+        'locations': locations_serializer.data
+    }
 
 
 class CurrentMuseumView(APIView):
@@ -156,92 +218,92 @@ class CurrentMuseumView(APIView):
         return Response(serialize_museum_and_locations(request))
 
 
-def swap_and_save_artifact(swap_type, request):
-    if swap_type == 'up':
-        cur = Artifact.objects.get(pk=request.data['obj_id'])
-    elif swap_type == 'down':
-        cur = Artifact.objects.get(prev=request.data['obj_id'])
-    up = Artifact.objects.get(pk=cur.prev)
-    try:
-        down = Artifact.objects.get(prev=cur.id)
-        cur.prev = None  # deleting obj from list
-        down.prev = up.id
-        cur.prev = up.prev  # adding obj to list
-        up.prev = cur.id
-        cur.save()
-        up.save()
-        down.save()
-    except:  # exception only if 'cur' is the last el in the list (then obj 'down' doesn't exists)
-        if swap_type == 'down':
-            cur = Artifact.objects.get(prev=request.data['obj_id'])
-            up = Artifact.objects.get(pk=request.data['obj_id'])
-        cur.prev = up.prev
-        up.prev = cur.id
-        cur.save()
-        up.save()
-    return True
-
-
-class SwapArtifactsView(APIView):
-    """
-    Swaps current artifact with upper or lower artifact
-    """
-
-    def post(self, request):
-        swap_type = request.data['swap_type']
-        swap_and_save_artifact(swap_type, request)
-        return Response(True)
-
-
-class ShowAllArtifactsView(APIView):
-    """
-    Shows all artifacts
-    """
-
-    def get(self, request):
-
-        list_of_artifacts = list()
-        artifact = Artifact.objects.get(prev=None)
-        list_of_artifacts.append(artifact)
-
-        for i in range(len(Artifact.objects.all()) - 1):
-            artifact = Artifact.objects.get(prev=artifact.id)
-            list_of_artifacts.append(artifact)
-
-        if len(list_of_artifacts) == 1:
-            serializer = AllArtifactsSerializer(list_of_artifacts, context={'request': request})
-        else:
-            serializer = AllArtifactsSerializer(list_of_artifacts, context={'request': request}, many=True)
-
-        # objs = Artifact.objects.all()
-        # serializer = AllArtifactsSerializer(objs, context={'request': request}, many=True)
-
-        return Response(serializer.data)
-
-
-class ShowCurrentArtifactView(APIView):
-    """
-    Shows current artifact
-    """
-
-    def get(self, request, artifact_pk):
-        artifact = Artifact.objects.get(pk=artifact_pk)
-        serializer = ArtifactSerializer(artifact, context={'request': request})
-
-        return Response(serializer.data)
-
-
-class ShowQRCodeOfCurrentArtifactView(APIView):
-    """
-    Shows QR-code of current artifact
-    """
-
-    def get(self, request, artifact_pk):
-        artifact = Artifact.objects.get(pk=artifact_pk)
-        artifact.save()
-        qr_code = QRCodeSerializer(artifact, context={'request': request})
-
-        return Response(qr_code.data)
+# def swap_and_save_artifact(swap_type, request):
+#     if swap_type == 'up':
+#         cur = Artifact.objects.get(pk=request.data['obj_id'])
+#     elif swap_type == 'down':
+#         cur = Artifact.objects.get(prev=request.data['obj_id'])
+#     up = Artifact.objects.get(pk=cur.prev)
+#     try:
+#         down = Artifact.objects.get(prev=cur.id)
+#         cur.prev = None  # deleting obj from list
+#         down.prev = up.id
+#         cur.prev = up.prev  # adding obj to list
+#         up.prev = cur.id
+#         cur.save()
+#         up.save()
+#         down.save()
+#     except:  # exception only if 'cur' is the last el in the list (then obj 'down' doesn't exists)
+#         if swap_type == 'down':
+#             cur = Artifact.objects.get(prev=request.data['obj_id'])
+#             up = Artifact.objects.get(pk=request.data['obj_id'])
+#         cur.prev = up.prev
+#         up.prev = cur.id
+#         cur.save()
+#         up.save()
+#     return True
+#
+#
+# class SwapArtifactsView(APIView):
+#     """
+#     Swaps current artifact with upper or lower artifact
+#     """
+#
+#     def post(self, request):
+#         swap_type = request.data['swap_type']
+#         swap_and_save_artifact(swap_type, request)
+#         return Response(True)
+#
+#
+# class ShowAllArtifactsView(APIView):
+#     """
+#     Shows all artifacts
+#     """
+#
+#     def get(self, request):
+#
+#         list_of_artifacts = list()
+#         artifact = Artifact.objects.get(prev=None)
+#         list_of_artifacts.append(artifact)
+#
+#         for i in range(len(Artifact.objects.all()) - 1):
+#             artifact = Artifact.objects.get(prev=artifact.id)
+#             list_of_artifacts.append(artifact)
+#
+#         if len(list_of_artifacts) == 1:
+#             serializer = AllArtifactsSerializer(list_of_artifacts, context={'request': request})
+#         else:
+#             serializer = AllArtifactsSerializer(list_of_artifacts, context={'request': request}, many=True)
+#
+#         # objs = Artifact.objects.all()
+#         # serializer = AllArtifactsSerializer(objs, context={'request': request}, many=True)
+#
+#         return Response(serializer.data)
+#
+#
+# class ShowCurrentArtifactView(APIView):
+#     """
+#     Shows current artifact
+#     """
+#
+#     def get(self, request, artifact_pk):
+#         artifact = Artifact.objects.get(pk=artifact_pk)
+#         serializer = ArtifactSerializer(artifact, context={'request': request})
+#
+#         return Response(serializer.data)
+#
+#
+# class ShowQRCodeOfCurrentArtifactView(APIView):
+#     """
+#     Shows QR-code of current artifact
+#     """
+#
+#     def get(self, request, artifact_pk):
+#         artifact = Artifact.objects.get(pk=artifact_pk)
+#         artifact.save()
+#         qr_code = QRCodeSerializer(artifact, context={'request': request})
+#
+#         return Response(qr_code.data)
 
 
 class ReactAppView(View):

@@ -27,35 +27,31 @@ urlpatterns = [
     # Админ-панель
     path('admin/', admin.site.urls),
 
-    # Получить выбранный экспонат
-    path('api/artifacts/<int:artifact_pk>', views.ShowCurrentArtifactView.as_view()),
-
-    # Получить все экспонаты
-    path('api/artifacts', views.ShowAllArtifactsView.as_view()),
-
-    # Поменять два выбранных экспоната местами
-    path('api/swap_artifacts', views.SwapArtifactsView.as_view()),
-
-    # Получить QR-код выбранного экспоната
-    path('api/artifacts/<int:artifact_pk>/qr-code', views.ShowQRCodeOfCurrentArtifactView.as_view()),
+    # # Получить выбранный экспонат
+    # path('api/artifacts/<int:artifact_pk>', views.ShowCurrentArtifactView.as_view()),
+    # # Получить все экспонаты
+    # path('api/artifacts', views.ShowAllArtifactsView.as_view()),
+    # # Поменять два выбранных экспоната местами
+    # path('api/swap_artifacts', views.SwapArtifactsView.as_view()),
+    # # Получить QR-код выбранного экспоната
+    # path('api/artifacts/<int:artifact_pk>/qr-code', views.ShowQRCodeOfCurrentArtifactView.as_view()),
 
     # Получить или изменить музей, к которому привязан данный администратор
     path('api/m-admin', views.CurrentMuseumView.as_view()),
 
     # Получить, добавить или изменить локацию
-    # path('api/locations', views.CurrentLocationView.as_view()),
-
-    # Получить, добавить или изменить локацию
     path('api/m-admin/<int:location_pk>', views.CurrentLocationView.as_view()),
-
     # Поменять две выбранных локации местами
     path('api/swap_locations', views.SwapLocationsView.as_view()),
+    # Получить все локации
+    path('api/all_locations', views.AllLocationsView.as_view()),
 
-    # Поменять две выбранных локации местами
-    path('api/all', views.AllLocationsView.as_view()),
-
-    # Получить, добавить или изменить локацию
-    # path('api/m-admin/<int:location_pk>/<int:hall_pk>', views.CurrentLocationView.as_view()),
+    # Получить, добавить или изменить зал
+    path('api/m-admin/<int:location_pk>/<int:hall_pk>', views.CurrentHallView.as_view()),
+    # Поменять две выбранных залы местами
+    # path('api/swap_locations', views.SwapLocationsView.as_view()),
+    # Получить все залы
+    path('api/all_halls', views.AllHallView.as_view()),
 
     # Авторизация
     url(r'^auth/', include('djoser.urls')),

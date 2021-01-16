@@ -2,6 +2,13 @@ from rest_framework import serializers
 from .models import *
 
 
+class HallSerializer(serializers.ModelSerializer):
+    class Meta:
+        depth = 2
+        model = Hall
+        exclude = ('location',)
+
+
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         depth = 2
