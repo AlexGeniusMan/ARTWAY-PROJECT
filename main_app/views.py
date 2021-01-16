@@ -12,25 +12,26 @@ class CurrentHallView(APIView):
     Shows or changes or deletes current hall
     """
 
-    # def get(self, request, location_pk):
-    #     location = Location.objects.get(pk=location_pk)
-    #     serializer = LocationSerializer(location, context={'request': request})
-    #     return Response(serializer.data)
+    def get_hall(self, request, location_pk, hall_pk):
+        hall = Hall.objects.get(pk=hall_pk)
+        serializer = HallSerializer(hall, context={'request': request})
+        return serializer.data
 
-    # def put(self, request, location_pk):
-    #     location = Location.objects.get(pk=location_pk)
-    #
-    #     location.name = request.data['name']
-    #     location.description = request.data['description']
-    #     try:
-    #         location.img = request.FILES['img']
-    #     except:
-    #         pass
-    #     location.save()
-    #
-    #     location = Location.objects.get(pk=location_pk)
-    #     serializer = LocationSerializer(location, context={'request': request})
-    #     return Response(serializer.data)
+    def get(self, request, location_pk, hall_pk):
+        return Response(self.get_hall(request, location_pk, hall_pk))
+
+    def put(self, request, location_pk, hall_pk):
+        hall = Hall.objects.get(pk=hall_pk)
+
+        hall.name = request.data['name']
+        hall.description = request.data['description']
+        try:
+            hall.img = request.FILES['img']
+        except:
+            pass
+        hall.save()
+
+        return Response(self.get_hall(request, location_pk, hall_pk))
 
     # def delete(self, request, location_pk):
     #     delete_location(request, location_pk)
