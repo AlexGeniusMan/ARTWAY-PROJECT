@@ -229,26 +229,32 @@ class AllLocationsView(APIView):
 
 
 def serialize_museum_and_locations(request):
-    list_of_locations = list()
-    location = Location.objects.get(prev=None)
-    list_of_locations.append(location)
-
-    for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
-        location = Location.objects.get(prev=location.id)
-        list_of_locations.append(location)
-
-    if len(list_of_locations) == 1:
-        locations_serializer = LocationSerializer(list_of_locations, context={'request': request})
-    else:
-        locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
-
     museum = Museum.objects.get(admins=request.user)
     museum_serializer = MuseumSerializer(museum, context={'request': request})
 
-    return {
-        'museum': museum_serializer.data,
-        'locations': locations_serializer.data
-    }
+    if len(Location.objects.filter(museum=request.user.museum)) > 0:
+        list_of_locations = list()
+        location = Location.objects.get(prev=None)
+        list_of_locations.append(location)
+
+        for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
+            location = Location.objects.get(prev=location.id)
+            list_of_locations.append(location)
+
+        if len(list_of_locations) == 1:
+            locations_serializer = LocationSerializer(list_of_locations, context={'request': request})
+        else:
+            locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
+
+        return {
+            'museum': museum_serializer.data,
+            'locations': locations_serializer.data
+        }
+    else:
+        return {
+            'museum': museum_serializer.data,
+            'locations': []
+        }
 
 
 class CurrentMuseumView(APIView):
