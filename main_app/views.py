@@ -11,11 +11,30 @@ class CurrentArtifactView(APIView):
     """
     Shows current artifact
     """
-
-    def get(self, request, location_pk, hall_pk, artifact_pk):
+    def get_artifact(self, request, location_pk, hall_pk, artifact_pk):
         artifact = Artifact.objects.get(pk=artifact_pk)
         serializer = ArtifactSerializer(artifact, context={'request': request})
-        return Response(serializer.data)
+        return serializer.data
+
+    def get(self, request, location_pk, hall_pk, artifact_pk):
+        return Response(self.get_artifact(request, location_pk, hall_pk, artifact_pk))
+
+    def put(self, request, location_pk, hall_pk, artifact_pk):
+        artifact = Artifact.objects.get(pk=artifact_pk)
+
+        artifact.name = request.data['name']
+        artifact.description = request.data['description']
+        try:
+            artifact.img = request.FILES['img']
+        except:
+            pass
+        try:
+            artifact.audio = request.FILES['audio']
+        except:
+            pass
+        artifact.save()
+
+        return Response(self.get_artifact(request, location_pk, hall_pk, artifact_pk))
 
 
 class SwapHallsView(APIView):
