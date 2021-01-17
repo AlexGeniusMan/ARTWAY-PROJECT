@@ -29,6 +29,7 @@ class Artifact(models.Model):
         return str(self.id)
 
     def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
         qr = qrcode.QRCode(version=1, box_size=15, border=2)
         qr.add_data('https://devgang.ru/artifacts/' + str(self.id))
         qr.make(fit=True)
