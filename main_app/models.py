@@ -22,7 +22,8 @@ class Hall(models.Model):
         verbose_name_plural = 'Залы'
 
     def __str__(self):
-        return self.name
+        # return self.name
+        return str(self.id)
 
 
 class Location(models.Model):
@@ -40,7 +41,8 @@ class Location(models.Model):
         verbose_name_plural = 'Локации'
 
     def __str__(self):
-        return self.name
+        # return self.name
+        return str(self.id)
 
 
 class Museum(models.Model):
@@ -53,7 +55,8 @@ class Museum(models.Model):
         verbose_name_plural = 'Музеи'
 
     def __str__(self):
-        return self.name
+        # return self.name
+        return str(self.id)
 
 
 class Artifact(models.Model):
