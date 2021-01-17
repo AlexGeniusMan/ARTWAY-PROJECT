@@ -7,6 +7,43 @@ from django.core.files import File
 from PIL import Image
 
 
+class Artifact(models.Model):
+    name = models.CharField(_("Название"), max_length=100)
+    img = models.ImageField(_("Фотография"), null=True, upload_to='artifacts/photos', blank=True)
+    audio = models.FileField(_("Аудио"), upload_to='artifacts/audios', blank=True)
+    description = models.TextField(_("Описание"), max_length=10000, blank=True)
+
+    qr_code = models.ImageField(_('QR code'), upload_to='artifacts/qrs', blank=True)
+
+    prev = models.IntegerField(_("Экспонат выше"), null=True, blank=True)
+
+    hall = models.ForeignKey('Hall', on_delete=models.PROTECT, verbose_name='Зал',
+                             related_name='artifacts', null=True)
+
+    class Meta:
+        verbose_name = 'Экспонат'
+        verbose_name_plural = 'Экспонаты'
+
+    def __str__(self):
+        # return self.name
+        return str(self.id)
+
+    # def save(self, *args, **kwargs):
+    #     qr = qrcode.QRCode(version=1, box_size=15, border=2)
+    #     qr.add_data('https://devgang.ru/artifacts/' + str(self.id))
+    #     qr.make(fit=True)
+    #     img = qr.make_image(fill='black', back_color='white')
+    #
+    #     canvas = Image.new('RGB', (500, 500), 'white')
+    #     canvas.paste(img)
+    #     fname = f'qr_code-{self.id}.png'
+    #     buffer = BytesIO()
+    #     canvas.save(buffer, 'PNG')
+    #     self.qr_code.save(fname, File(buffer), save=False)
+    #     canvas.close()
+    #     super().save(*args, **kwargs)
+
+
 class Hall(models.Model):
     name = models.CharField(_("Название"), max_length=100)
     img = models.ImageField(_("Фотография"), null=True, upload_to='halls', blank=True)
@@ -57,39 +94,6 @@ class Museum(models.Model):
     def __str__(self):
         # return self.name
         return str(self.id)
-
-
-class Artifact(models.Model):
-    name = models.CharField(_("Название"), max_length=100)
-    img = models.ImageField(_("Фотография"), null=True, upload_to='artifact_photos', blank=True)
-    audio = models.FileField(_("Аудио"), upload_to='artifact_audios', blank=True)
-    description = models.TextField(_("Описание"), max_length=10000, blank=True)
-
-    prev = models.IntegerField(_("Экспонат выше"), null=True, blank=True)
-
-    qr_code = models.ImageField(_('QR code'), upload_to='artifact_qrs', blank=True)
-
-    class Meta:
-        verbose_name = 'Экспонат'
-        verbose_name_plural = 'Экспонаты'
-
-    def __str__(self):
-        return self.name
-
-    def save(self, *args, **kwargs):
-        qr = qrcode.QRCode(version=1, box_size=15, border=2)
-        qr.add_data('https://devgang.ru/artifacts/' + str(self.id))
-        qr.make(fit=True)
-        img = qr.make_image(fill='black', back_color='white')
-
-        canvas = Image.new('RGB', (500, 500), 'white')
-        canvas.paste(img)
-        fname = f'qr_code-{self.id}.png'
-        buffer = BytesIO()
-        canvas.save(buffer, 'PNG')
-        self.qr_code.save(fname, File(buffer), save=False)
-        canvas.close()
-        super().save(*args, **kwargs)
 
 
 class User(AbstractUser):

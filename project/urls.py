@@ -46,12 +46,19 @@ urlpatterns = [
     # Получить все локации
     path('api/all_locations', views.AllLocationsView.as_view()),
 
-    # Получить выбранный зал, или изменить/удалить выбранный зал
+    # Получить выбранный зал со всеми его экспонатами, или изменить/удалить выбранный зал, или добавить новый экспонат
     path('api/m-admin/<int:location_pk>/<int:hall_pk>', views.CurrentHallView.as_view()),
     # Поменять две выбранных зала местами
     path('api/swap_halls', views.SwapHallsView.as_view()),
     # Получить все залы
-    path('api/all_halls', views.AllHallView.as_view()),
+    path('api/all_halls', views.AllHallsView.as_view()),
+
+    # Получить выбранный экспонат или изменить/удалить выбранный экспонат
+    # path('api/m-admin/<int:location_pk>/<int:hall_pk>/<int:artifact_pk>', views.CurrentArtifactView.as_view()),
+    # Поменять две выбранных зала местами
+    # path('api/swap_halls', views.SwapHallsView.as_view()),
+    # Получить все залы
+    path('api/all_artifacts', views.AllArtifactsView.as_view()),
 
     # Авторизация
     url(r'^auth/', include('djoser.urls')),

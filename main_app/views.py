@@ -44,15 +44,55 @@ class SwapHallsView(APIView):
         return Response(serialize_location_and_halls(request, location_pk))
 
 
+def serialize_hall_and_artifacts(request, location_pk, hall_pk):
+    hall = Hall.objects.get(pk=hall_pk)
+    hall_serializer = HallSerializer(hall, context={'request': request})
+
+    temp_len = len(Artifact.objects.filter(hall=hall_pk))
+    print(temp_len)
+
+    if temp_len > 1:
+        list_of_artifacts = list()
+        artifact = Artifact.objects.filter(hall=hall_pk).get(prev=None)
+        list_of_artifacts.append(artifact)
+
+        for i in range(len(Artifact.objects.filter(hall=hall_pk)) - 1):
+            print('ok')
+            artifact = Artifact.objects.get(prev=artifact.id)
+            list_of_artifacts.append(artifact)
+
+        artifacts_serializer = ArtifactSerializer(list_of_artifacts, context={'request': request}, many=True)
+
+        return {
+            'hall': hall_serializer.data,
+            'artifacts': artifacts_serializer.data
+        }
+    elif temp_len == 1:
+        # location = Location.objects.get(pk=location_pk)
+        print('ok')
+        artifact = Artifact.objects.get(hall=hall_pk)
+        print('ok')
+        artifact_serializer = ArtifactSerializer(artifact, context={'request': request})
+        print('ok')
+        return {
+            'hall': hall_serializer.data,
+            'artifacts': [artifact_serializer.data]
+        }
+        return True
+    else:
+        return {
+            'hall': hall_serializer.data,
+            'artifacts': []
+        }
+
+
 class CurrentHallView(APIView):
     """
     Shows or changes or deletes current hall
     """
 
     def get_hall(self, request, location_pk, hall_pk):
-        hall = Hall.objects.get(pk=hall_pk)
-        serializer = HallSerializer(hall, context={'request': request})
-        return serializer.data
+        return serialize_hall_and_artifacts(request, location_pk, hall_pk)
 
     def delete_hall(self, request, location_pk, hall_pk):
         cur = Hall.objects.get(pk=hall_pk)
@@ -86,7 +126,18 @@ class CurrentHallView(APIView):
         return Response(serialize_location_and_halls(request, location_pk))
 
 
-class AllHallView(APIView):
+class AllArtifactsView(APIView):
+    """
+    Shows all artifacts
+    """
+
+    def get(self, request):
+        artifacts = Artifact.objects.all()
+        serializer = ArtifactSerializer(artifacts, context={'request': request}, many=True)
+        return Response(serializer.data)
+
+
+class AllHallsView(APIView):
     """
     Shows all halls
     """
@@ -193,9 +244,7 @@ class CurrentLocationView(APIView):
     """
 
     def get(self, request, location_pk):
-        aaa = serialize_location_and_halls(request, location_pk)
-        print('ok')
-        return Response(aaa)
+        return Response(serialize_location_and_halls(request, location_pk))
 
     def post(self, request, location_pk):
         name = request.data['name']
