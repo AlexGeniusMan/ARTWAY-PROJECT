@@ -108,6 +108,26 @@ class CurrentHallView(APIView):
     def get(self, request, location_pk, hall_pk):
         return Response(self.get_hall(request, location_pk, hall_pk))
 
+    def post(self, request, location_pk, hall_pk):
+        name = request.data['name']
+        img = request.FILES['img']
+        audio = request.FILES['audio']
+        description = request.data['description']
+
+        try:
+            artifact = Artifact.objects.filter(hall=hall_pk).get(prev=None)
+            for i in range(len(Artifact.objects.filter(hall=hall_pk)) - 1):
+                artifact = Artifact.objects.get(prev=artifact.id)
+
+            hall = Hall.objects.get(pk=hall_pk)
+            Artifact.objects.create(name=name, img=img, audio=audio, description=description, hall=hall,
+                                    prev=artifact.id)
+        except:
+            hall = Hall.objects.get(pk=hall_pk)
+            Artifact.objects.create(name=name, img=img, audio=audio, description=description, hall=hall, prev=None)
+
+        return Response(serialize_hall_and_artifacts(request, location_pk, hall_pk))
+
     def put(self, request, location_pk, hall_pk):
         hall = Hall.objects.get(pk=hall_pk)
 
