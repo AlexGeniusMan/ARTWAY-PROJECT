@@ -7,6 +7,44 @@ from .serializers import *
 import os
 
 
+class SwapArtifactsView(APIView):
+    """
+    Swaps current hall with upper or lower hall
+    """
+
+    def swap_and_save_artifact(self, swap_type, request):
+        if swap_type == 'up':
+            cur = Artifact.objects.get(pk=request.data['obj_id'])
+        elif swap_type == 'down':
+            cur = Artifact.objects.get(prev=request.data['obj_id'])
+        up = Artifact.objects.get(pk=cur.prev)
+        try:
+            down = Artifact.objects.get(prev=cur.id)
+            cur.prev = None  # deleting obj from list
+            down.prev = up.id
+            cur.prev = up.prev  # adding obj to list
+            up.prev = cur.id
+            cur.save()
+            up.save()
+            down.save()
+        except:  # exception only if 'cur' is the last el in the list (then obj 'down' doesn't exists)
+            if swap_type == 'down':
+                cur = Artifact.objects.get(prev=request.data['obj_id'])
+                up = Artifact.objects.get(pk=request.data['obj_id'])
+            cur.prev = up.prev
+            up.prev = cur.id
+            cur.save()
+            up.save()
+        return True
+
+    def post(self, request):
+        swap_type = request.data['swap_type']
+        self.swap_and_save_artifact(swap_type, request)
+        hall_pk = Artifact.objects.get(pk=request.data['obj_id']).hall.id
+        location_pk = Hall.objects.get(pk=hall_pk).location.id
+        return Response(serialize_hall_and_artifacts(request, location_pk, hall_pk))
+
+
 class CurrentArtifactView(APIView):
     """
     Shows current artifact
