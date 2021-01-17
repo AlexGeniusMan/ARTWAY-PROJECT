@@ -256,7 +256,7 @@ def serialize_museum_and_locations(request):
         location = Location.objects.get(prev=None)
         list_of_locations.append(location)
 
-        for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
+        for i in range(len(Location.objects.filter(museum=request.user.museum))):
             location = Location.objects.get(prev=location.id)
             list_of_locations.append(location)
 
@@ -290,7 +290,7 @@ class CurrentMuseumView(APIView):
         description = request.data['description']
 
         location = Location.objects.get(prev=None)
-        for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
+        for i in range(len(Location.objects.filter(museum=request.user.museum))):
             location = Location.objects.get(prev=location.id)
 
         Location.objects.create(name=name, img=img, description=description, museum=request.user.museum,
