@@ -28,6 +28,22 @@ class Artifact(models.Model):
         # return self.name
         return str(self.id)
 
+    def save(self, *args, **kwargs):
+        qr = qrcode.QRCode(version=1, box_size=15, border=2)
+        qr.add_data('https://devgang.ru/artifacts/' + str(self.id))
+        qr.make(fit=True)
+        img = qr.make_image(fill='black', back_color='white')
+
+        canvas = Image.new('RGB', (500, 500), 'white')
+        canvas.paste(img)
+        fname = f'qr_{self.id}.jpeg'
+        # buffer = BytesIO()
+        canvas.save('media/artifacts/qrs/' + fname, 'jpeg')
+        canvas.close()
+        self.qr_code = 'artifacts/qrs/' + fname
+        # self.qr_code.save(fname, File(buffer), save=False)
+        super().save(*args, **kwargs)
+
     # def save(self, *args, **kwargs):
     #     super().save(*args, **kwargs)
     #     print(self.img_1)
