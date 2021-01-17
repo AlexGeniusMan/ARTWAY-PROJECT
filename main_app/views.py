@@ -16,6 +16,17 @@ class CurrentArtifactView(APIView):
         serializer = ArtifactSerializer(artifact, context={'request': request})
         return serializer.data
 
+    def delete_artifact(self, request, location_pk, hall_pk, artifact_pk):
+        cur = Artifact.objects.get(pk=artifact_pk)
+        try:
+            down = Artifact.objects.get(prev=cur.id)
+            down.prev = cur.prev
+            down.save()
+        except:
+            pass
+        cur.delete()
+        return True
+
     def get(self, request, location_pk, hall_pk, artifact_pk):
         return Response(self.get_artifact(request, location_pk, hall_pk, artifact_pk))
 
@@ -35,6 +46,10 @@ class CurrentArtifactView(APIView):
         artifact.save()
 
         return Response(self.get_artifact(request, location_pk, hall_pk, artifact_pk))
+
+    def delete(self, request, location_pk, hall_pk, artifact_pk):
+        self.delete_artifact(request, location_pk, hall_pk, artifact_pk)
+        return Response(serialize_hall_and_artifacts(request, location_pk, hall_pk))
 
 
 class SwapHallsView(APIView):
