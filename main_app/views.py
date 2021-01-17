@@ -3,8 +3,60 @@ from rest_framework.response import Response
 from django.views.generic.base import View
 from rest_framework.views import APIView
 from django.http import HttpResponse
+
+from .permissions import HasGroupPermission
 from .serializers import *
 import os
+from .models import User
+from rest_framework.permissions import BasePermission
+from django.contrib.auth.models import Group
+
+# # Custom permission for users with "is_active" = True.
+# class IsMuseumAdmin(BasePermission):
+#     """
+#     Allows access only to "is_active" users.
+#     """
+#
+#     # def has_permission(self, request, view):
+#     #     if 'Супер-админ сервиса' in request.user.groups.all():
+#     #         return True
+#     #     return False
+#         # return request.user and request.user.is_active
+#
+#     def has_object_permission(self, request, view, obj):
+#         # Read permissions are allowed to any request,
+#         # so we'll always allow GET, HEAD or OPTIONS requests.
+#         if 'Супер-админ сервиса' in request.user.groups.all:
+#             return True
+#         return False
+#         # if request.method in permissions.SAFE_METHODS:
+#         #     return True
+#
+#         # Instance must have an attribute named `owner`.
+#         # return obj.owner == request.user
+
+
+# class CreateNewCashierView(APIView):
+#     # permission_classes = (IsMuseumAdmin,)
+#
+#     permission_classes = [HasGroupPermission]
+#     required_groups = {
+#         'GET': ['Кассир'],
+#         # 'POST': ['moderators', 'someMadeUpGroup'],
+#         # 'PUT': ['__all__'],
+#     }
+#
+#     def get(self, request):
+#         groups = Group.objects.all()
+#         print(groups)
+#         user = User.objects.get(pk=1)
+#         # print(user.groups.all())
+#         return Response(True)
+#
+#     def post(self, request):
+#         user = User.objects.create_user(username='awffe', password='123', last_name='Chentsov', first_name='Alex')
+#         print(user.groups)
+#         return Response(True)
 
 
 class SwapArtifactsView(APIView):
@@ -49,6 +101,7 @@ class CurrentArtifactView(APIView):
     """
     Shows current artifact
     """
+
     def get_artifact(self, request, location_pk, hall_pk, artifact_pk):
         artifact = Artifact.objects.get(pk=artifact_pk)
         serializer = ArtifactSerializer(artifact, context={'request': request})
@@ -573,3 +626,14 @@ class ReactAppView(View):
                 """,
                 status=501,
             )
+
+# give status to front
+# return Response({"data": data, "status": status.HTTP_200_OK})
+
+# validate data
+# def post(self, request):
+#     user = request.data
+#     serializer = UserSerializer(data=user)
+#     serializer.is_valid(raise_exception=True)
+#     serializer.save()
+#     return Response({"user": serializer.data, "status": status.HTTP_200_OK})

@@ -29,18 +29,14 @@ class Artifact(models.Model):
         return str(self.id)
 
     # def save(self, *args, **kwargs):
-    #     qr = qrcode.QRCode(version=1, box_size=15, border=2)
-    #     qr.add_data('https://devgang.ru/artifacts/' + str(self.id))
-    #     qr.make(fit=True)
-    #     img = qr.make_image(fill='black', back_color='white')
-    #
-    #     canvas = Image.new('RGB', (500, 500), 'white')
-    #     canvas.paste(img)
-    #     fname = f'qr_code-{self.id}.png'
-    #     buffer = BytesIO()
-    #     canvas.save(buffer, 'PNG')
-    #     self.qr_code.save(fname, File(buffer), save=False)
-    #     canvas.close()
+    #     super().save(*args, **kwargs)
+    #     print(self.img_1)
+    #     im1 = Image.open(self.img_1)
+    #     fname = f'{self.id}-mini.jpeg'
+    #     print(fname)
+    #     im1.save('media/Products/' + fname, "JPEG", quality=10)
+    #     self.img_mini = 'Products/' + fname
+    #     print(self.img_mini)
     #     super().save(*args, **kwargs)
 
 
@@ -97,9 +93,17 @@ class Museum(models.Model):
 
 
 class User(AbstractUser):
+    ROLES = (
+        ('service_super_admin', 'Супер-админ сервиса'),
+        ('museum_super_admin', 'Супер-админ музея'),
+        ('museum_admin', 'Админ музея'),
+        ('museum_cashier', 'Кассир музея'),
+    )
     last_name = models.CharField(_("Фамилия"), max_length=50)
     first_name = models.CharField(_("Имя"), max_length=50)
-    middle_name = models.CharField(_("Отчество"), max_length=50)
+    middle_name = models.CharField(_("Отчество"), max_length=50, blank=True)
+
+    # role = models.CharField(_("Роль"), choices=ROLES, max_length=64, default='none', blank=True)
 
     museum = models.ForeignKey('Museum', on_delete=models.SET_NULL, verbose_name='Музей',
                                related_name='admins', null=True)

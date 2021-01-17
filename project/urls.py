@@ -60,6 +60,12 @@ urlpatterns = [
     # Получить все залы
     path('api/all_artifacts', views.AllArtifactsView.as_view()),
 
+    # Создать нового пользователя
+    # path('api/create_new_cashier', views.CreateNewCashierView.as_view()),
+
+    # Вызвать метод save() у всех экспонатов (используется для переноса сервиса с IP/домена на IP/домен)
+    # path('api/update_all_qrs', views.UpdateAllQRsView.as_view()),
+
     # Авторизация
     url(r'^auth/', include('djoser.urls')),
     url(r'^auth/', include('djoser.urls.jwt')),
