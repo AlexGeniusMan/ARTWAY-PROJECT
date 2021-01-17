@@ -54,7 +54,7 @@ urlpatterns = [
     path('api/all_halls', views.AllHallsView.as_view()),
 
     # Получить выбранный экспонат или изменить/удалить выбранный экспонат
-    # path('api/m-admin/<int:location_pk>/<int:hall_pk>/<int:artifact_pk>', views.CurrentArtifactView.as_view()),
+    path('api/m-admin/<int:location_pk>/<int:hall_pk>/<int:artifact_pk>', views.CurrentArtifactView.as_view()),
     # Поменять две выбранных зала местами
     # path('api/swap_halls', views.SwapHallsView.as_view()),
     # Получить все залы

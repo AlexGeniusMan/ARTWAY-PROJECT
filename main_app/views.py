@@ -7,6 +7,17 @@ from .serializers import *
 import os
 
 
+class CurrentArtifactView(APIView):
+    """
+    Shows current artifact
+    """
+
+    def get(self, request, location_pk, hall_pk, artifact_pk):
+        artifact = Artifact.objects.get(pk=artifact_pk)
+        serializer = ArtifactSerializer(artifact, context={'request': request})
+        return Response(serializer.data)
+
+
 class SwapHallsView(APIView):
     """
     Swaps current hall with upper or lower hall
