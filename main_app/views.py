@@ -26,14 +26,11 @@ from django.contrib.auth.models import Group
 #
 #     def get(self, request):
 #         groups = Group.objects.all()
-#         print(groups)
 #         user = User.objects.get(pk=1)
-#         # print(user.groups.all())
 #         return Response(True)
 #
 #     def post(self, request):
 #         user = User.objects.create_user(username='awffe', password='123', last_name='Chentsov', first_name='Alex')
-#         print(user.groups)
 #         return Response(True)
 
 
@@ -71,7 +68,6 @@ class SwapArtifactsView(APIView):
         return True
 
     def post(self, request):
-        print('oooooooooooooo')
         swap_type = request.data['swap_type']
         self.swap_and_save_artifact(swap_type, request)
         hall_pk = Artifact.objects.get(pk=request.data['obj_id']).hall.id
@@ -167,7 +163,6 @@ def serialize_hall_and_artifacts(request, location_pk, hall_pk):
     hall_serializer = HallSerializer(hall, context={'request': request})
 
     temp_len = len(Artifact.objects.filter(hall=hall_pk))
-    print(temp_len)
 
     if temp_len > 1:
         list_of_artifacts = list()
@@ -175,7 +170,6 @@ def serialize_hall_and_artifacts(request, location_pk, hall_pk):
         list_of_artifacts.append(artifact)
 
         for i in range(len(Artifact.objects.filter(hall=hall_pk)) - 1):
-            print('ok')
             artifact = Artifact.objects.get(prev=artifact.id)
             list_of_artifacts.append(artifact)
 
@@ -187,11 +181,8 @@ def serialize_hall_and_artifacts(request, location_pk, hall_pk):
         }
     elif temp_len == 1:
         # location = Location.objects.get(pk=location_pk)
-        print('ok')
         artifact = Artifact.objects.get(hall=hall_pk)
-        print('ok')
         artifact_serializer = ArtifactSerializer(artifact, context={'request': request})
-        print('ok')
         return {
             'hall': hall_serializer.data,
             'artifacts': [artifact_serializer.data]
@@ -342,7 +333,6 @@ def serialize_location_and_halls(request, location_pk):
     location_serializer = LocationSerializer(location, context={'request': request})
 
     temp_len = len(Hall.objects.filter(location=location_pk))
-    print(temp_len)
 
     if temp_len > 1:
         list_of_halls = list()
@@ -350,7 +340,6 @@ def serialize_location_and_halls(request, location_pk):
         list_of_halls.append(hall)
 
         for i in range(len(Hall.objects.filter(location=location_pk)) - 1):
-            print('ok')
             hall = Hall.objects.get(prev=hall.id)
             list_of_halls.append(hall)
 
@@ -361,11 +350,8 @@ def serialize_location_and_halls(request, location_pk):
         }
     elif temp_len == 1:
         # location = Location.objects.get(pk=location_pk)
-        print('ok')
         hall = Hall.objects.get(location=location)
-        print('ok')
         halls_serializer = HallSerializer(hall, context={'request': request})
-        print('ok')
         return {
             'location': location_serializer.data,
             'halls': [halls_serializer.data]
@@ -445,12 +431,10 @@ def serialize_museum_and_locations(request):
         list_of_locations = list()
         location = Location.objects.get(prev=None)
         list_of_locations.append(location)
-        print(list_of_locations)
 
         for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
             location = Location.objects.get(prev=location.id)
             list_of_locations.append(location)
-            print(list_of_locations)
 
         if len(list_of_locations) == 1:
             locations_serializer = LocationSerializer(list_of_locations, context={'request': request})
@@ -510,13 +494,13 @@ class CurrentMuseumView(APIView):
         return Response(serialize_museum_and_locations(request))
 
 
-class ServiceCurrentMuseumView(APIView):
+class MuseumSuperAdminView(APIView):
     """
     # Shows all museums, creates new one or deletes current
     """
     permission_classes = (IsServiceSuperAdmin,)
 
-    def get(self, request, museum_pk):
+    def get_museum_super_admin(self, request, museum_pk):
         museum = Museum.objects.get(pk=museum_pk)
         museum_serializer = MuseumSerializer(museum, context={'request': request})
 
@@ -527,29 +511,63 @@ class ServiceCurrentMuseumView(APIView):
                 break
         try:
             museum_super_admin_serializer = UserSerializer(museum_super_admin, context={'request': request})
-            return Response({
+            return {
                 'status': True,
                 'museum_super_admin': museum_super_admin_serializer.data,
                 # 'museum': museum_serializer.data
-            })
+            }
         except:
-            return Response({
+            return {
                 'status': False,
                 'museum_super_admin': {},
                 # 'museum': museum_serializer.data
-            })
+            }
 
+    def get(self, request, museum_pk):
+        return Response(self.get_museum_super_admin(request, museum_pk))
+
+    def post(self, request, museum_pk):
+        # username = request.data['email']
+        # email = request.data['email']
+        # password = request.data['password']
+        # last_name = request.data['last_name']
+        # first_name = request.data['first_name']
+        # middle_name = request.data['middle_name']
+
+        username = 'm_super_1'
+        email = 'email'
+        password = 'password'
+        last_name = 'Chentsov'
+        first_name = 'Alex'
+        middle_name = ''
+
+        users = User.objects.filter(museum=request.user.museum).exclude(pk=request.user.id)
+        for user in users:
+            if user.groups.filter(name='museum_super_admins').exists():
+                return Response(
+                    {"error_code": 'MUSEUM SUPER ADMIN IS ALREADY EXISTS', "status": status.HTTP_403_FORBIDDEN})
+
+        user = User.objects.create_user(username=username, password=password, last_name=last_name,
+                                        first_name=first_name, middle_name=middle_name,
+                                        email=email, museum=request.user.museum)
+
+        group = Group.objects.get(name='museum_super_admins')
+        user.groups.add(group.id)
+        user.save()
+        return Response(self.get_museum_super_admin(request, museum_pk))
 
     def delete(self, request, museum_pk):
-        museum = Museum.objects.get(pk=museum_pk)
-        museum.delete()
-        return Response(get_all_museums(request))
 
-
-def get_all_museums(request):
-    museums = Museum.objects.all()
-    serializer = MuseumSerializer(museums, context={'request': request}, many=True)
-    return serializer.data
+        # users = User.objects.filter(museum=museum_pk).exclude(pk=request.user.id)
+        users = User.objects.filter(museum=museum_pk).exclude(pk=request.user.id)
+        print(users)
+        for user in users:
+            print(user)
+            if user.groups.filter(name='museum_super_admins').exists():
+                user.delete()
+                return Response(self.get_museum_super_admin(request, museum_pk))
+        return Response(
+            {"error_code": 'MUSEUM SUPER ADMIN DOES NOT EXISTS', "status": status.HTTP_403_FORBIDDEN})
 
 
 class MuseumsView(APIView):
@@ -558,8 +576,13 @@ class MuseumsView(APIView):
     """
     permission_classes = (IsServiceSuperAdmin,)
 
+    def get_all_museums(self, request):
+        museums = Museum.objects.all()
+        serializer = MuseumSerializer(museums, context={'request': request}, many=True)
+        return serializer.data
+
     def get(self, request):
-        return Response(get_all_museums(request))
+        return Response(self.get_all_museums(request))
 
     def post(self, request):
         name = request.data['name']
@@ -568,7 +591,12 @@ class MuseumsView(APIView):
 
         Museum.objects.create(name=name, img=img, description=description)
 
-        return Response(get_all_museums(request))
+        return Response(self.get_all_museums(request))
+
+    def delete(self, request, museum_pk):
+        museum = Museum.objects.get(pk=museum_pk)
+        museum.delete()
+        return Response(self.get_all_museums(request))
 
 
 class MuseumProfilesView(APIView):

@@ -39,7 +39,7 @@ urlpatterns = [
     # Получить все музеи или добавить новый
     path('api/s-admin', views.MuseumsView.as_view()),
     # Удалить выбранный музей
-    path('api/s-admin/<int:museum_pk>', views.ServiceCurrentMuseumView.as_view()),
+    path('api/s-admin/<int:museum_pk>', views.MuseumSuperAdminView.as_view()),
 
     # Получить музей со всеми его локациями, или изменить музей, или добавить новую локацию
     path('api/m-admin', views.CurrentMuseumView.as_view()),
