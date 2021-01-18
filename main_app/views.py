@@ -1,10 +1,12 @@
 from django.db.models import Q
+from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.response import Response
 from django.views.generic.base import View
 from rest_framework.views import APIView
 from django.http import HttpResponse
 
-from .permissions import HasGroupPermission
+# from .permissions import HasGroupPermission
+from .permissions import IsOwnerOrReadOnly
 from .serializers import *
 import os
 from .models import User
@@ -37,14 +39,14 @@ from django.contrib.auth.models import Group
 
 
 # class CreateNewCashierView(APIView):
-#     # permission_classes = (IsMuseumAdmin,)
+#     permission_classes = (IsMuseumAdmin,)
 #
-#     permission_classes = [HasGroupPermission]
-#     required_groups = {
-#         'GET': ['Кассир'],
-#         # 'POST': ['moderators', 'someMadeUpGroup'],
-#         # 'PUT': ['__all__'],
-#     }
+#     # permission_classes = [HasGroupPermission]
+#     # required_groups = {
+#     #     'GET': ['Кассир'],
+#     #     # 'POST': ['moderators', 'someMadeUpGroup'],
+#     #     # 'PUT': ['__all__'],
+#     # }
 #
 #     def get(self, request):
 #         groups = Group.objects.all()
@@ -58,11 +60,17 @@ from django.contrib.auth.models import Group
 #         print(user.groups)
 #         return Response(True)
 
+# class SwapArtifactsView(GenericAPIView):
+#     queryset =
+
 
 class SwapArtifactsView(APIView):
     """
     Swaps current hall with upper or lower hall
     """
+    permission_classes = (IsOwnerOrReadOnly,)
+
+    # queryset = Museum.objects.all()
 
     def swap_and_save_artifact(self, swap_type, request):
         if swap_type == 'up':
@@ -90,6 +98,7 @@ class SwapArtifactsView(APIView):
         return True
 
     def post(self, request):
+        print('oooooooooooooo')
         swap_type = request.data['swap_type']
         self.swap_and_save_artifact(swap_type, request)
         hall_pk = Artifact.objects.get(pk=request.data['obj_id']).hall.id
