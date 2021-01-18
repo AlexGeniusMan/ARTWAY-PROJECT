@@ -1,4 +1,5 @@
 from django.db.models import Q
+from rest_framework import status
 from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.response import Response
 from django.views.generic.base import View
@@ -509,11 +510,11 @@ class CurrentMuseumView(APIView):
         return Response(serialize_museum_and_locations(request))
 
 
-class HRManagementView(APIView):
+class MuseumProfilesView(APIView):
     """
     Shows/creates/deletes employees of current museum
     """
-    permission_classes = (IsMuseumSuperAdmin,)
+    permission_classes = (IsMuseumAdmin,)
 
     def get_users(self, request):
         museum_super_admin = User.objects.get(pk=request.user.id)
@@ -562,6 +563,29 @@ class HRManagementView(APIView):
         user.groups.add(group.id)
         user.save()
         return Response(self.get_users(request))
+
+    def put(self, request, user_pk):
+        museum_super_admin = request.user
+        user = User.objects.get(pk=user_pk)
+
+        if museum_super_admin.museum == user.museum:
+            user.last_name = request.data['last_name']
+            user.first_name = request.data['first_name']
+            user.middle_name = request.data['middle_name']
+            user.email = request.data['email']
+            user.username = request.data['email']
+
+            # user.last_name = 'last'
+            # user.first_name = 'first'
+            # user.middle_name = 'middle'
+            # user.email = 'email'
+            # user.username = 'username'
+            user.save()
+
+            return Response(self.get_users(request))
+        else:
+            return Response({"error_code": 'ERROR', "status": status.HTTP_200_OK})
+
 
 
 # def swap_and_save_artifact(swap_type, request):

@@ -10,7 +10,7 @@ class ArtifactAdmin(admin.ModelAdmin):
 
 
 class CustomUserAdmin(UserAdmin):
-    list_display = ('username', 'email', 'last_name', 'first_name', 'is_staff', 'is_superuser', 'is_active')
+    list_display = ('username', 'id', 'email', 'last_name', 'first_name', 'is_staff', 'is_superuser', 'is_active')
     fieldsets = (
         (_('Авторизация'), {'fields': ('username', 'email', 'password')}),
         (_('Основная информация'),

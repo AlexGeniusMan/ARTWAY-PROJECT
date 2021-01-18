@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
         depth = 2
         model = User
         # fields = ('last_name', 'first_name', 'middle_name')
-        fields = ('username', 'last_name', 'first_name', 'middle_name')
+        fields = ('id', 'username', 'last_name', 'first_name', 'middle_name')
 
 
 class ArtifactSerializer(serializers.ModelSerializer):
