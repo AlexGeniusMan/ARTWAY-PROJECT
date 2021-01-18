@@ -5,37 +5,12 @@ from django.views.generic.base import View
 from rest_framework.views import APIView
 from django.http import HttpResponse
 
-# from .permissions import HasGroupPermission
-from .permissions import IsOwnerOrReadOnly
+from .permissions import *
 from .serializers import *
 import os
 from .models import User
 from rest_framework.permissions import BasePermission
 from django.contrib.auth.models import Group
-
-# # Custom permission for users with "is_active" = True.
-# class IsMuseumAdmin(BasePermission):
-#     """
-#     Allows access only to "is_active" users.
-#     """
-#
-#     # def has_permission(self, request, view):
-#     #     if 'Супер-админ сервиса' in request.user.groups.all():
-#     #         return True
-#     #     return False
-#         # return request.user and request.user.is_active
-#
-#     def has_object_permission(self, request, view, obj):
-#         # Read permissions are allowed to any request,
-#         # so we'll always allow GET, HEAD or OPTIONS requests.
-#         if 'Супер-админ сервиса' in request.user.groups.all:
-#             return True
-#         return False
-#         # if request.method in permissions.SAFE_METHODS:
-#         #     return True
-#
-#         # Instance must have an attribute named `owner`.
-#         # return obj.owner == request.user
 
 
 # class CreateNewCashierView(APIView):
@@ -60,15 +35,12 @@ from django.contrib.auth.models import Group
 #         print(user.groups)
 #         return Response(True)
 
-# class SwapArtifactsView(GenericAPIView):
-#     queryset =
-
 
 class SwapArtifactsView(APIView):
     """
     Swaps current hall with upper or lower hall
     """
-    permission_classes = (IsOwnerOrReadOnly,)
+    permission_classes = (IsMuseumAdmin,)
 
     # queryset = Museum.objects.all()
 
