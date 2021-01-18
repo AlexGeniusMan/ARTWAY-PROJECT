@@ -36,9 +36,14 @@ urlpatterns = [
     # # Получить QR-код выбранного экспоната
     # path('api/artifacts/<int:artifact_pk>/qr-code', views.ShowQRCodeOfCurrentArtifactView.as_view()),
 
+    # Получить все музеи или добавить новый
+    path('api/s-admin', views.MuseumsView.as_view()),
+    # Удалить выбранный музей
+    path('api/s-admin/<int:museum_pk>', views.MuseumsView.as_view()),
+
     # Получить музей со всеми его локациями, или изменить музей, или добавить новую локацию
     path('api/m-admin', views.CurrentMuseumView.as_view()),
-    # Получить профиль супер-админа музея, а также списка админов и кассиров музея, к которому привязан супер-админ
+    # Получить профиль супер-админа музея, а также списки админов и кассиров музея, к которому привязан супер-админ
     path('api/m-admin/hr-management', views.MuseumProfilesView.as_view()),
     # Изменить/удалить выбранного администратора/кассира музея
     path('api/m-admin/hr-management/<int:user_pk>', views.MuseumProfilesView.as_view()),

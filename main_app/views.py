@@ -510,6 +510,36 @@ class CurrentMuseumView(APIView):
         return Response(serialize_museum_and_locations(request))
 
 
+class MuseumsView(APIView):
+    """
+    Shows all museums, creates new one or deletes current
+    """
+    permission_classes = (IsServiceSuperAdmin,)
+
+    def get_museums(self, request):
+        museums = Museum.objects.all()
+        serializer = MuseumSerializer(museums, context={'request': request}, many=True)
+        return serializer.data
+
+    def get(self, request):
+        return Response(self.get_museums(request))
+
+    def post(self, request):
+        name = request.data['name']
+        img = request.data['img']
+        description = request.data['description']
+
+        Museum.objects.create(name=name, img=img, description=description)
+
+        return Response(self.get_museums(request))
+
+    def delete(self, request, museum_pk):
+        museum = Museum.objects.get(pk=museum_pk)
+        museum.delete()
+
+        return Response(self.get_museums(request))
+
+
 class MuseumProfilesView(APIView):
     """
     Shows/creates/deletes employees of current museum
@@ -598,9 +628,6 @@ class MuseumProfilesView(APIView):
                 return Response({"error_code": 'ERROR', "status": status.HTTP_403_FORBIDDEN})
         else:
             return Response({"error_code": 'ERROR', "status": status.HTTP_403_FORBIDDEN})
-
-
-
 
 
 # def swap_and_save_artifact(swap_type, request):
