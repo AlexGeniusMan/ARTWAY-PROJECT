@@ -510,19 +510,56 @@ class CurrentMuseumView(APIView):
         return Response(serialize_museum_and_locations(request))
 
 
+class ServiceCurrentMuseumView(APIView):
+    """
+    # Shows all museums, creates new one or deletes current
+    """
+    permission_classes = (IsServiceSuperAdmin,)
+
+    def get(self, request, museum_pk):
+        museum = Museum.objects.get(pk=museum_pk)
+        museum_serializer = MuseumSerializer(museum, context={'request': request})
+
+        users = User.objects.filter(museum=request.user.museum).exclude(pk=request.user.id)
+        for user in users:
+            if user.groups.filter(name='museum_super_admins').exists():
+                museum_super_admin = user
+                break
+        try:
+            museum_super_admin_serializer = UserSerializer(museum_super_admin, context={'request': request})
+            return Response({
+                'status': True,
+                'museum_super_admin': museum_super_admin_serializer.data,
+                # 'museum': museum_serializer.data
+            })
+        except:
+            return Response({
+                'status': False,
+                'museum_super_admin': {},
+                # 'museum': museum_serializer.data
+            })
+
+
+    def delete(self, request, museum_pk):
+        museum = Museum.objects.get(pk=museum_pk)
+        museum.delete()
+        return Response(get_all_museums(request))
+
+
+def get_all_museums(request):
+    museums = Museum.objects.all()
+    serializer = MuseumSerializer(museums, context={'request': request}, many=True)
+    return serializer.data
+
+
 class MuseumsView(APIView):
     """
     Shows all museums, creates new one or deletes current
     """
     permission_classes = (IsServiceSuperAdmin,)
 
-    def get_museums(self, request):
-        museums = Museum.objects.all()
-        serializer = MuseumSerializer(museums, context={'request': request}, many=True)
-        return serializer.data
-
     def get(self, request):
-        return Response(self.get_museums(request))
+        return Response(get_all_museums(request))
 
     def post(self, request):
         name = request.data['name']
@@ -531,13 +568,7 @@ class MuseumsView(APIView):
 
         Museum.objects.create(name=name, img=img, description=description)
 
-        return Response(self.get_museums(request))
-
-    def delete(self, request, museum_pk):
-        museum = Museum.objects.get(pk=museum_pk)
-        museum.delete()
-
-        return Response(self.get_museums(request))
+        return Response(get_all_museums(request))
 
 
 class MuseumProfilesView(APIView):
