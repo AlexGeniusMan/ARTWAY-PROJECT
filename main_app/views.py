@@ -575,6 +575,7 @@ class MuseumProfilesView(APIView):
         password = request.data['password']
         last_name = request.data['last_name']
         first_name = request.data['first_name']
+        middle_name = request.data['middle_name']
         role = request.data['role']
 
         # username = 'm_cashier_2'
@@ -582,10 +583,12 @@ class MuseumProfilesView(APIView):
         # password = 'password'
         # last_name = 'Chentsov'
         # first_name = 'Alex'
+        # middle_name = ''
         # role = 'museum_cashiers'
 
         user = User.objects.create_user(username=username, password=password, last_name=last_name,
-                                        first_name=first_name, email=email, museum=request.user.museum)
+                                        first_name=first_name, middle_name=middle_name,
+                                        email=email, museum=request.user.museum)
         if role == 'museum_admins':
             group = Group.objects.get(name='museum_admins')
         elif role == 'museum_cashiers':
