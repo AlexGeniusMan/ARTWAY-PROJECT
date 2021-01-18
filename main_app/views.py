@@ -567,7 +567,7 @@ class MuseumSuperAdminView(APIView):
                 user.delete()
                 return Response(self.get_museum_super_admin(request, museum_pk))
         return Response(
-            {"error_code": 'MUSEUM SUPER ADMIN DOES NOT EXISTS', "status": status.HTTP_403_FORBIDDEN})
+            {"error_code": 'MUSEUM SUPER ADMIN DOES NOT EXISTS', "status": status.HTTP_404_NOT_FOUND})
 
 
 class MuseumsView(APIView):
