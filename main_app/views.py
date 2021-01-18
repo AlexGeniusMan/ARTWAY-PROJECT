@@ -539,19 +539,19 @@ class HRManagementView(APIView):
         return Response(self.get_users(request))
 
     def post(self, request):
-        # username = request.data['email']
-        # email = request.data['email']
-        # password = request.data['password']
-        # last_name = request.data['last_name']
-        # first_name = request.data['first_name']
-        # role = request.data['role']
+        username = request.data['email']
+        email = request.data['email']
+        password = request.data['password']
+        last_name = request.data['last_name']
+        first_name = request.data['first_name']
+        role = request.data['role']
 
-        username = 'm_cashier_2'
-        email = 'email'
-        password = 'password'
-        last_name = 'Chentsov'
-        first_name = 'Alex'
-        role = 'museum_cashiers'
+        # username = 'm_cashier_2'
+        # email = 'email'
+        # password = 'password'
+        # last_name = 'Chentsov'
+        # first_name = 'Alex'
+        # role = 'museum_cashiers'
 
         user = User.objects.create_user(username=username, password=password, last_name=last_name,
                                         first_name=first_name, email=email, museum=request.user.museum)
