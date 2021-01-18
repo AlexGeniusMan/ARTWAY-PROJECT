@@ -584,7 +584,22 @@ class MuseumProfilesView(APIView):
 
             return Response(self.get_users(request))
         else:
-            return Response({"error_code": 'ERROR', "status": status.HTTP_200_OK})
+            return Response({"error_code": 'ERROR', "status": status.HTTP_403_FORBIDDEN})
+
+    def delete(self, request, user_pk):
+        museum_super_admin = request.user
+        user = User.objects.get(pk=user_pk)
+
+        if user.id != museum_super_admin.id:
+            if museum_super_admin.museum == user.museum:
+                user.delete()
+                return Response(self.get_users(request))
+            else:
+                return Response({"error_code": 'ERROR', "status": status.HTTP_403_FORBIDDEN})
+        else:
+            return Response({"error_code": 'ERROR', "status": status.HTTP_403_FORBIDDEN})
+
+
 
 
 
