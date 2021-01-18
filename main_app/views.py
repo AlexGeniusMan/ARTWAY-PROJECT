@@ -516,30 +516,49 @@ class HRManagementView(APIView):
     permission_classes = (IsMuseumSuperAdmin,)
 
     def get_users(self, request):
+        museum_super_admin = User.objects.get(pk=request.user.id)
         users = User.objects.filter(museum=request.user.museum).exclude(pk=request.user.id)
-        serializer = UserSerializer(users, context={'request': request}, many=True)
-        return serializer.data
+
+        museum_admins = list()
+        museum_cashiers = list()
+        for user in users:
+            if user.groups.filter(name='museum_admins').exists():
+                museum_admins.append(user)
+            elif user.groups.filter(name='museum_cashiers').exists():
+                museum_cashiers.append(user)
+
+        museum_super_admin_serializer = UserSerializer(museum_super_admin, context={'request': request})
+        museum_admins_serializer = UserSerializer(museum_admins, context={'request': request}, many=True)
+        museum_cashiers_serializer = UserSerializer(museum_cashiers, context={'request': request}, many=True)
+        return {'museum_super_admin': museum_super_admin_serializer.data,
+                'museum_admins': museum_admins_serializer.data,
+                'museum_cashiers': museum_cashiers_serializer.data
+                }
 
     def get(self, request):
         return Response(self.get_users(request))
 
     def post(self, request):
-        username = request.data['email']
-        email = request.data['email']
-        password = request.data['password']
-        last_name = request.data['last_name']
-        first_name = request.data['first_name']
+        # username = request.data['email']
+        # email = request.data['email']
+        # password = request.data['password']
+        # last_name = request.data['last_name']
+        # first_name = request.data['first_name']
+        # role = request.data['role']
 
-        # username = 'alexg_5'
-        # email = 'email'
-        # password = 'password'
-        # last_name = 'Chentsov'
-        # first_name = 'Alex'
+        username = 'm_cashier_2'
+        email = 'email'
+        password = 'password'
+        last_name = 'Chentsov'
+        first_name = 'Alex'
+        role = 'museum_cashiers'
 
         user = User.objects.create_user(username=username, password=password, last_name=last_name,
                                         first_name=first_name, email=email, museum=request.user.museum)
-
-        group = Group.objects.get(name='museum_admins')
+        if role == 'museum_admins':
+            group = Group.objects.get(name='museum_admins')
+        elif role == 'museum_cashiers':
+            group = Group.objects.get(name='museum_cashiers')
         user.groups.add(group.id)
         user.save()
         return Response(self.get_users(request))
