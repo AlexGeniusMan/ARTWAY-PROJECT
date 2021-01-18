@@ -2,6 +2,13 @@ from rest_framework import serializers
 from .models import *
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        depth = 2
+        model = User
+        fields = ('username', 'last_name', 'first_name', 'middle_name')
+
+
 class ArtifactSerializer(serializers.ModelSerializer):
     class Meta:
         depth = 2

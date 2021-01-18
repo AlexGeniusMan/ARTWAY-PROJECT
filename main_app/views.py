@@ -278,6 +278,7 @@ class AllHallsView(APIView):
     """
     Shows all halls
     """
+
     # permission_classes = (IsAuthenticated,)
 
     def get(self, request):
@@ -506,6 +507,42 @@ class CurrentMuseumView(APIView):
         museum.save()
 
         return Response(serialize_museum_and_locations(request))
+
+
+class HRManagementView(APIView):
+    """
+    Shows/creates/deletes employees of current museum
+    """
+    permission_classes = (IsMuseumSuperAdmin,)
+
+    def get_users(self, request):
+        users = User.objects.filter(museum=request.user.museum).exclude(pk=request.user.id)
+        serializer = UserSerializer(users, context={'request': request}, many=True)
+        return serializer.data
+
+    def get(self, request):
+        return Response(self.get_users(request))
+
+    def post(self, request):
+        username = request.data['email']
+        email = request.data['email']
+        password = request.data['password']
+        last_name = request.data['last_name']
+        first_name = request.data['first_name']
+
+        # username = 'alexg_5'
+        # email = 'email'
+        # password = 'password'
+        # last_name = 'Chentsov'
+        # first_name = 'Alex'
+
+        user = User.objects.create_user(username=username, password=password, last_name=last_name,
+                                        first_name=first_name, email=email, museum=request.user.museum)
+
+        group = Group.objects.get(name='museum_admins')
+        user.groups.add(group.id)
+        user.save()
+        return Response(self.get_users(request))
 
 
 # def swap_and_save_artifact(swap_type, request):

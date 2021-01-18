@@ -12,7 +12,7 @@ class ArtifactAdmin(admin.ModelAdmin):
 class CustomUserAdmin(UserAdmin):
     list_display = ('username', 'email', 'last_name', 'first_name', 'is_staff', 'is_superuser', 'is_active')
     fieldsets = (
-        (_('Авторизация'), {'fields': ('username', 'password')}),
+        (_('Авторизация'), {'fields': ('username', 'email', 'password')}),
         (_('Основная информация'),
          {'fields': ('last_name', 'first_name', 'middle_name', 'museum')}),
         # (_('Университет'), {'fields': ('university', 'faculty', 'specialty', 'course_type', 'course')}),
@@ -21,15 +21,12 @@ class CustomUserAdmin(UserAdmin):
         (_('Права доступа'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         # (_('Другое'), {'fields': ('last_login', 'date_joined', 'priority')}),
     )
-    # add_fieldsets = (
-    #     (None, {
-    #         'classes': ('wide',),
-    #         'fields': ('username', 'password1', 'password2', 'email', 'full_name', 'date_of_birth',
-    #                    'skills_level', 'university', 'faculty', 'specialty', 'course_type', 'course', 'description',
-    #                    'link_vk', 'link_facebook', 'link_instagram', 'link_linked_in',
-    #                    'link_github',),
-    #     }),
-    # )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'username', 'password1', 'password2', 'last_name', 'first_name', 'middle_name', 'museum'),
+        }),
+    )
 
 
 admin.site.register(Artifact, ArtifactAdmin)
