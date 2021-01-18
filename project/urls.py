@@ -38,6 +38,8 @@ urlpatterns = [
 
     # Получить музей со всеми его локациями, или изменить музей, или добавить новую локацию
     path('api/m-admin', views.CurrentMuseumView.as_view()),
+    # Получить музей со всеми его локациями, или изменить музей, или добавить новую локацию
+    path('api/m-admin/hr-management', views.CurrentMuseumView.as_view()),
 
     # Получить локацию со всеми её залами, или изменить/удалить выбранную локацию, или добавить новый зал
     path('api/m-admin/<int:location_pk>', views.CurrentLocationView.as_view()),

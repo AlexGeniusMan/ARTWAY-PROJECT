@@ -9,7 +9,7 @@ from .permissions import *
 from .serializers import *
 import os
 from .models import User
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, IsAuthenticated
 from django.contrib.auth.models import Group
 
 
@@ -278,6 +278,7 @@ class AllHallsView(APIView):
     """
     Shows all halls
     """
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         halls = Hall.objects.all()
@@ -436,6 +437,7 @@ class AllLocationsView(APIView):
 def serialize_museum_and_locations(request):
     museum = Museum.objects.get(admins=request.user)
     museum_serializer = MuseumSerializer(museum, context={'request': request})
+    is_museum_super_admin = request.user.groups.filter(name='museum_super_admins').exists()
 
     if len(Location.objects.filter(museum=request.user.museum)) > 0:
         list_of_locations = list()
@@ -455,11 +457,13 @@ def serialize_museum_and_locations(request):
 
         return {
             'museum': museum_serializer.data,
+            'is_museum_super_admin': is_museum_super_admin,
             'locations': locations_serializer.data
         }
     else:
         return {
             'museum': museum_serializer.data,
+            'is_museum_super_admin': is_museum_super_admin,
             'locations': []
         }
 
@@ -468,6 +472,7 @@ class CurrentMuseumView(APIView):
     """
     Shows or changes current museum
     """
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         return Response(serialize_museum_and_locations(request))
