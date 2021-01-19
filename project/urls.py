@@ -37,6 +37,9 @@ urlpatterns = [
     # path('api/artifacts/<int:artifact_pk>/qr-code', views.ShowQRCodeOfCurrentArtifactView.as_view()),
 
     # Получить все музеи или добавить новый
+    path('api/qr', views.TestingQRCode.as_view()),
+
+    # Получить все музеи или добавить новый
     path('api/s-admin', views.MuseumsView.as_view()),
     # Удалить выбранный музей
     path('api/s-admin/<int:museum_pk>', views.MuseumSuperAdminView.as_view()),

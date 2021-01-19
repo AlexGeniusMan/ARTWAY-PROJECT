@@ -12,6 +12,14 @@ import os
 from .models import User
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from django.contrib.auth.models import Group
+import segno
+# from svglib.svglib import svg2rlg
+# from reportlab.graphics import renderPDF
+
+import matplotlib.pyplot as plt
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+from svglib.svglib import svg2rlg
 
 
 # class CreateNewCashierView(APIView):
@@ -32,6 +40,45 @@ from django.contrib.auth.models import Group
 #     def post(self, request):
 #         user = User.objects.create_user(username='awffe', password='123', last_name='Chentsov', first_name='Alex')
 #         return Response(True)
+
+# def plot_data(data):
+#     # Plot the data using matplotlib.
+#     plt.plot(data)
+#
+#     # Save the figure to SVG format in memory.
+#     # svg_file = BytesIO()
+#     svg_file = segno.make('Henry Lee', micro=False)
+#     # plt.savefig(svg_file, format='SVG')
+#
+#     # Rewind the file for reading, and convert to a Drawing.
+#     # svg_file.seek(0)
+#     drawing = svg2rlg(svg_file)
+#
+#     # Scale the Drawing.
+#     scale = 0.75
+#     drawing.scale(scale, scale)
+#     drawing.width *= scale
+#     drawing.height *= scale
+#
+#     return drawing
+
+
+class TestingQRCode(APIView):
+
+    def get(self, request):
+        # styles = getSampleStyleSheet()
+        # pdf_path = 'sketch.pdf'
+        # doc = SimpleDocTemplate(pdf_path)
+        # data = [1, 3, 2]
+        # story = [Paragraph('Lorem ipsum!', styles['Normal']), plot_data(data),
+        #          Paragraph('Dolores sit amet.', styles['Normal'])]
+        # doc.build(story)
+
+        # qr = segno.make('Henry Lee', micro=False)
+        # qr.save('qr.svg')
+        # drawing = svg2rlg("qr.svg")
+        # renderPDF.drawToFile(drawing, "ticket.pdf")
+        return Response(True)
 
 
 class SwapArtifactsView(APIView):
