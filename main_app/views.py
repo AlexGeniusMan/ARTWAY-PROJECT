@@ -600,6 +600,8 @@ class MuseumSuperAdminView(APIView):
 
         group = Group.objects.get(name='museum_super_admins')
         user.groups.add(group.id)
+        group = Group.objects.get(name='museum_admins')
+        user.groups.add(group.id)
         user.save()
         return Response(self.get_museum_super_admin(request, museum_pk))
 
