@@ -67,10 +67,21 @@ from svglib.svglib import svg2rlg
 class TestingQRCode(APIView):
 
     def get(self, request):
+        # try:
+        #     path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'svg_on_canvas.pdf')
+        #     os.remove(path)
+        #     print('ok')
+        # except:
+        #     raise
+        #     pass
         my_canvas = canvas.Canvas('svg_on_canvas.pdf')
         drawing = svg2rlg('qr.svg')
-        renderPDF.draw(drawing, my_canvas, 0, 40)
-        my_canvas.drawString(50, 30, 'My SVG Image')
+        renderPDF.draw(drawing, my_canvas, 50, 680)
+        my_canvas.drawString(50, 800, 'Museum name')
+        my_canvas.drawString(50, 780, 'Contacts')
+        my_canvas.drawString(50, 760, '• Перейдите к сканированию qr-кода выбранного экспоната или введите его ID')
+        my_canvas.drawString(50, 740, '• На странице экспоната Вы сможете просмотреть информацию о нём и запустить аудиогид')
+        my_canvas.drawString(50, 720, '• Любите искусство вместе с ArtWay')
         my_canvas.save()
 
         # styles = getSampleStyleSheet()
