@@ -24,13 +24,15 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'username', 'password1', 'password2', 'last_name', 'first_name', 'middle_name', 'museum'),
+            'fields': (
+                'email', 'username', 'password1', 'password2', 'last_name', 'first_name', 'middle_name', 'museum'),
         }),
     )
 
 
+admin.site.register(User, CustomUserAdmin)
+admin.site.register(Ticket)
 admin.site.register(Artifact, ArtifactAdmin)
 admin.site.register(Museum)
 admin.site.register(Location)
 admin.site.register(Hall)
-admin.site.register(User, CustomUserAdmin)

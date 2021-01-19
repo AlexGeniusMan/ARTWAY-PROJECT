@@ -1,10 +1,27 @@
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 import qrcode
 from io import BytesIO
 from django.core.files import File
 from PIL import Image
+
+
+class Ticket(models.Model):
+    token = models.CharField(_("Токен"), max_length=30)
+    created_at = models.DateTimeField(_("Время создания"), default=timezone.now)
+
+    museum = models.ForeignKey('Museum', on_delete=models.CASCADE, verbose_name='Музей',
+                               related_name='tickets', null=True)
+
+    class Meta:
+        verbose_name = 'Билет'
+        verbose_name_plural = 'Билеты'
+
+    def __str__(self):
+        # return self.name
+        return str(self.id)
 
 
 class Artifact(models.Model):
@@ -104,6 +121,7 @@ class Museum(models.Model):
     name = models.CharField(_("Название"), max_length=100)
     img = models.ImageField(_("Фотография"), null=True, upload_to='museums', blank=True)
     description = models.TextField(_("Описание"), max_length=10000, blank=True)
+    ticket_lifetime = models.IntegerField(_("Время действия билета"), default=3)
 
     class Meta:
         verbose_name = 'Музей'

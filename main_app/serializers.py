@@ -10,6 +10,14 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'last_name', 'first_name', 'middle_name')
 
 
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        depth = 2
+        model = Ticket
+        # fields = '__all__'
+        exclude = ('museum',)
+
+
 class ArtifactSerializer(serializers.ModelSerializer):
     class Meta:
         depth = 2

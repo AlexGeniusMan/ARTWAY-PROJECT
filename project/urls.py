@@ -72,6 +72,11 @@ urlpatterns = [
     # Получить все залы
     path('api/all_artifacts', views.AllArtifactsView.as_view()),
 
+    # Получить все активные билеты или создать новый билет
+    path('api/cashier', views.AllTicketsView.as_view()),
+    # Получить выбранный билет
+    path('api/cashier/<int:ticket_pk>', views.CurrentTicketView.as_view()),
+
     # Создать нового пользователя
     # path('api/create_new_cashier', views.CreateNewCashierView.as_view()),
 

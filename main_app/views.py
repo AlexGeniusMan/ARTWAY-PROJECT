@@ -1,4 +1,9 @@
+import random
+import string
+from datetime import timedelta
+
 from django.db.models import Q
+from django.utils.datetime_safe import datetime
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.response import Response
@@ -23,47 +28,6 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph
 from svglib.svglib import svg2rlg
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase import ttfonts
-
-
-# class CreateNewCashierView(APIView):
-#     permission_classes = (IsMuseumAdmin,)
-#
-#     # permission_classes = [HasGroupPermission]
-#     # required_groups = {
-#     #     'GET': ['Кассир'],
-#     #     # 'POST': ['moderators', 'someMadeUpGroup'],
-#     #     # 'PUT': ['__all__'],
-#     # }
-#
-#     def get(self, request):
-#         groups = Group.objects.all()
-#         user = User.objects.get(pk=1)
-#         return Response(True)
-#
-#     def post(self, request):
-#         user = User.objects.create_user(username='awffe', password='123', last_name='Chentsov', first_name='Alex')
-#         return Response(True)
-
-# def plot_data(data):
-#     # Plot the data using matplotlib.
-#     plt.plot(data)
-#
-#     # Save the figure to SVG format in memory.
-#     # svg_file = BytesIO()
-#     svg_file = segno.make('Henry Lee', micro=False)
-#     # plt.savefig(svg_file, format='SVG')
-#
-#     # Rewind the file for reading, and convert to a Drawing.
-#     # svg_file.seek(0)
-#     drawing = svg2rlg(svg_file)
-#
-#     # Scale the Drawing.
-#     scale = 0.75
-#     drawing.scale(scale, scale)
-#     drawing.width *= scale
-#     drawing.height *= scale
-#
-#     return drawing
 
 
 class TestingQRCode(APIView):
@@ -148,6 +112,24 @@ class TestingQRCode(APIView):
         # drawing = svg2rlg("qr.svg")
         # renderPDF.drawToFile(drawing, "ticket.pdf")
         return Response(True)
+
+
+class AllTicketsView(APIView):
+    """
+    Shows all active tickets, creates new ticket
+    """
+    permission_classes = (IsMuseumCashier,)
+
+    def get_new_token(self):
+        letters_and_digits = string.ascii_letters + string.digits
+        result_str = ''.join((random.choice(letters_and_digits) for i in range(30)))
+        return result_str
+
+    def get(self, request):
+        d = datetime.now() - timedelta(hours=request.user.museum.ticket_lifetime)
+        tickets = Ticket.objects.filter(museum=request.user.museum).filter(created_at__gte=d).order_by('-created_at')
+        tickets_serializer = TicketSerializer(tickets, context={'request': request}, many=True)
+        return Response(tickets_serializer.data)
 
 
 class SwapArtifactsView(APIView):
