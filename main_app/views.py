@@ -114,6 +114,18 @@ class TestingQRCode(APIView):
         return Response(True)
 
 
+class CurrentTicketView(APIView):
+    """
+    Shows current ticket
+    """
+    permission_classes = (IsMuseumCashier,)
+
+    def get(self, request, ticket_pk):
+        ticket = Ticket.objects.get(pk=ticket_pk)
+        tickets_serializer = TicketSerializer(ticket, context={'request': request})
+        return Response(tickets_serializer.data)
+
+
 class AllTicketsView(APIView):
     """
     Shows all active tickets, creates new ticket
