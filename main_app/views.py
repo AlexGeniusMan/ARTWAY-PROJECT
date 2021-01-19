@@ -21,7 +21,8 @@ import matplotlib.pyplot as plt
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from svglib.svglib import svg2rlg
-
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase import ttfonts
 
 # class CreateNewCashierView(APIView):
 #     permission_classes = (IsMuseumAdmin,)
@@ -66,6 +67,19 @@ from svglib.svglib import svg2rlg
 
 class TestingQRCode(APIView):
 
+    def scale(self, drawing, scaling_factor):
+        """
+        Scale a reportlab.graphics.shapes.Drawing()
+        object while maintaining the aspect ratio
+        """
+        scaling_x = scaling_factor
+        scaling_y = scaling_factor
+
+        drawing.width = drawing.minWidth() * scaling_x
+        drawing.height = drawing.height * scaling_y
+        drawing.scale(scaling_x, scaling_y)
+        return drawing
+
     def get(self, request):
         # try:
         #     path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'svg_on_canvas.pdf')
@@ -74,14 +88,50 @@ class TestingQRCode(APIView):
         # except:
         #     raise
         #     pass
-        my_canvas = canvas.Canvas('svg_on_canvas.pdf')
+
+        qr = segno.make('https://devgang.ru', micro=False)
+        qr.save('qr.svg')
+
+        MyFontObject = ttfonts.TTFont('Arial', 'arial.ttf')
+        pdfmetrics.registerFont(MyFontObject)
+        my_canvas = canvas.Canvas('svg_scaled_on_canvas.pdf')
+        my_canvas.setFont('Arial', 14)
         drawing = svg2rlg('qr.svg')
-        renderPDF.draw(drawing, my_canvas, 50, 680)
-        my_canvas.drawString(50, 800, 'Museum name')
-        my_canvas.drawString(50, 780, 'Contacts')
-        my_canvas.drawString(50, 760, '• Перейдите к сканированию qr-кода выбранного экспоната или введите его ID')
-        my_canvas.drawString(50, 740, '• На странице экспоната Вы сможете просмотреть информацию о нём и запустить аудиогид')
-        my_canvas.drawString(50, 720, '• Любите искусство вместе с ArtWay')
+        scaling_factor = 10
+        scaled_drawing = self.scale(drawing, scaling_factor=scaling_factor)
+        # renderPDF.draw(scaled_drawing, my_canvas, 0, 40)
+        # my_canvas.drawString(50, 30, 'My SVG Image')
+        # my_canvas.save()
+
+        # MyFontObject = ttfonts.TTFont('Arial', 'arial.ttf')
+        # pdfmetrics.registerFont(MyFontObject)
+        # my_canvas = canvas.Canvas('svg_on_canvas.pdf')
+        # my_canvas.setFont('Arial', 14)
+        # drawing = svg2rlg('qr.svg')
+        # renderPDF.draw(drawing, my_canvas, 50, 640)
+        strings = (
+            'Музей "Третьяковская галерея"',
+            '',
+            'Кантакты: +7 (495) 957-07-27, tretyakov@tretyakov.ru',
+            'Часы работы колл-центра:',
+            'Пн — 10:00–16:00, Вт, Ср, Вс — 10:00–18:00, Чт, Пт, Сб — 10:00–21:00',
+            'Часы работы службы поддержки:',
+            'Пн, Вт, Ср, Чт — 10:00–18:00, Пт — 10:00–15:30',
+            '',
+            'Инструкция:',
+            '• Перейдите к сканированию QR-кода выбранного экспоната или введите его ID',
+            '• На странице экспоната Вы сможете просмотреть информацию о нём,',
+            '  а также прослушать аудиогид',
+            '• Любите искусство вместе с ArtWay',
+            '',
+            '',
+            'Ваш персональный QR-код для перехода на страницу сервиса:',
+        )
+        i = 800
+        for string in strings:
+            my_canvas.drawString(50, i, string)
+            i -= 20
+        renderPDF.draw(scaled_drawing, my_canvas, 130, 190)
         my_canvas.save()
 
         # styles = getSampleStyleSheet()
@@ -92,8 +142,8 @@ class TestingQRCode(APIView):
         #          Paragraph('Dolores sit amet.', styles['Normal'])]
         # doc.build(story)
 
-        # qr = segno.make('Henry Lee', micro=False)
-        # qr.save('qr.svg')
+        qr = segno.make('https://devgang.ru', micro=False)
+        qr.save('qr.svg')
         # drawing = svg2rlg("qr.svg")
         # renderPDF.drawToFile(drawing, "ticket.pdf")
         return Response(True)
