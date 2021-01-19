@@ -574,19 +574,19 @@ class MuseumSuperAdminView(APIView):
         return Response(self.get_museum_super_admin(request, museum_pk))
 
     def post(self, request, museum_pk):
-        # username = request.data['email']
-        # email = request.data['email']
-        # password = request.data['password']
-        # last_name = request.data['last_name']
-        # first_name = request.data['first_name']
-        # middle_name = request.data['middle_name']
+        username = request.data['email']
+        email = request.data['email']
+        password = request.data['password']
+        last_name = request.data['last_name']
+        first_name = request.data['first_name']
+        middle_name = request.data['middle_name']
 
-        username = 'm_super_1'
-        email = 'email'
-        password = 'password'
-        last_name = 'Chentsov'
-        first_name = 'Alex'
-        middle_name = ''
+        # username = 'm_super_1'
+        # email = 'email'
+        # password = 'password'
+        # last_name = 'Chentsov'
+        # first_name = 'Alex'
+        # middle_name = ''
 
         users = User.objects.filter(museum=request.user.museum).exclude(pk=request.user.id)
         for user in users:
