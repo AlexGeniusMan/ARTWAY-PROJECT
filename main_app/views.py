@@ -662,9 +662,11 @@ class MuseumSuperAdminView(APIView):
                 return Response(
                     {"error_code": 'MUSEUM SUPER ADMIN IS ALREADY EXISTS', "status": status.HTTP_403_FORBIDDEN})
 
+        museum = Museum.objects.get(pk=museum_pk)
+
         user = User.objects.create_user(username=username, password=password, last_name=last_name,
                                         first_name=first_name, middle_name=middle_name,
-                                        email=email, museum=museum_pk)
+                                        email=email, museum=museum)
 
         group = Group.objects.get(name='museum_super_admins')
         user.groups.add(group.id)
