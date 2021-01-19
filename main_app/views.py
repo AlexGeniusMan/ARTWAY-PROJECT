@@ -619,7 +619,7 @@ class MuseumSuperAdminView(APIView):
         museum = Museum.objects.get(pk=museum_pk)
         museum_serializer = MuseumSerializer(museum, context={'request': request})
 
-        users = User.objects.filter(museum=request.user.museum).exclude(pk=request.user.id)
+        users = User.objects.filter(museum=museum_pk).exclude(pk=request.user.id)
         for user in users:
             if user.groups.filter(name='museum_super_admins').exists():
                 museum_super_admin = user
