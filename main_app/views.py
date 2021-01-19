@@ -13,8 +13,9 @@ from .models import User
 from rest_framework.permissions import BasePermission, IsAuthenticated
 from django.contrib.auth.models import Group
 import segno
-# from svglib.svglib import svg2rlg
-# from reportlab.graphics import renderPDF
+from svglib.svglib import svg2rlg
+from reportlab.graphics import renderPDF
+from reportlab.pdfgen import canvas
 
 import matplotlib.pyplot as plt
 from reportlab.lib.styles import getSampleStyleSheet
@@ -66,6 +67,12 @@ from svglib.svglib import svg2rlg
 class TestingQRCode(APIView):
 
     def get(self, request):
+        my_canvas = canvas.Canvas('svg_on_canvas.pdf')
+        drawing = svg2rlg('qr.svg')
+        renderPDF.draw(drawing, my_canvas, 0, 40)
+        my_canvas.drawString(50, 30, 'My SVG Image')
+        my_canvas.save()
+
         # styles = getSampleStyleSheet()
         # pdf_path = 'sketch.pdf'
         # doc = SimpleDocTemplate(pdf_path)
@@ -642,10 +649,14 @@ class MuseumsView(APIView):
 
         return Response(self.get_all_museums(request))
 
-    def delete(self, request, museum_pk):
-        museum = Museum.objects.get(pk=museum_pk)
-        museum.delete()
-        return Response(self.get_all_museums(request))
+    def delete(self, request):
+        museum_pk = request.data['museum_pk']
+        try:
+            museum = Museum.objects.get(pk=museum_pk)
+            museum.delete()
+            return Response(self.get_all_museums(request))
+        except:
+            return Response({"error_code": 'MUSEUM DOES NOT EXISTS', "status": status.HTTP_404_NOT_FOUND})
 
 
 class MuseumProfilesView(APIView):
