@@ -664,7 +664,7 @@ class MuseumSuperAdminView(APIView):
 
         user = User.objects.create_user(username=username, password=password, last_name=last_name,
                                         first_name=first_name, middle_name=middle_name,
-                                        email=email, museum=request.user.museum)
+                                        email=email, museum=museum_pk)
 
         group = Group.objects.get(name='museum_super_admins')
         user.groups.add(group.id)
