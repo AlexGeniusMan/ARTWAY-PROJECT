@@ -128,8 +128,8 @@ class Museum(models.Model):
         verbose_name_plural = 'Музеи'
 
     def __str__(self):
-        # return self.name
-        return str(self.id)
+        return self.name
+        # return str(self.id)
 
 
 class User(AbstractUser):

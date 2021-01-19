@@ -74,33 +74,37 @@ class AllTicketsView(APIView):
         pdfmetrics.registerFont(MyFontObject)
         pdf_name = f'./media/tickets/ticket_{ticket_id}.pdf'
         my_canvas = canvas.Canvas(pdf_name)
-        my_canvas.setFont('Arial', 14)
-        drawing = svg2rlg('qr.svg')
-        scaling_factor = 10
+
+        drawing = svg2rlg('mirea_emblem_black.svg')
+        scaling_factor = 0.2
         scaled_drawing = self.scale(drawing, scaling_factor=scaling_factor)
+        renderPDF.draw(scaled_drawing, my_canvas, 370, 650)
+
+        my_canvas.setFont('Arial', 18)
+        my_canvas.drawString(50, 730, f'Музей "{request.user.museum}"')
+
+        my_canvas.setFont('Arial', 14)
         strings = (
-            f'Музей "{request.user.museum}"',
-            '',
-            'Контакты: +7 (495) 957-07-27, tretyakov@tretyakov.ru',
-            'Часы работы колл-центра:',
-            'Пн — 10:00–16:00, Вт, Ср, Вс — 10:00–18:00, Чт, Пт, Сб — 10:00–21:00',
-            'Часы работы службы поддержки:',
-            'Пн, Вт, Ср, Чт — 10:00–18:00, Пт — 10:00–15:30',
             '',
             'Инструкция:',
             '• Перейдите к сканированию QR-кода выбранного экспоната или введите его ID',
-            '• На странице экспоната Вы сможете просмотреть информацию о нём,',
+            '• На странице экспоната Вы сможете получить информацию о нём,',
             '  а также прослушать аудиогид',
             '• Любите искусство вместе с ArtWay',
             '',
             '',
             'Ваш персональный QR-код для перехода на страницу сервиса:',
         )
-        i = 800
-        for string in strings:
-            my_canvas.drawString(50, i, string)
+        i = 650
+        for new_string in strings:
+            my_canvas.drawString(50, i, new_string)
             i -= 20
-        renderPDF.draw(scaled_drawing, my_canvas, 100, 70)
+
+        drawing = svg2rlg('qr.svg')
+        scaling_factor = 10
+        scaled_drawing = self.scale(drawing, scaling_factor=scaling_factor)
+        renderPDF.draw(scaled_drawing, my_canvas, 95, 70)
+
         my_canvas.setFont('Arial', 10)
         my_canvas.drawString(470, 20, 'Powered by Dev.gang')
         my_canvas.save()
