@@ -11,6 +11,7 @@ from PIL import Image
 class Ticket(models.Model):
     token = models.CharField(_("Токен"), max_length=30)
     created_at = models.DateTimeField(_("Время создания"), default=timezone.now)
+    pdf = models.FileField(_("PDF"), upload_to='tickets', blank=True)
 
     museum = models.ForeignKey('Museum', on_delete=models.CASCADE, verbose_name='Музей',
                                related_name='tickets', null=True)
@@ -20,8 +21,7 @@ class Ticket(models.Model):
         verbose_name_plural = 'Билеты'
 
     def __str__(self):
-        # return self.name
-        return str(self.id)
+        return f'Билет {self.id}'
 
 
 class Artifact(models.Model):

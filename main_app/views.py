@@ -11,6 +11,7 @@ from django.views.generic.base import View
 from rest_framework.views import APIView
 from django.http import HttpResponse
 
+from project.settings import MEDIA_ROOT
 from .permissions import *
 from .serializers import *
 import os
@@ -28,90 +29,6 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph
 from svglib.svglib import svg2rlg
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase import ttfonts
-
-
-class TestingQRCode(APIView):
-
-    def scale(self, drawing, scaling_factor):
-        """
-        Scale a reportlab.graphics.shapes.Drawing()
-        object while maintaining the aspect ratio
-        """
-        scaling_x = scaling_factor
-        scaling_y = scaling_factor
-
-        drawing.width = drawing.minWidth() * scaling_x
-        drawing.height = drawing.height * scaling_y
-        drawing.scale(scaling_x, scaling_y)
-        return drawing
-
-    def get(self, request):
-        # try:
-        #     path = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'svg_on_canvas.pdf')
-        #     os.remove(path)
-        #     print('ok')
-        # except:
-        #     raise
-        #     pass
-
-        qr = segno.make('https://devgang.ru', micro=False)
-        qr.save('qr.svg')
-
-        MyFontObject = ttfonts.TTFont('Arial', 'arial.ttf')
-        pdfmetrics.registerFont(MyFontObject)
-        my_canvas = canvas.Canvas('svg_scaled_on_canvas.pdf')
-        my_canvas.setFont('Arial', 14)
-        drawing = svg2rlg('qr.svg')
-        scaling_factor = 10
-        scaled_drawing = self.scale(drawing, scaling_factor=scaling_factor)
-        # renderPDF.draw(scaled_drawing, my_canvas, 0, 40)
-        # my_canvas.drawString(50, 30, 'My SVG Image')
-        # my_canvas.save()
-
-        # MyFontObject = ttfonts.TTFont('Arial', 'arial.ttf')
-        # pdfmetrics.registerFont(MyFontObject)
-        # my_canvas = canvas.Canvas('svg_on_canvas.pdf')
-        # my_canvas.setFont('Arial', 14)
-        # drawing = svg2rlg('qr.svg')
-        # renderPDF.draw(drawing, my_canvas, 50, 640)
-        strings = (
-            'Музей "Третьяковская галерея"',
-            '',
-            'Кантакты: +7 (495) 957-07-27, tretyakov@tretyakov.ru',
-            'Часы работы колл-центра:',
-            'Пн — 10:00–16:00, Вт, Ср, Вс — 10:00–18:00, Чт, Пт, Сб — 10:00–21:00',
-            'Часы работы службы поддержки:',
-            'Пн, Вт, Ср, Чт — 10:00–18:00, Пт — 10:00–15:30',
-            '',
-            'Инструкция:',
-            '• Перейдите к сканированию QR-кода выбранного экспоната или введите его ID',
-            '• На странице экспоната Вы сможете просмотреть информацию о нём,',
-            '  а также прослушать аудиогид',
-            '• Любите искусство вместе с ArtWay',
-            '',
-            '',
-            'Ваш персональный QR-код для перехода на страницу сервиса:',
-        )
-        i = 800
-        for string in strings:
-            my_canvas.drawString(50, i, string)
-            i -= 20
-        renderPDF.draw(scaled_drawing, my_canvas, 130, 190)
-        my_canvas.save()
-
-        # styles = getSampleStyleSheet()
-        # pdf_path = 'sketch.pdf'
-        # doc = SimpleDocTemplate(pdf_path)
-        # data = [1, 3, 2]
-        # story = [Paragraph('Lorem ipsum!', styles['Normal']), plot_data(data),
-        #          Paragraph('Dolores sit amet.', styles['Normal'])]
-        # doc.build(story)
-
-        qr = segno.make('https://devgang.ru', micro=False)
-        qr.save('qr.svg')
-        # drawing = svg2rlg("qr.svg")
-        # renderPDF.drawToFile(drawing, "ticket.pdf")
-        return Response(True)
 
 
 class CurrentTicketView(APIView):
@@ -137,6 +54,59 @@ class AllTicketsView(APIView):
         result_str = ''.join((random.choice(letters_and_digits) for i in range(30)))
         return result_str
 
+    def scale(self, drawing, scaling_factor):
+        """
+        Scale a reportlab.graphics.shapes.Drawing()
+        object while maintaining the aspect ratio
+        """
+        scaling_x = scaling_factor
+        scaling_y = scaling_factor
+
+        drawing.width = drawing.minWidth() * scaling_x
+        drawing.height = drawing.height * scaling_y
+        drawing.scale(scaling_x, scaling_y)
+        return drawing
+
+    def get_new_pdf(self, request, ticket_id, token):
+        qr = segno.make(f'https://devgang.ru/?token={token}', micro=False)
+        qr.save('qr.svg')
+        MyFontObject = ttfonts.TTFont('Arial', 'arial.ttf')
+        pdfmetrics.registerFont(MyFontObject)
+        pdf_name = f'./media/tickets/ticket_{ticket_id}.pdf'
+        my_canvas = canvas.Canvas(pdf_name)
+        my_canvas.setFont('Arial', 14)
+        drawing = svg2rlg('qr.svg')
+        scaling_factor = 10
+        scaled_drawing = self.scale(drawing, scaling_factor=scaling_factor)
+        strings = (
+            f'Музей "{request.user.museum}"',
+            '',
+            'Контакты: +7 (495) 957-07-27, tretyakov@tretyakov.ru',
+            'Часы работы колл-центра:',
+            'Пн — 10:00–16:00, Вт, Ср, Вс — 10:00–18:00, Чт, Пт, Сб — 10:00–21:00',
+            'Часы работы службы поддержки:',
+            'Пн, Вт, Ср, Чт — 10:00–18:00, Пт — 10:00–15:30',
+            '',
+            'Инструкция:',
+            '• Перейдите к сканированию QR-кода выбранного экспоната или введите его ID',
+            '• На странице экспоната Вы сможете просмотреть информацию о нём,',
+            '  а также прослушать аудиогид',
+            '• Любите искусство вместе с ArtWay',
+            '',
+            '',
+            'Ваш персональный QR-код для перехода на страницу сервиса:',
+        )
+        i = 800
+        for string in strings:
+            my_canvas.drawString(50, i, string)
+            i -= 20
+        renderPDF.draw(scaled_drawing, my_canvas, 100, 70)
+        my_canvas.setFont('Arial', 10)
+        my_canvas.drawString(470, 20, 'Powered by Dev.gang')
+        my_canvas.save()
+        pdf_name = f'tickets/ticket_{ticket_id}.pdf'
+        return pdf_name
+
     def get(self, request):
         d = datetime.now() - timedelta(hours=request.user.museum.ticket_lifetime)
         tickets = Ticket.objects.filter(museum=request.user.museum).filter(created_at__gte=d).order_by('-created_at')
@@ -144,7 +114,11 @@ class AllTicketsView(APIView):
         return Response(tickets_serializer.data)
 
     def post(self, request):
-        ticket = Ticket(token=self.get_new_token(), museum=request.user.museum)
+        token = self.get_new_token()
+        ticket = Ticket(token=token, museum=request.user.museum)
+        ticket.save()
+        pdf_name = self.get_new_pdf(request, ticket.id, token)
+        ticket.pdf = pdf_name
         ticket.save()
         ticket_serializer = TicketSerializer(ticket, context={'request': request})
         return Response(ticket_serializer.data)
