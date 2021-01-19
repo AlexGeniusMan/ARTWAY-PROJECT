@@ -131,6 +131,12 @@ class AllTicketsView(APIView):
         tickets_serializer = TicketSerializer(tickets, context={'request': request}, many=True)
         return Response(tickets_serializer.data)
 
+    def post(self, request):
+        ticket = Ticket(token=self.get_new_token(), museum=request.user.museum)
+        ticket.save()
+        ticket_serializer = TicketSerializer(ticket, context={'request': request})
+        return Response(ticket_serializer.data)
+
 
 class SwapArtifactsView(APIView):
     """
