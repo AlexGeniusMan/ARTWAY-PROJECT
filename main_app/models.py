@@ -28,6 +28,11 @@ class Artifact(models.Model):
         # return self.name
         return str(self.id)
 
+    @classmethod
+    def create(cls, name, img, audio, description, hall, prev):
+        book = cls(name=name, img=img, audio=audio, description=description, hall=hall, prev=prev)
+        return book
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         qr = qrcode.QRCode(version=1, box_size=15, border=2)

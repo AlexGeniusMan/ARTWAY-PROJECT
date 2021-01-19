@@ -24,6 +24,7 @@ from svglib.svglib import svg2rlg
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase import ttfonts
 
+
 # class CreateNewCashierView(APIView):
 #     permission_classes = (IsMuseumAdmin,)
 #
@@ -278,7 +279,6 @@ def serialize_hall_and_artifacts(request, location_pk, hall_pk):
     hall_serializer = HallSerializer(hall, context={'request': request})
 
     temp_len = len(Artifact.objects.filter(hall=hall_pk))
-
     if temp_len > 1:
         list_of_artifacts = list()
         artifact = Artifact.objects.filter(hall=hall_pk).get(prev=None)
@@ -337,19 +337,24 @@ class CurrentHallView(APIView):
         img = request.FILES['img']
         audio = request.FILES['audio']
         description = request.data['description']
+        hall = Hall.objects.get(pk=hall_pk)
 
         try:
             artifact = Artifact.objects.filter(hall=hall_pk).get(prev=None)
             for i in range(len(Artifact.objects.filter(hall=hall_pk)) - 1):
                 artifact = Artifact.objects.get(prev=artifact.id)
 
-            hall = Hall.objects.get(pk=hall_pk)
-            Artifact.objects.create(name=name, img=img, audio=audio, description=description, hall=hall,
-                                    prev=artifact.id)
+            print(artifact.id)
+            # Artifact.objects.create(name=name, img=img, audio=audio, description=description, hall=hall,
+            #                         prev=artifact.id)
+            prev = artifact.id
         except:
-            hall = Hall.objects.get(pk=hall_pk)
-            Artifact.objects.create(name=name, img=img, audio=audio, description=description, hall=hall, prev=None)
-
+            # Artifact.objects.create(name=name, img=img, audio=audio, description=description, hall=hall, prev=None)
+            prev = None
+        print(prev)
+        aaa = Artifact.create(name=name, img=img, audio=audio, description=description, hall=hall, prev=prev)
+        aaa.save()
+        print(aaa)
         return Response(serialize_hall_and_artifacts(request, location_pk, hall_pk))
 
     def put(self, request, location_pk, hall_pk):
