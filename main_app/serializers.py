@@ -14,8 +14,7 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         depth = 2
         model = Ticket
-        # fields = '__all__'
-        exclude = ('museum',)
+        exclude = ('token', 'museum')
 
 
 class ArtifactSerializer(serializers.ModelSerializer):

@@ -37,7 +37,7 @@ urlpatterns = [
     # path('api/artifacts/<int:artifact_pk>/qr-code', views.ShowQRCodeOfCurrentArtifactView.as_view()),
 
     # Получить все музеи или добавить новый
-    path('api/qr', views.TestingQRCode.as_view()),
+    # path('api/qr', views.TestingQRCode.as_view()),
 
     # Получить все музеи или добавить новый
     path('api/s-admin', views.MuseumsView.as_view()),
@@ -75,7 +75,7 @@ urlpatterns = [
     # Получить все активные билеты или создать новый билет
     path('api/cashier', views.AllTicketsView.as_view()),
     # Получить выбранный билет
-    path('api/cashier/<int:ticket_pk>', views.CurrentTicketView.as_view()),
+    # path('api/cashier/<int:ticket_pk>', views.CurrentTicketView.as_view()),
 
     # Создать нового пользователя
     # path('api/create_new_cashier', views.CreateNewCashierView.as_view()),

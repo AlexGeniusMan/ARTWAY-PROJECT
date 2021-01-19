@@ -31,16 +31,16 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase import ttfonts
 
 
-class CurrentTicketView(APIView):
-    """
-    Shows current ticket
-    """
-    permission_classes = (IsMuseumCashier,)
-
-    def get(self, request, ticket_pk):
-        ticket = Ticket.objects.get(pk=ticket_pk)
-        tickets_serializer = TicketSerializer(ticket, context={'request': request})
-        return Response(tickets_serializer.data)
+# class CurrentTicketView(APIView):
+#     """
+#     Shows current ticket
+#     """
+#     permission_classes = (IsMuseumCashier,)
+#
+#     def get(self, request, ticket_pk):
+#         ticket = Ticket.objects.get(pk=ticket_pk)
+#         tickets_serializer = TicketSerializer(ticket, context={'request': request})
+#         return Response(tickets_serializer.data)
 
 
 class AllTicketsView(APIView):
@@ -107,11 +107,14 @@ class AllTicketsView(APIView):
         pdf_name = f'tickets/ticket_{ticket_id}.pdf'
         return pdf_name
 
-    def get(self, request):
+    def get_tickets(self, request):
         d = datetime.now() - timedelta(hours=request.user.museum.ticket_lifetime)
         tickets = Ticket.objects.filter(museum=request.user.museum).filter(created_at__gte=d).order_by('-created_at')
         tickets_serializer = TicketSerializer(tickets, context={'request': request}, many=True)
-        return Response(tickets_serializer.data)
+        return tickets_serializer.data
+
+    def get(self, request):
+        return Response(self.get_tickets(request))
 
     def post(self, request):
         token = self.get_new_token()
@@ -120,8 +123,7 @@ class AllTicketsView(APIView):
         pdf_name = self.get_new_pdf(request, ticket.id, token)
         ticket.pdf = pdf_name
         ticket.save()
-        ticket_serializer = TicketSerializer(ticket, context={'request': request})
-        return Response(ticket_serializer.data)
+        return Response(self.get_tickets(request))
 
 
 class SwapArtifactsView(APIView):
