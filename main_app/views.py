@@ -240,6 +240,10 @@ class CurrentArtifactView(APIView):
             artifact.audio = request.FILES['audio']
         except:
             pass
+        try:
+            artifact.video = request.FILES['video']
+        except:
+            pass
         artifact.save()
 
         return Response(self.get_artifact(request, location_pk, hall_pk, artifact_pk))
