@@ -28,6 +28,7 @@ class Artifact(models.Model):
     name = models.CharField(_("Название"), max_length=100)
     img = models.ImageField(_("Фотография"), null=True, upload_to='artifacts/photos', blank=True)
     audio = models.FileField(_("Аудио"), upload_to='artifacts/audios', blank=True)
+    video = models.CharField(_("Ссылка на видео"), max_length=1000, blank=True)
     description = models.TextField(_("Описание"), max_length=10000, blank=True)
 
     qr_code = models.ImageField(_('QR code'), upload_to='artifacts/qrs', blank=True)
@@ -46,8 +47,8 @@ class Artifact(models.Model):
         return str(self.id)
 
     @classmethod
-    def create(cls, name, img, audio, description, hall, prev):
-        book = cls(name=name, img=img, audio=audio, description=description, hall=hall, prev=prev)
+    def create(cls, name, img, audio, video, description, hall, prev):
+        book = cls(name=name, img=img, audio=audio, video=video, description=description, hall=hall, prev=prev)
         return book
 
     def save(self, *args, **kwargs):

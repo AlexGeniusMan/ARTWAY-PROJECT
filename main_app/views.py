@@ -57,6 +57,7 @@ class UserStatusesView(APIView):
     """
     Shows user statuses
     """
+
     def get(self, request):
         if request.user.is_authenticated:
             return Response({
@@ -72,7 +73,6 @@ class UserStatusesView(APIView):
                 'is_museum_admin': False,
                 'is_museum_cashier': False,
             })
-
 
 
 class AllTicketsView(APIView):
@@ -348,6 +348,7 @@ class CurrentHallView(APIView):
         name = request.data['name']
         img = request.FILES['img']
         audio = request.FILES['audio']
+        video = request.FILES['video']
         description = request.data['description']
         hall = Hall.objects.get(pk=hall_pk)
 
@@ -364,7 +365,8 @@ class CurrentHallView(APIView):
             # Artifact.objects.create(name=name, img=img, audio=audio, description=description, hall=hall, prev=None)
             prev = None
         print(prev)
-        aaa = Artifact.create(name=name, img=img, audio=audio, description=description, hall=hall, prev=prev)
+        aaa = Artifact.create(name=name, img=img, audio=audio, video=video, description=description, hall=hall,
+                              prev=prev)
         aaa.save()
         print(aaa)
         return Response(serialize_hall_and_artifacts(request, location_pk, hall_pk))
