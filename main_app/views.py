@@ -11,7 +11,7 @@ from django.views.generic.base import View
 from rest_framework.views import APIView
 from django.http import HttpResponse
 
-from project.settings import MEDIA_ROOT
+from project.settings import MEDIA_ROOT, DOMAIN_NAME
 from .permissions import *
 from .serializers import *
 import os
@@ -30,6 +30,7 @@ from svglib.svglib import svg2rlg
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase import ttfonts
 from PyPDF2 import PdfFileMerger
+
 
 # class CurrentTicketView(APIView):
 #     """
@@ -55,9 +56,14 @@ from PyPDF2 import PdfFileMerger
 
 class PrintCurrentArtifactsView(APIView):
     """
-    Shows current artifact
+    Shows PDF file for printing
     """
     permission_classes = (IsMuseumAdmin,)
+
+    def get_new_filename(self):
+        letters_and_digits = string.ascii_letters + string.digits
+        result_str = ''.join((random.choice(letters_and_digits) for i in range(60)))
+        return result_str
 
     def scale(self, drawing, scaling_factor):
         """
@@ -72,28 +78,20 @@ class PrintCurrentArtifactsView(APIView):
         drawing.scale(scaling_x, scaling_y)
         return drawing
 
-    def get_new_pdf(self, request):
+    def get_new_pdf(self, request, list_of_artifacts):
         MyFontObject = ttfonts.TTFont('Arial', 'arial.ttf')
         pdfmetrics.registerFont(MyFontObject)
-        pdf_name = 'print.pdf'
+        fname = self.get_new_filename()
+        pdf_name = f'./media/prints/{fname}.pdf'
         my_canvas = canvas.Canvas(pdf_name)
         my_canvas.setFont('Arial', 12)
-
-        # qr = segno.make(f'https://devgang.ru/artifacts/8235253234', micro=False)
-        # qr.save('qr.svg')
-
-
         my_canvas.rect(0, 0, 595, 842)
 
-        artifacts = Artifact.objects.all()
-        list_of_artifacts = list()
-        for el in artifacts:
-            list_of_artifacts.append(el)
         number_of_artifacts = len(list_of_artifacts)
-        # for i in range(len(list_of_artifacts)):
+
         i = 0
         while number_of_artifacts > 0:
-            qr = segno.make(f'https://devgang.ru/artifacts/{list_of_artifacts[i].id}', micro=False)
+            qr = segno.make(f'https://{DOMAIN_NAME}/artifacts/{list_of_artifacts[i].id}', micro=False)
             qr.save('qr.svg')
             drawing = svg2rlg('qr.svg')
             scaling_factor = 3.5
@@ -118,24 +116,24 @@ class PrintCurrentArtifactsView(APIView):
                 my_canvas.setFont('Arial', 10)
                 my_canvas.drawString(465, 15, 'Powered by Dev.gang')
                 my_canvas.showPage()
+                my_canvas.rect(0, 0, 595, 842)
 
         my_canvas.setFont('Arial', 10)
         my_canvas.drawString(465, 15, 'Powered by Dev.gang')
 
         my_canvas.save()
-        # pdf_name = f'print.pdf'
-        return True
-        # return pdf_name
+        pdf_name = f'http://{DOMAIN_NAME}/media/prints/{fname}.pdf'
+        return pdf_name
 
     def post(self, request):
-        # artifacts_pk = request.data['artifacts']
-        # list_of_artifacts = list()
-        # for artifact_pk in artifacts_pk:
-        #     artifact = Artifact.objects.get(pk=artifact_pk)
-        #     list_of_artifacts.append(artifact)
+        artifacts_pk = request.data['artifacts']
+        list_of_artifacts = list()
+        for artifact_pk in artifacts_pk:
+            artifact = Artifact.objects.get(pk=artifact_pk)
+            list_of_artifacts.append(artifact)
 
-        pdf_name = self.get_new_pdf(request)
-        return Response(True)
+        pdf_name = self.get_new_pdf(request, list_of_artifacts)
+        return Response(pdf_name)
 
 
 def is_ticket_valid(museum_pk, token):
@@ -215,7 +213,7 @@ class AllTicketsView(APIView):
         return drawing
 
     def get_new_pdf(self, request, ticket_id, token):
-        qr = segno.make(f'https://devgang.ru/?token={token}', micro=False)
+        qr = segno.make(f'http://{DOMAIN_NAME}/?token={token}', micro=False)
         qr.save('qr.svg')
         MyFontObject = ttfonts.TTFont('Arial', 'arial.ttf')
         pdfmetrics.registerFont(MyFontObject)
