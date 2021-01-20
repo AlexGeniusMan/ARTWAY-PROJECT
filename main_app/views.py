@@ -116,6 +116,7 @@ class PrintCurrentArtifactsView(APIView):
                 my_canvas.setFont('Arial', 10)
                 my_canvas.drawString(465, 15, 'Powered by Dev.gang')
                 my_canvas.showPage()
+                my_canvas.setFont('Arial', 12)
                 my_canvas.rect(0, 0, 595, 842)
 
         my_canvas.setFont('Arial', 10)
