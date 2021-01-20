@@ -44,6 +44,48 @@ def is_ticket_valid(museum_pk, token):
         return False
 
 
+class HallsMapView(APIView):
+    """
+    Shows halls map of current location
+    """
+
+    def post(self, request):
+        token = request.data['token']
+        location_pk = request.data['location_pk']
+
+        ticket = Ticket.objects.get(token=token)
+
+        if is_ticket_valid(ticket.museum.id, token):
+            location = Location.objects.get(pk=location_pk)
+            temp_len = len(Hall.objects.filter(location=location_pk))
+
+            if temp_len > 1:
+                list_of_halls = list()
+                hall = Hall.objects.filter(location=location_pk).get(prev=None)
+                list_of_halls.append(hall)
+
+                for i in range(len(Hall.objects.filter(location=location_pk)) - 1):
+                    hall = Hall.objects.get(prev=hall.id)
+                    list_of_halls.append(hall)
+
+                halls_serializer = HallSerializer(list_of_halls, context={'request': request}, many=True)
+                return Response({
+                    'halls': halls_serializer.data
+                })
+            elif temp_len == 1:
+                hall = Hall.objects.get(location=location)
+                halls_serializer = HallSerializer(hall, context={'request': request})
+                return Response({
+                    'halls': [halls_serializer.data]
+                })
+            else:
+                return Response({
+                    'halls': []
+                })
+        else:
+            return Response({"error_code": 'YOUR TICKET IS EXPIRED', "status": status.HTTP_403_FORBIDDEN})
+
+
 class LocationsMapView(APIView):
     """
     Shows locations map of current museum
