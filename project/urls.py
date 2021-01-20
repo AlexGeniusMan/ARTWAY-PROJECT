@@ -50,6 +50,8 @@ urlpatterns = [
     path('api/m-admin/hr-management', views.MuseumProfilesView.as_view()),
     # Изменить/удалить выбранного администратора/кассира музея
     path('api/m-admin/hr-management/<int:user_pk>', views.MuseumProfilesView.as_view()),
+    # Получить PDF для печати со всеми выбранными экспонатами
+    path('api/m-admin/print', views.PrintCurrentArtifactsView.as_view()),
 
     # Получить локацию со всеми её залами, или изменить/удалить выбранную локацию, или добавить новый зал
     path('api/m-admin/<int:location_pk>', views.CurrentLocationView.as_view()),

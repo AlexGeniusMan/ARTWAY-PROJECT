@@ -52,6 +52,79 @@ from reportlab.pdfbase import ttfonts
 #         getattr(models, Location)
 #         return Response(self.get_tickets(request))
 
+
+class PrintCurrentArtifactsView(APIView):
+    """
+    Shows current artifact
+    """
+
+    def scale(self, drawing, scaling_factor):
+        """
+        Scale a reportlab.graphics.shapes.Drawing()
+        object while maintaining the aspect ratio
+        """
+        scaling_x = scaling_factor
+        scaling_y = scaling_factor
+
+        drawing.width = drawing.minWidth() * scaling_x
+        drawing.height = drawing.height * scaling_y
+        drawing.scale(scaling_x, scaling_y)
+        return drawing
+
+    def get_new_pdf(self, request, ticket_id, token):
+        qr = segno.make(f'https://devgang.ru/?token={token}', micro=False)
+        qr.save('qr.svg')
+        MyFontObject = ttfonts.TTFont('Arial', 'arial.ttf')
+        pdfmetrics.registerFont(MyFontObject)
+        pdf_name = f'./media/tickets/ticket_{ticket_id}.pdf'
+        my_canvas = canvas.Canvas(pdf_name)
+
+        drawing = svg2rlg('mirea_emblem_black.svg')
+        scaling_factor = 0.2
+        scaled_drawing = self.scale(drawing, scaling_factor=scaling_factor)
+        renderPDF.draw(scaled_drawing, my_canvas, 370, 650)
+
+        my_canvas.setFont('Arial', 18)
+        my_canvas.drawString(50, 730, f'Музей "{request.user.museum}"')
+
+        my_canvas.setFont('Arial', 14)
+        strings = (
+            '',
+            'Инструкция:',
+            '• Перейдите к сканированию QR-кода выбранного экспоната или введите его ID',
+            '• На странице экспоната Вы сможете получить информацию о нём,',
+            '  а также прослушать аудиогид',
+            '• Любите искусство вместе с ArtWay',
+            '',
+            '',
+            'Ваш персональный QR-код для перехода на страницу сервиса:',
+        )
+        i = 650
+        for new_string in strings:
+            my_canvas.drawString(50, i, new_string)
+            i -= 20
+
+        drawing = svg2rlg('qr.svg')
+        scaling_factor = 10
+        scaled_drawing = self.scale(drawing, scaling_factor=scaling_factor)
+        renderPDF.draw(scaled_drawing, my_canvas, 95, 70)
+
+        my_canvas.setFont('Arial', 10)
+        my_canvas.drawString(470, 20, 'Powered by Dev.gang')
+        my_canvas.save()
+        pdf_name = f'tickets/ticket_{ticket_id}.pdf'
+        return pdf_name
+
+    def post(self, request):
+        token = self.get_new_token()
+        ticket = Ticket(token=token, museum=request.user.museum)
+        ticket.save()
+        pdf_name = self.get_new_pdf(request, ticket.id, token)
+        ticket.pdf = pdf_name
+        ticket.save()
+        return Response(self.get_tickets(request))
+
+
 def is_ticket_valid(museum_pk, token):
     museum = Museum.objects.get(pk=museum_pk)
     d = datetime.now() - timedelta(hours=museum.ticket_lifetime)
@@ -381,7 +454,7 @@ class CurrentHallView(APIView):
         name = request.data['name']
         img = request.FILES['img']
         audio = request.FILES['audio']
-        video = request.FILES['video']
+        video = request.data['video']
         description = request.data['description']
         hall = Hall.objects.get(pk=hall_pk)
 
