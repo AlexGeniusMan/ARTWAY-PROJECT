@@ -52,6 +52,35 @@ from reportlab.pdfbase import ttfonts
 #         getattr(models, Location)
 #         return Response(self.get_tickets(request))
 
+def is_ticket_valid(museum_pk, token):
+    museum = Museum.objects.get(pk=museum_pk)
+    d = datetime.now() - timedelta(hours=museum.ticket_lifetime)
+    tickets = Ticket.objects.filter(museum=museum).filter(created_at__gte=d)
+    try:
+        ticket = Ticket.objects.filter(museum=museum).get(token=token)
+    except:
+        return False
+
+    if ticket in tickets:
+        return True
+    else:
+        return False
+
+
+class VisitorCurrentArtifactView(APIView):
+    """
+    Shows current artifact
+    """
+
+    def post(self, request, artifact_pk):
+        token = request.data['token']
+        artifact = Artifact.objects.get(pk=artifact_pk)
+        if is_ticket_valid(artifact.hall.location.museum.id, token):
+            serializer = ArtifactSerializer(artifact, context={'request': request})
+            return Response(serializer.data)
+        else:
+            return Response({"error_code": 'YOUR TICKET IS EXPIRED', "status": status.HTTP_403_FORBIDDEN})
+
 
 class UserStatusesView(APIView):
     """

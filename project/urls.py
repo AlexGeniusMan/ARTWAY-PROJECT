@@ -75,8 +75,12 @@ urlpatterns = [
     # Получить все активные билеты или создать новый билет
     path('api/cashier', views.AllTicketsView.as_view()),
 
-    # Получить все активные билеты или создать новый билет
+    # Получить статусы текущего пользователя
     path('api/user_statuses', views.UserStatusesView.as_view()),
+
+    # Получить выбранный экспонат
+    path('api/artifacts/<int:artifact_pk>', views.VisitorCurrentArtifactView.as_view()),
+
     # Получить выбранный билет
     # path('api/cashier/<int:ticket_pk>', views.CurrentTicketView.as_view()),
 
