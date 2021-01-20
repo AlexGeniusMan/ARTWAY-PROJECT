@@ -128,7 +128,7 @@ class Museum(models.Model):
         verbose_name_plural = 'Музеи'
 
     def __str__(self):
-        return self.name
+        return self.name + ' ' + str(self.id)
         # return str(self.id)
 
 

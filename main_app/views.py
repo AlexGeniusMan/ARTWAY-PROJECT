@@ -456,7 +456,6 @@ def serialize_location_and_halls(request, location_pk):
             'location': location_serializer.data,
             'halls': [halls_serializer.data]
         }
-        return True
     else:
         return {
             'location': location_serializer.data,
@@ -517,7 +516,7 @@ class AllLocationsView(APIView):
     """
 
     def get(self, request):
-        locations = Location.objects.all()
+        locations = Location.objects.filter(museum=request.user.museum)
         serializer = LocationSerializer(locations, context={'request': request}, many=True)
         return Response(serializer.data)
 
@@ -527,24 +526,31 @@ def serialize_museum_and_locations(request):
     museum_serializer = MuseumSerializer(museum, context={'request': request})
     is_museum_super_admin = request.user.groups.filter(name='museum_super_admins').exists()
 
-    if len(Location.objects.filter(museum=request.user.museum)) > 0:
+    temp_len = len(Location.objects.filter(museum=request.user.museum))
+
+    if temp_len > 1:
         list_of_locations = list()
-        location = Location.objects.get(prev=None)
+        location = Location.objects.filter(museum=request.user.museum).get(prev=None)
         list_of_locations.append(location)
 
         for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
             location = Location.objects.get(prev=location.id)
             list_of_locations.append(location)
 
-        if len(list_of_locations) == 1:
-            locations_serializer = LocationSerializer(list_of_locations, context={'request': request})
-        else:
-            locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
+        locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
 
         return {
             'museum': museum_serializer.data,
             'is_museum_super_admin': is_museum_super_admin,
             'locations': locations_serializer.data
+        }
+    elif temp_len == 1:
+        location = Location.objects.get(museum=request.user.museum)
+        locations_serializer = LocationSerializer(location, context={'request': request})
+        return {
+            'museum': museum_serializer.data,
+            'is_museum_super_admin': is_museum_super_admin,
+            'locations': [locations_serializer.data]
         }
     else:
         return {
@@ -558,7 +564,8 @@ class CurrentMuseumView(APIView):
     """
     Shows or changes current museum
     """
-    permission_classes = (IsAuthenticated,)
+
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         return Response(serialize_museum_and_locations(request))
@@ -568,12 +575,25 @@ class CurrentMuseumView(APIView):
         img = request.FILES['img']
         description = request.data['description']
 
-        location = Location.objects.get(prev=None)
-        for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
-            location = Location.objects.get(prev=location.id)
+        try:
+            print('im trying')
+            location = Location.objects.filter(museum=request.user.museum).get(prev=None)
+            print('location found')
+            print(location)
+            for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
+                print(i)
+                location = Location.objects.get(prev=location.id)
 
-        Location.objects.create(name=name, img=img, description=description, museum=request.user.museum,
-                                prev=location.id)
+            # Location.objects.create(name=name, img=img, description=description, museum=request.user.museum,
+            #                         prev=location.id)
+            Location(name=name, img=img, description=description, museum=request.user.museum,
+                     prev=location.id).save()
+        except:
+            print('location NOT found')
+            # Location.objects.create(name=name, img=img, description=description, museum=request.user.museum,
+            #                         prev=None)
+            Location(name=name, img=img, description=description, museum=request.user.museum,
+                     prev=None).save()
 
         return Response(serialize_museum_and_locations(request))
 
