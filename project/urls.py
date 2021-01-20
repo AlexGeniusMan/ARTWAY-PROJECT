@@ -21,6 +21,7 @@ from .yasg import urlpatterns as doc_url
 from django.conf.urls.static import static
 
 import main_app.views as views
+import main_app.views_visitor as views_visitor
 
 urlpatterns = [
 
@@ -80,9 +81,6 @@ urlpatterns = [
     # Получить статусы текущего пользователя
     path('api/user_statuses', views.UserStatusesView.as_view()),
 
-    # Получить выбранный экспонат
-    path('api/artifacts/<int:artifact_pk>', views.VisitorCurrentArtifactView.as_view()),
-
     # Получить выбранный билет
     # path('api/cashier/<int:ticket_pk>', views.CurrentTicketView.as_view()),
 
@@ -96,8 +94,26 @@ urlpatterns = [
     url(r'^auth/', include('djoser.urls')),
     url(r'^auth/', include('djoser.urls.jwt')),
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
 
+#  Сценарий посетителя музея
+urlpatterns += [
+
+    # Получить карту локаций текущего музея
+    path('api/locations_map', views_visitor.LocationsMapView.as_view()),
+
+    # Получить карту залов текущей локации
+    path('api/halls_map', views_visitor.HallsMapView.as_view()),
+
+    # Получить карту экспонатов текущего зала
+    path('api/artifacts_map', views_visitor.ArtifactsMapView.as_view()),
+
+    # Получить выбранный экспонат
+    path('api/artifacts/<int:artifact_pk>', views_visitor.CurrentArtifactView.as_view()),
+
+]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 # urlpatterns += doc_url
 urlpatterns.append(url(r'^', views.ReactAppView.as_view()))
