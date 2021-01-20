@@ -57,6 +57,7 @@ class PrintCurrentArtifactsView(APIView):
     """
     Shows current artifact
     """
+    permission_classes = (IsMuseumAdmin,)
 
     def scale(self, drawing, scaling_factor):
         """
@@ -71,58 +72,51 @@ class PrintCurrentArtifactsView(APIView):
         drawing.scale(scaling_x, scaling_y)
         return drawing
 
-    def get_new_pdf(self, request, ticket_id, token):
-        qr = segno.make(f'https://devgang.ru/?token={token}', micro=False)
-        qr.save('qr.svg')
+    def get_new_pdf(self, request):
         MyFontObject = ttfonts.TTFont('Arial', 'arial.ttf')
         pdfmetrics.registerFont(MyFontObject)
-        pdf_name = f'./media/tickets/ticket_{ticket_id}.pdf'
+        pdf_name = 'print.pdf'
         my_canvas = canvas.Canvas(pdf_name)
-
-        drawing = svg2rlg('mirea_emblem_black.svg')
-        scaling_factor = 0.2
-        scaled_drawing = self.scale(drawing, scaling_factor=scaling_factor)
-        renderPDF.draw(scaled_drawing, my_canvas, 370, 650)
-
-        my_canvas.setFont('Arial', 18)
-        my_canvas.drawString(50, 730, f'Музей "{request.user.museum}"')
-
         my_canvas.setFont('Arial', 14)
-        strings = (
-            '',
-            'Инструкция:',
-            '• Перейдите к сканированию QR-кода выбранного экспоната или введите его ID',
-            '• На странице экспоната Вы сможете получить информацию о нём,',
-            '  а также прослушать аудиогид',
-            '• Любите искусство вместе с ArtWay',
-            '',
-            '',
-            'Ваш персональный QR-код для перехода на страницу сервиса:',
-        )
-        i = 650
-        for new_string in strings:
-            my_canvas.drawString(50, i, new_string)
-            i -= 20
+
+        qr = segno.make(f'https://devgang.ru/artifacts/8235253234', micro=False)
+        qr.save('qr.svg')
 
         drawing = svg2rlg('qr.svg')
-        scaling_factor = 10
+        scaling_factor = 3
         scaled_drawing = self.scale(drawing, scaling_factor=scaling_factor)
-        renderPDF.draw(scaled_drawing, my_canvas, 95, 70)
+        renderPDF.draw(scaled_drawing, my_canvas, 50, 710)
+
+        strings = (
+            f'artifact_name',
+            'ID: 8235253234',
+        )
+
+        i = 775
+        for new_string in strings:
+            my_canvas.drawString(170, i, new_string)
+            i -= 20
+
+        # draw.add(Rect(0, 100, 500, 100))
+
+        my_canvas.rect(40, 700, 250, 130)
 
         my_canvas.setFont('Arial', 10)
         my_canvas.drawString(470, 20, 'Powered by Dev.gang')
         my_canvas.save()
-        pdf_name = f'tickets/ticket_{ticket_id}.pdf'
-        return pdf_name
+        # pdf_name = f'print.pdf'
+        return True
+        # return pdf_name
 
     def post(self, request):
-        token = self.get_new_token()
-        ticket = Ticket(token=token, museum=request.user.museum)
-        ticket.save()
-        pdf_name = self.get_new_pdf(request, ticket.id, token)
-        ticket.pdf = pdf_name
-        ticket.save()
-        return Response(self.get_tickets(request))
+        # artifacts_pk = request.data['artifacts']
+        # list_of_artifacts = list()
+        # for artifact_pk in artifacts_pk:
+        #     artifact = Artifact.objects.get(pk=artifact_pk)
+        #     list_of_artifacts.append(artifact)
+
+        pdf_name = self.get_new_pdf(request)
+        return Response(True)
 
 
 def is_ticket_valid(museum_pk, token):
