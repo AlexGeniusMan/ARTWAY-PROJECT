@@ -25,11 +25,11 @@ from reportlab.pdfgen import canvas
 
 import matplotlib.pyplot as plt
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.platypus import SimpleDocTemplate, Paragraph, PageBreak
 from svglib.svglib import svg2rlg
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase import ttfonts
-
+from PyPDF2 import PdfFileMerger
 
 # class CurrentTicketView(APIView):
 #     """
@@ -79,55 +79,49 @@ class PrintCurrentArtifactsView(APIView):
         my_canvas = canvas.Canvas(pdf_name)
         my_canvas.setFont('Arial', 12)
 
-        qr = segno.make(f'https://devgang.ru/artifacts/8235253234', micro=False)
-        qr.save('qr.svg')
+        # qr = segno.make(f'https://devgang.ru/artifacts/8235253234', micro=False)
+        # qr.save('qr.svg')
 
-        drawing = svg2rlg('qr.svg')
-        scaling_factor = 3.5
-        scaled_drawing = self.scale(drawing, scaling_factor=scaling_factor)
 
-        # i = 775
-        # for new_string in strings:
-        #     my_canvas.drawString(170, i, new_string)
-        #     i -= 20
-
-        # draw.add(Rect(0, 100, 500, 100))
-
-        # my_canvas.rect(40, 700, 250, 130)
         my_canvas.rect(0, 0, 595, 842)
 
-        artifacts = Artifact.objects.filter(Q(pk=26) | Q(pk=27) | Q(pk=28) | Q(pk=29) | Q(pk=30))
+        artifacts = Artifact.objects.all()
         list_of_artifacts = list()
         for el in artifacts:
             list_of_artifacts.append(el)
+        number_of_artifacts = len(list_of_artifacts)
+        # for i in range(len(list_of_artifacts)):
+        i = 0
+        while number_of_artifacts > 0:
+            qr = segno.make(f'https://devgang.ru/artifacts/{list_of_artifacts[i].id}', micro=False)
+            qr.save('qr.svg')
+            drawing = svg2rlg('qr.svg')
+            scaling_factor = 3.5
+            scaled_drawing = self.scale(drawing, scaling_factor=scaling_factor)
 
-        if len(list_of_artifacts) <= 10:
-            for i in range(len(list_of_artifacts)):
-                qr = segno.make(f'https://devgang.ru/artifacts/{list_of_artifacts[i].id}', micro=False)
-                qr.save('qr.svg')
-                if i % 2 == 0:
-                    my_canvas.drawString(40, 165 + i * 80, f'{list_of_artifacts[i].name}')
-                    renderPDF.draw(scaled_drawing, my_canvas, 35, 39 + i * 80)
-                    my_canvas.drawString(160, 100 + i * 80, f'ID: {list_of_artifacts[i].id}')
-                    my_canvas.rect(30, 34 + i * 80, 257, 150)
-                else:
-                    k = 278
-                    my_canvas.drawString(40 + k, 165 + (i - 1) * 80, f'{list_of_artifacts[i].name}')
-                    renderPDF.draw(scaled_drawing, my_canvas, 35 + k, 39 + (i - 1) * 80)
-                    my_canvas.drawString(160 + k, 100 + (i - 1) * 80, f'ID: {list_of_artifacts[i].id}')
-                    my_canvas.rect(30 + k, 34 + (i - 1) * 80, 257, 150)
-
-        # my_canvas.drawString(40, 165 + i * 160, 'Третьяковская галерея - длинное название')
-        # renderPDF.draw(scaled_drawing, my_canvas, 35, 39 + i * 160)
-        # my_canvas.drawString(160, 100 + i * 160, 'ID: 937825892')
-        # my_canvas.rect(30, 34 + i * 160, 257, 150)
-
-        # my_canvas.rect(30, 189, 257, 150)
-        # my_canvas.rect(30, 34, 257, 150)
-        # my_canvas.rect(308, 34, 257, 150)
+            if i % 2 == 0:
+                my_canvas.drawString(40, 165 + i * 80, f'{list_of_artifacts[i].name}')
+                renderPDF.draw(scaled_drawing, my_canvas, 35, 39 + i * 80)
+                my_canvas.drawString(160, 100 + i * 80, f'ID: {list_of_artifacts[i].id}')
+                my_canvas.rect(30, 34 + i * 80, 257, 150)
+            else:
+                k = 278
+                my_canvas.drawString(40 + k, 165 + (i - 1) * 80, f'{list_of_artifacts[i].name}')
+                renderPDF.draw(scaled_drawing, my_canvas, 35 + k, 39 + (i - 1) * 80)
+                my_canvas.drawString(160 + k, 100 + (i - 1) * 80, f'ID: {list_of_artifacts[i].id}')
+                my_canvas.rect(30 + k, 34 + (i - 1) * 80, 257, 150)
+            number_of_artifacts -= 1
+            if i < 9:
+                i += 1
+            else:
+                i = 0
+                my_canvas.setFont('Arial', 10)
+                my_canvas.drawString(465, 15, 'Powered by Dev.gang')
+                my_canvas.showPage()
 
         my_canvas.setFont('Arial', 10)
         my_canvas.drawString(465, 15, 'Powered by Dev.gang')
+
         my_canvas.save()
         # pdf_name = f'print.pdf'
         return True
