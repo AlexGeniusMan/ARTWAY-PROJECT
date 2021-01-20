@@ -337,7 +337,7 @@ class CurrentArtifactView(APIView):
         except:
             pass
         try:
-            artifact.video = request.FILES['video']
+            artifact.video = request.data['video']
         except:
             pass
         artifact.save()
