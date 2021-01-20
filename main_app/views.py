@@ -43,6 +43,38 @@ from reportlab.pdfbase import ttfonts
 #         return Response(tickets_serializer.data)
 
 
+# class TestView(APIView):
+#     """
+#     Shows all active tickets, creates new ticket
+#     """
+#
+#     def get(self, request):
+#         getattr(models, Location)
+#         return Response(self.get_tickets(request))
+
+
+class UserStatusesView(APIView):
+    """
+    Shows user statuses
+    """
+    def get(self, request):
+        if request.user.is_authenticated:
+            return Response({
+                'is_service_super_admin': request.user.groups.filter(name='service_super_admins').exists(),
+                'is_museum_super_admin': request.user.groups.filter(name='museum_super_admins').exists(),
+                'is_museum_admin': request.user.groups.filter(name='museum_admins').exists(),
+                'is_museum_cashier': request.user.groups.filter(name='museum_cashiers').exists(),
+            })
+        else:
+            return Response({
+                'is_service_super_admin': False,
+                'is_museum_super_admin': False,
+                'is_museum_admin': False,
+                'is_museum_cashier': False,
+            })
+
+
+
 class AllTicketsView(APIView):
     """
     Shows all active tickets, creates new ticket
