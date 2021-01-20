@@ -1,57 +1,24 @@
 import random
 import string
 from datetime import timedelta
-
-from django.db.models import Q
 from django.utils.datetime_safe import datetime
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.response import Response
 from django.views.generic.base import View
 from rest_framework.views import APIView
 from django.http import HttpResponse
-
-from project.settings import MEDIA_ROOT, DOMAIN_NAME
+from project.settings import DOMAIN_NAME
 from .permissions import *
 from .serializers import *
 import os
 from .models import User
-from rest_framework.permissions import BasePermission, IsAuthenticated
 from django.contrib.auth.models import Group
 import segno
-from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPDF
 from reportlab.pdfgen import canvas
-
-import matplotlib.pyplot as plt
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Paragraph, PageBreak
 from svglib.svglib import svg2rlg
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase import ttfonts
-from PyPDF2 import PdfFileMerger
-
-
-# class CurrentTicketView(APIView):
-#     """
-#     Shows current ticket
-#     """
-#     permission_classes = (IsMuseumCashier,)
-#
-#     def get(self, request, ticket_pk):
-#         ticket = Ticket.objects.get(pk=ticket_pk)
-#         tickets_serializer = TicketSerializer(ticket, context={'request': request})
-#         return Response(tickets_serializer.data)
-
-
-# class TestView(APIView):
-#     """
-#     Shows all active tickets, creates new ticket
-#     """
-#
-#     def get(self, request):
-#         getattr(models, Location)
-#         return Response(self.get_tickets(request))
 
 
 class PrintCurrentArtifactsView(APIView):
@@ -942,94 +909,6 @@ class MuseumProfilesView(APIView):
             return Response({"error_code": 'ERROR', "status": status.HTTP_403_FORBIDDEN})
 
 
-# def swap_and_save_artifact(swap_type, request):
-#     if swap_type == 'up':
-#         cur = Artifact.objects.get(pk=request.data['obj_id'])
-#     elif swap_type == 'down':
-#         cur = Artifact.objects.get(prev=request.data['obj_id'])
-#     up = Artifact.objects.get(pk=cur.prev)
-#     try:
-#         down = Artifact.objects.get(prev=cur.id)
-#         cur.prev = None  # deleting obj from list
-#         down.prev = up.id
-#         cur.prev = up.prev  # adding obj to list
-#         up.prev = cur.id
-#         cur.save()
-#         up.save()
-#         down.save()
-#     except:  # exception only if 'cur' is the last el in the list (then obj 'down' doesn't exists)
-#         if swap_type == 'down':
-#             cur = Artifact.objects.get(prev=request.data['obj_id'])
-#             up = Artifact.objects.get(pk=request.data['obj_id'])
-#         cur.prev = up.prev
-#         up.prev = cur.id
-#         cur.save()
-#         up.save()
-#     return True
-#
-#
-# class SwapArtifactsView(APIView):
-#     """
-#     Swaps current artifact with upper or lower artifact
-#     """
-#
-#     def post(self, request):
-#         swap_type = request.data['swap_type']
-#         swap_and_save_artifact(swap_type, request)
-#         return Response(True)
-#
-#
-# class ShowAllArtifactsView(APIView):
-#     """
-#     Shows all artifacts
-#     """
-#
-#     def get(self, request):
-#
-#         list_of_artifacts = list()
-#         artifact = Artifact.objects.get(prev=None)
-#         list_of_artifacts.append(artifact)
-#
-#         for i in range(len(Artifact.objects.all()) - 1):
-#             artifact = Artifact.objects.get(prev=artifact.id)
-#             list_of_artifacts.append(artifact)
-#
-#         if len(list_of_artifacts) == 1:
-#             serializer = AllArtifactsSerializer(list_of_artifacts, context={'request': request})
-#         else:
-#             serializer = AllArtifactsSerializer(list_of_artifacts, context={'request': request}, many=True)
-#
-#         # objs = Artifact.objects.all()
-#         # serializer = AllArtifactsSerializer(objs, context={'request': request}, many=True)
-#
-#         return Response(serializer.data)
-#
-#
-# class ShowCurrentArtifactView(APIView):
-#     """
-#     Shows current artifact
-#     """
-#
-#     def get(self, request, artifact_pk):
-#         artifact = Artifact.objects.get(pk=artifact_pk)
-#         serializer = ArtifactSerializer(artifact, context={'request': request})
-#
-#         return Response(serializer.data)
-#
-#
-# class ShowQRCodeOfCurrentArtifactView(APIView):
-#     """
-#     Shows QR-code of current artifact
-#     """
-#
-#     def get(self, request, artifact_pk):
-#         artifact = Artifact.objects.get(pk=artifact_pk)
-#         artifact.save()
-#         qr_code = QRCodeSerializer(artifact, context={'request': request})
-#
-#         return Response(qr_code.data)
-
-
 class ReactAppView(View):
 
     def get(self, request):
@@ -1047,10 +926,7 @@ class ReactAppView(View):
                 status=501,
             )
 
-# give status to front
-# return Response({"data": data, "status": status.HTTP_200_OK})
-
-# validate data
+# validating data
 # def post(self, request):
 #     user = request.data
 #     serializer = UserSerializer(data=user)

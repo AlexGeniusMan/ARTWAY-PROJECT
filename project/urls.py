@@ -25,20 +25,8 @@ import main_app.views_visitor as views_visitor
 
 urlpatterns = [
 
-    # Админ-панель
+    # Админ-панель (используется только при режиме разработки)
     path('admin/', admin.site.urls),
-
-    # # Получить выбранный экспонат
-    # path('api/artifacts/<int:artifact_pk>', views.ShowCurrentArtifactView.as_view()),
-    # # Получить все экспонаты
-    # path('api/artifacts', views.ShowAllArtifactsView.as_view()),
-    # # Поменять два выбранных экспоната местами
-    # path('api/swap_artifacts', views.SwapArtifactsView.as_view()),
-    # # Получить QR-код выбранного экспоната
-    # path('api/artifacts/<int:artifact_pk>/qr-code', views.ShowQRCodeOfCurrentArtifactView.as_view()),
-
-    # Получить все музеи или добавить новый
-    # path('api/qr', views.TestingQRCode.as_view()),
 
     # Получить все музеи или добавить новый
     path('api/s-admin', views.MuseumsView.as_view()),
@@ -80,12 +68,6 @@ urlpatterns = [
 
     # Получить статусы текущего пользователя
     path('api/user_statuses', views.UserStatusesView.as_view()),
-
-    # Получить выбранный билет
-    # path('api/cashier/<int:ticket_pk>', views.CurrentTicketView.as_view()),
-
-    # Создать нового пользователя
-    # path('api/create_new_cashier', views.CreateNewCashierView.as_view()),
 
     # Вызвать метод save() у всех экспонатов (используется для переноса сервиса с IP/домена на IP/домен)
     # path('api/update_all_qrs', views.UpdateAllQRsView.as_view()),
