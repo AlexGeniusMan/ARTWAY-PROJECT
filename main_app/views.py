@@ -46,6 +46,9 @@ class PrintCurrentArtifactsView(APIView):
         return drawing
 
     def get_new_pdf(self, request, list_of_artifacts):
+        # print_type = request.data['print_type']
+        print_type = 'tiny'
+
         MyFontObject = ttfonts.TTFont('Arial', 'arial.ttf')
         pdfmetrics.registerFont(MyFontObject)
         fname = self.get_new_filename()
@@ -56,36 +59,76 @@ class PrintCurrentArtifactsView(APIView):
 
         number_of_artifacts = len(list_of_artifacts)
 
-        i = 0
-        while number_of_artifacts > 0:
-            qr = segno.make(f'https://{DOMAIN_NAME}/artifacts/{list_of_artifacts[i].id}', micro=False)
-            qr.save('qr.svg')
-            drawing = svg2rlg('qr.svg')
-            scaling_factor = 3.5
-            scaled_drawing = self.scale(drawing, scaling_factor=scaling_factor)
+        if print_type == 'tiny':
+            i = 0
+            while number_of_artifacts > 0:
+                qr = segno.make(f'https://{DOMAIN_NAME}/artifacts/{list_of_artifacts[i].id}', micro=False)
+                qr.save('qr.svg')
+                drawing = svg2rlg('qr.svg')
+                scaling_factor = 3.5
+                qr_code = self.scale(drawing, scaling_factor=scaling_factor)
 
-            if i % 2 == 0:
-                my_canvas.drawString(40, 165 + i * 80, f'{list_of_artifacts[i].name}')
-                renderPDF.draw(scaled_drawing, my_canvas, 35, 39 + i * 80)
-                my_canvas.drawString(160, 100 + i * 80, f'ID: {list_of_artifacts[i].id}')
-                my_canvas.rect(30, 34 + i * 80, 257, 150)
-            else:
-                k = 278
-                my_canvas.drawString(40 + k, 165 + (i - 1) * 80, f'{list_of_artifacts[i].name}')
-                renderPDF.draw(scaled_drawing, my_canvas, 35 + k, 39 + (i - 1) * 80)
-                my_canvas.drawString(160 + k, 100 + (i - 1) * 80, f'ID: {list_of_artifacts[i].id}')
-                my_canvas.rect(30 + k, 34 + (i - 1) * 80, 257, 150)
-            number_of_artifacts -= 1
-            if i < 9:
-                i += 1
-            else:
-                i = 0
-                my_canvas.setFont('Arial', 10)
-                my_canvas.drawString(465, 15, 'Powered by Dev.gang')
-                my_canvas.showPage()
-                my_canvas.setFont('Arial', 12)
-                my_canvas.rect(0, 0, 595, 842)
+                if i % 2 == 0:
+                    k = 0
+                    j = 0
+                else:
+                    k = 278
+                    j = 1
+                my_canvas.drawString(40 + k, 165 + (i - j) * 80, f'{list_of_artifacts[i].name}')
+                renderPDF.draw(qr_code, my_canvas, 35 + k, 39 + (i - j) * 80)
+                my_canvas.drawString(160 + k, 100 + (i - j) * 80, f'ID: {list_of_artifacts[i].id}')
+                my_canvas.rect(30 + k, 34 + (i - j) * 80, 257, 150)
+                number_of_artifacts -= 1
+                if i < 9:
+                    i += 1
+                else:
+                    i = 0
+                    my_canvas.setFont('Arial', 10)
+                    my_canvas.drawString(468, 15, 'Powered by Dev.gang')
+                    my_canvas.showPage()
+                    my_canvas.setFont('Arial', 12)
+                    my_canvas.rect(0, 0, 595, 842)
+        elif print_type == 'medium':
+            i = 0
+            while number_of_artifacts > 0:
+                drawing = svg2rlg('mirea_emblem_black.svg')
+                scaling_factor = 0.1
+                emblem = self.scale(drawing, scaling_factor=scaling_factor)
 
+                qr = segno.make(f'https://{DOMAIN_NAME}/artifacts/{list_of_artifacts[i].id}', micro=False)
+                qr.save('qr.svg')
+                drawing = svg2rlg('qr.svg')
+                scaling_factor = 7
+                qr_code = self.scale(drawing, scaling_factor=scaling_factor)
+
+                if i % 2 == 0:
+                    k = 0
+                    j = 0
+                else:
+                    k = 278
+                    j = 1
+                    # renderPDF.draw(emblem, my_canvas, 115, 315 + i * 202)
+                    # my_canvas.drawString(55, 300 + i * 202, f'{list_of_artifacts[i].name}')
+                    # my_canvas.drawString(55, 280 + i * 202, f'ID: {list_of_artifacts[i].id}')
+                    # renderPDF.draw(qr_code, my_canvas, 28, 35 + i * 202)
+                    # my_canvas.rect(30, 32 + i * 202, 257, 375)
+                renderPDF.draw(emblem, my_canvas, 115 + k, 315 + (i - j) * 202)
+                my_canvas.drawString(55 + k, 300 + (i - j) * 202, f'{list_of_artifacts[i].name}')
+                my_canvas.drawString(55 + k, 280 + (i - j) * 202, f'ID: {list_of_artifacts[i].id}')
+                renderPDF.draw(qr_code, my_canvas, 28 + k, 35 + (i - j) * 202)
+                my_canvas.rect(30 + k, 32 + (i - j) * 202, 257, 375)
+                number_of_artifacts -= 1
+                if i < 3:
+                    i += 1
+                else:
+                    i = 0
+                    my_canvas.setFont('Arial', 10)
+                    my_canvas.drawString(468, 15, 'Powered by Dev.gang')
+                    my_canvas.showPage()
+                    my_canvas.setFont('Arial', 12)
+                    my_canvas.rect(0, 0, 595, 842)
+        elif print_type == 'large':
+            pass
         my_canvas.setFont('Arial', 10)
         my_canvas.drawString(465, 15, 'Powered by Dev.gang')
 

@@ -93,6 +93,9 @@ urlpatterns += [
     # Получить выбранный экспонат
     path('api/artifacts/<int:artifact_pk>', views_visitor.CurrentArtifactView.as_view()),
 
+    # Получить выбранный экспонат
+    # path('api/artifacts/<int:artifact_pk>', views_visitor.ArtifactsFromThisHallView.as_view()),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
