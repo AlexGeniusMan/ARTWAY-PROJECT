@@ -285,7 +285,7 @@ class RelocateArtifactView(APIView):
 
     def post(self, request):
         cur = Artifact.objects.get(pk=request.data['artifact_pk'])
-
+        hall_pk = cur.hall.id
 
         # deleting obj from old hall
         if cur.prev != None:
@@ -331,7 +331,7 @@ class RelocateArtifactView(APIView):
             down.save()
         except:
             pass
-        return Response(True)
+        return Response(serialize_hall_and_artifacts(request, hall_pk))
 
 
 class SwapArtifactsView(APIView):
@@ -372,7 +372,7 @@ class SwapArtifactsView(APIView):
         self.swap_and_save_artifact(swap_type, request)
         hall_pk = Artifact.objects.get(pk=request.data['obj_id']).hall.id
         location_pk = Hall.objects.get(pk=hall_pk).location.id
-        return Response(serialize_hall_and_artifacts(request, location_pk, hall_pk))
+        return Response(serialize_hall_and_artifacts(request, hall_pk))
 
 
 class CurrentArtifactView(APIView):
@@ -422,7 +422,7 @@ class CurrentArtifactView(APIView):
 
     def delete(self, request, location_pk, hall_pk, artifact_pk):
         self.delete_artifact(request, location_pk, hall_pk, artifact_pk)
-        return Response(serialize_hall_and_artifacts(request, location_pk, hall_pk))
+        return Response(serialize_hall_and_artifacts(request, hall_pk))
 
 
 class SwapHallsView(APIView):
@@ -462,7 +462,7 @@ class SwapHallsView(APIView):
         return Response(serialize_location_and_halls(request, location_pk))
 
 
-def serialize_hall_and_artifacts(request, location_pk, hall_pk):
+def serialize_hall_and_artifacts(request, hall_pk):
     hall = Hall.objects.get(pk=hall_pk)
     hall_serializer = HallSerializer(hall, context={'request': request})
 
@@ -504,7 +504,7 @@ class CurrentHallView(APIView):
     """
 
     def get_hall(self, request, location_pk, hall_pk):
-        return serialize_hall_and_artifacts(request, location_pk, hall_pk)
+        return serialize_hall_and_artifacts(request, hall_pk)
 
     def delete_hall(self, request, location_pk, hall_pk):
         cur = Hall.objects.get(pk=hall_pk)
@@ -545,7 +545,7 @@ class CurrentHallView(APIView):
                               prev=prev)
         aaa.save()
         print(aaa)
-        return Response(serialize_hall_and_artifacts(request, location_pk, hall_pk))
+        return Response(serialize_hall_and_artifacts(request, hall_pk))
 
     def put(self, request, location_pk, hall_pk):
         hall = Hall.objects.get(pk=hall_pk)
