@@ -58,9 +58,11 @@ urlpatterns = [
 
     # Получить выбранный экспонат или изменить/удалить выбранный экспонат
     path('api/m-admin/<int:location_pk>/<int:hall_pk>/<int:artifact_pk>', views.CurrentArtifactView.as_view()),
-    # Поменять две выбранных зала местами
+    # Поменять две выбранных экспоната местами
     path('api/swap_artifacts', views.SwapArtifactsView.as_view()),
-    # Получить все залы
+    # Переместить выбранный экспонат в другой зал
+    path('api/relocate_artifact', views.RelocateArtifactView.as_view()),
+    # Получить все экспонаты
     path('api/all_artifacts', views.AllArtifactsView.as_view()),
 
     # Получить все активные билеты или создать новый билет
@@ -78,7 +80,7 @@ urlpatterns = [
 
 ]
 
-#  Сценарий посетителя музея
+# Сценарий посетителя музея
 urlpatterns += [
 
     # Получить карту локаций текущего музея

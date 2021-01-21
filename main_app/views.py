@@ -54,7 +54,6 @@ class PrintCurrentArtifactsView(APIView):
         pdf_name = f'./media/prints/{fname}.pdf'
         my_canvas = canvas.Canvas(pdf_name)
         my_canvas.setFont('Arial', 12)
-        # my_canvas.rect(0, 0, 595, 842)
 
         number_of_artifacts = len(list_of_artifacts)
         print(list_of_artifacts)
@@ -278,9 +277,42 @@ class AllTicketsView(APIView):
         return Response(self.get_tickets(request))
 
 
+class RelocateArtifactView(APIView):
+    """
+    Relocates current artifact to another hall of current museum
+    """
+    permission_classes = (IsMuseumAdmin,)
+
+    def post(self, request):
+        cur = Artifact.objects.get(pk=request.data['artifact_pk'])
+
+        # if cur.prev != None:
+        up = Artifact.objects.get(pk=cur.prev)
+        down = Artifact.objects.get(prev=cur.id)
+
+        # deleting obj from old hall
+        cur.prev = None
+        down.prev = up.id
+
+        # adding obj to new hall
+        cur.hall = Hall.objects.get(pk=request.data['hall_pk'])
+
+        temp_len = len(Artifact.objects.filter(hall=cur.hall))
+        if temp_len > 1:
+            artifact = Artifact.objects.filter(hall=cur.hall).get(prev=None)
+            for i in range(len(Artifact.objects.filter(hall=cur.hall)) - 1):
+                artifact = Artifact.objects.get(prev=artifact.id)
+            cur.prev = artifact.id
+        elif temp_len == 1:
+            artifact = Artifact.objects.get(hall=cur.hall)
+            cur.prev = artifact.id
+        else:
+            cur.prev = None
+
+
 class SwapArtifactsView(APIView):
     """
-    Swaps current hall with upper or lower hall
+    Swaps current artifact with upper or lower artifact
     """
     permission_classes = (IsMuseumAdmin,)
 
