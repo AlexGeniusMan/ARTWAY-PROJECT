@@ -46,8 +46,7 @@ class PrintCurrentArtifactsView(APIView):
         return drawing
 
     def get_new_pdf(self, request, list_of_artifacts):
-        # print_type = request.data['print_type']
-        print_type = 'tiny'
+        print_type = request.data['print_type']
 
         MyFontObject = ttfonts.TTFont('Arial', 'arial.ttf')
         pdfmetrics.registerFont(MyFontObject)
@@ -55,7 +54,7 @@ class PrintCurrentArtifactsView(APIView):
         pdf_name = f'./media/prints/{fname}.pdf'
         my_canvas = canvas.Canvas(pdf_name)
         my_canvas.setFont('Arial', 12)
-        my_canvas.rect(0, 0, 595, 842)
+        # my_canvas.rect(0, 0, 595, 842)
 
         number_of_artifacts = len(list_of_artifacts)
         print(list_of_artifacts)
@@ -132,9 +131,28 @@ class PrintCurrentArtifactsView(APIView):
                     my_canvas.setFont('Arial', 12)
                     my_canvas.rect(0, 0, 595, 842)
         elif print_type == 'large':
-            pass
-        my_canvas.setFont('Arial', 10)
-        my_canvas.drawString(467, 15, 'Powered by Dev.gang')
+            i = 0
+            while number_of_artifacts > 0:
+                drawing = svg2rlg('mirea_emblem_black.svg')
+                scaling_factor = 0.25
+                emblem = self.scale(drawing, scaling_factor=scaling_factor)
+
+                qr = segno.make(f'https://{DOMAIN_NAME}/artifacts/{list_of_artifacts[i].id}', micro=False)
+                qr.save('qr.svg')
+                drawing = svg2rlg('qr.svg')
+                scaling_factor = 15
+                qr_code = self.scale(drawing, scaling_factor=scaling_factor)
+
+                my_canvas.setFont('Arial', 16)
+                renderPDF.draw(emblem, my_canvas, 200, 600)
+                my_canvas.drawString(82, 560, f'{list_of_artifacts[i].name}')
+                my_canvas.drawString(82, 530, f'ID: {list_of_artifacts[i].id}')
+                renderPDF.draw(qr_code, my_canvas, 25, 10)
+
+                number_of_artifacts -= 1
+                i += 1
+                my_canvas.showPage()
+                my_canvas.setFont('Arial', 16)
 
         my_canvas.save()
         pdf_name = f'http://{DOMAIN_NAME}/media/prints/{fname}.pdf'
