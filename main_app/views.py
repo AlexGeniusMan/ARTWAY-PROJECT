@@ -286,14 +286,24 @@ class RelocateArtifactView(APIView):
     def post(self, request):
         cur = Artifact.objects.get(pk=request.data['artifact_pk'])
 
-        # if cur.prev != None:
-        up = Artifact.objects.get(pk=cur.prev)
-        down = Artifact.objects.get(prev=cur.id)
 
         # deleting obj from old hall
-        cur.prev = None
-        down.prev = up.id
+        if cur.prev != None:
+            up = Artifact.objects.get(pk=cur.prev)
+            try:
+                down = Artifact.objects.get(prev=cur.id)
+                down.prev = up.id
+            except:
+                pass
+        else:
+            try:
+                down = Artifact.objects.get(prev=cur.id)
+                down.prev = None
+            except:
+                pass
 
+        cur.prev = None
+        
         # adding obj to new hall
         cur.hall = Hall.objects.get(pk=request.data['hall_pk'])
 
@@ -305,9 +315,23 @@ class RelocateArtifactView(APIView):
             cur.prev = artifact.id
         elif temp_len == 1:
             artifact = Artifact.objects.get(hall=cur.hall)
-            cur.prev = artifact.id
+            if artifact.id != cur.id:
+                cur.prev = artifact.id
+            else:
+                cur.prev = None
         else:
             cur.prev = None
+
+        cur.save()
+        try:
+            up.save()
+        except:
+            pass
+        try:
+            down.save()
+        except:
+            pass
+        return Response(True)
 
 
 class SwapArtifactsView(APIView):
