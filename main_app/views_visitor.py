@@ -20,13 +20,13 @@ import segno
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPDF
 from reportlab.pdfgen import canvas
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph, PageBreak
 from svglib.svglib import svg2rlg
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase import ttfonts
-from PyPDF2 import PdfFileMerger
+# from PyPDF2 import PdfFileMerger
 
 
 def is_ticket_valid(museum_pk, token):
