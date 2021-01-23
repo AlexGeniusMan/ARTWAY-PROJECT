@@ -35,7 +35,7 @@ class Artifact(models.Model):
 
     prev = models.IntegerField(_("Экспонат выше"), null=True, blank=True)
 
-    hall = models.ForeignKey('Hall', on_delete=models.PROTECT, verbose_name='Зал',
+    hall = models.ForeignKey('Hall', on_delete=models.CASCADE, verbose_name='Зал',
                              related_name='artifacts', null=True)
 
     class Meta:
@@ -87,7 +87,7 @@ class Hall(models.Model):
 
     prev = models.IntegerField(_("Зал выше"), null=True, blank=True)
 
-    location = models.ForeignKey('Location', on_delete=models.PROTECT, verbose_name='Локация',
+    location = models.ForeignKey('Location', on_delete=models.CASCADE, verbose_name='Локация',
                                  related_name='halls', null=True)
 
     class Meta:
@@ -106,7 +106,7 @@ class Location(models.Model):
 
     prev = models.IntegerField(_("Локация выше"), null=True, blank=True)
 
-    museum = models.ForeignKey('Museum', on_delete=models.PROTECT, verbose_name='Музей',
+    museum = models.ForeignKey('Museum', on_delete=models.CASCADE, verbose_name='Музей',
                                related_name='locations', null=True)
 
     class Meta:
