@@ -268,13 +268,16 @@ class AllTicketsView(APIView):
         return Response(self.get_tickets(request))
 
     def post(self, request):
-        token = self.get_new_token()
-        ticket = Ticket(token=token, museum=request.user.museum)
-        ticket.save()
-        pdf_name = self.get_new_pdf(request, ticket.id, token)
-        ticket.pdf = pdf_name
-        ticket.save()
-        return Response(self.get_tickets(request))
+        try:
+            token = self.get_new_token()
+            ticket = Ticket(token=token, museum=request.user.museum)
+            ticket.save()
+            pdf_name = self.get_new_pdf(request, ticket.id, token)
+            ticket.pdf = pdf_name
+            ticket.save()
+            return Response(self.get_tickets(request))
+        except Exception:
+            return Response(Exception)
 
 
 class RelocateArtifactView(APIView):
