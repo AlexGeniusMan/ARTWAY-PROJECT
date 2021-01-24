@@ -201,7 +201,7 @@ class LocationsMapView(APIView):
                     'locations': locations_serializer.data
                 })
             elif temp_len == 1:
-                location = Location.objects.get(museum=request.user.museum)
+                location = Location.objects.get(museum=museum)
                 locations_serializer = LocationSerializer(location, context={'request': request})
                 return Response({
                     'locations': [locations_serializer.data]

@@ -779,6 +779,7 @@ class CurrentMuseumView(APIView):
     """
 
     # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsMuseumAdmin,)
 
     def get(self, request):
         return Response(serialize_museum_and_locations(request))
@@ -944,7 +945,7 @@ class MuseumProfilesView(APIView):
     """
     Shows/creates/deletes employees of current museum
     """
-    permission_classes = (IsMuseumAdmin,)
+    permission_classes = (IsMuseumSuperAdmin,)
 
     def get_users(self, request):
         museum_super_admin = User.objects.get(pk=request.user.id)
