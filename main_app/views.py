@@ -306,7 +306,7 @@ class RelocateArtifactView(APIView):
                 pass
 
         cur.prev = None
-        
+
         # adding obj to new hall
         cur.hall = Hall.objects.get(pk=request.data['hall_pk'])
 
@@ -342,8 +342,6 @@ class SwapArtifactsView(APIView):
     Swaps current artifact with upper or lower artifact
     """
     permission_classes = (IsMuseumAdmin,)
-
-    # queryset = Museum.objects.all()
 
     def swap_and_save_artifact(self, swap_type, request):
         if swap_type == 'up':
@@ -382,6 +380,7 @@ class CurrentArtifactView(APIView):
     """
     Shows current artifact
     """
+    permission_classes = (IsMuseumAdmin,)
 
     def get_artifact(self, request, location_pk, hall_pk, artifact_pk):
         artifact = Artifact.objects.get(pk=artifact_pk)
@@ -432,6 +431,7 @@ class SwapHallsView(APIView):
     """
     Swaps current hall with upper or lower hall
     """
+    permission_classes = (IsMuseumAdmin,)
 
     def swap_and_save_hall(self, swap_type, request):
         if swap_type == 'up':
@@ -505,6 +505,7 @@ class CurrentHallView(APIView):
     """
     Shows or changes or deletes current hall
     """
+    permission_classes = (IsMuseumAdmin,)
 
     def get_hall(self, request, location_pk, hall_pk):
         return serialize_hall_and_artifacts(request, hall_pk)
@@ -572,6 +573,7 @@ class AllArtifactsView(APIView):
     """
     Shows all artifacts
     """
+    permission_classes = (IsMuseumAdmin,)
 
     def get(self, request):
         artifacts = Artifact.objects.all()
@@ -583,8 +585,7 @@ class AllHallsView(APIView):
     """
     Shows all halls
     """
-
-    # permission_classes = (IsAuthenticated,)
+    permission_classes = (IsMuseumAdmin,)
 
     def get(self, request):
         halls = Hall.objects.all()
@@ -622,6 +623,7 @@ class SwapLocationsView(APIView):
     """
     Swaps current location with upper or lower location
     """
+    permission_classes = (IsMuseumAdmin,)
 
     def post(self, request):
         swap_type = request.data['swap_type']
@@ -680,6 +682,7 @@ class CurrentLocationView(APIView):
     """
     Shows or changes or deletes current location
     """
+    permission_classes = (IsMuseumAdmin,)
 
     def get(self, request, location_pk):
         return Response(serialize_location_and_halls(request, location_pk))
@@ -727,6 +730,7 @@ class AllLocationsView(APIView):
     """
     Shows all locations
     """
+    permission_classes = (IsMuseumAdmin,)
 
     def get(self, request):
         locations = Location.objects.filter(museum=request.user.museum)

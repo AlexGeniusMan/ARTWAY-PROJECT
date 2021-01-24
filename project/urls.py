@@ -23,60 +23,55 @@ from django.conf.urls.static import static
 import main_app.views as views
 import main_app.views_visitor as views_visitor
 
+from django.conf import settings
+
+# Сценарий администратора музея
 urlpatterns = [
-
-    # Админ-панель (используется только при режиме разработки)
-    path('admin/', admin.site.urls),
-
     # Получить все музеи или добавить новый - pt
     path('api/s-admin', views.MuseumsView.as_view()),
     # Удалить выбранный музей - pt
     path('api/s-admin/<int:museum_pk>', views.MuseumSuperAdminView.as_view()),
 
-    # Получить музей со всеми его локациями, или изменить музей, или добавить новую локацию - pt
+    # Получить музей со всеми локациями, или изменить музей, или добавить новую локацию - pt
     path('api/m-admin', views.CurrentMuseumView.as_view()),
     # Получить профиль супер-админа музея, а также списки админов и кассиров музея, к которому привязан супер-админ -pt
     path('api/m-admin/hr-management', views.MuseumProfilesView.as_view()),
-    # Изменить/удалить выбранного администратора/кассира музея
+    # Изменить/удалить выбранного администратора/кассира музея -pt
     path('api/m-admin/hr-management/<int:user_pk>', views.MuseumProfilesView.as_view()),
-    # Получить PDF для печати со всеми выбранными экспонатами
+    # Получить PDF для печати со всеми выбранными экспонатами -pt
     path('api/m-admin/print', views.PrintCurrentArtifactsView.as_view()),
 
-    # Получить локацию со всеми её залами, или изменить/удалить выбранную локацию, или добавить новый зал
+    # Получить локацию со всеми её залами, или изменить/удалить выбранную локацию, или добавить новый зал -pt
     path('api/m-admin/<int:location_pk>', views.CurrentLocationView.as_view()),
-    # Поменять две выбранных локации местами
+    # Поменять две выбранных локации местами -pt
     path('api/swap_locations', views.SwapLocationsView.as_view()),
-    # Получить все локации
-    path('api/all_locations', views.AllLocationsView.as_view()),
+    # Получить все локации -pt
+    # path('api/all_locations', views.AllLocationsView.as_view()),
 
-    # Получить выбранный зал со всеми его экспонатами, или изменить/удалить выбранный зал, или добавить новый экспонат
+    # Получить выбранный зал со всеми экспонатами, или изменить/удалить выбранный зал, или добавить новый экспонат -pt
     path('api/m-admin/<int:location_pk>/<int:hall_pk>', views.CurrentHallView.as_view()),
-    # Поменять две выбранных зала местами
+    # Поменять две выбранных зала местами -pt
     path('api/swap_halls', views.SwapHallsView.as_view()),
-    # Получить все залы
-    path('api/all_halls', views.AllHallsView.as_view()),
+    # Получить все залы -pt
+    # path('api/all_halls', views.AllHallsView.as_view()),
 
-    # Получить выбранный экспонат или изменить/удалить выбранный экспонат
+    # Получить выбранный экспонат или изменить/удалить выбранный экспонат -pt
     path('api/m-admin/<int:location_pk>/<int:hall_pk>/<int:artifact_pk>', views.CurrentArtifactView.as_view()),
-    # Поменять две выбранных экспоната местами
+    # Поменять две выбранных экспоната местами -pt
     path('api/swap_artifacts', views.SwapArtifactsView.as_view()),
-    # Переместить выбранный экспонат в другой зал
+    # Переместить выбранный экспонат в другой зал -pt
     path('api/relocate_artifact', views.RelocateArtifactView.as_view()),
-    # Получить все экспонаты
-    path('api/all_artifacts', views.AllArtifactsView.as_view()),
+    # Получить все экспонаты -pt
+    # path('api/all_artifacts', views.AllArtifactsView.as_view()),
 
-    # Получить все активные билеты или создать новый билет
+    # Получить все активные билеты или создать новый билет -pt
     path('api/cashier', views.AllTicketsView.as_view()),
 
-    # Получить статусы текущего пользователя
+    # Получить статусы текущего пользователя -pt
     path('api/user_statuses', views.UserStatusesView.as_view()),
 
     # Вызвать метод save() у всех экспонатов (используется для переноса сервиса с IP/домена на IP/домен)
     # path('api/update_all_qrs', views.UpdateAllQRsView.as_view()),
-
-    # Авторизация
-    url(r'^auth/', include('djoser.urls')),
-    url(r'^auth/', include('djoser.urls.jwt')),
 
 ]
 
@@ -97,6 +92,14 @@ urlpatterns += [
 
     # Получить выбранный экспонат
     # path('api/artifacts/<int:artifact_pk>', views_visitor.ArtifactsFromThisHallView.as_view()),
+
+]
+
+# Авторизация
+urlpatterns += [
+
+    url(r'^auth/', include('djoser.urls')),
+    url(r'^auth/', include('djoser.urls.jwt')),
 
 ]
 
