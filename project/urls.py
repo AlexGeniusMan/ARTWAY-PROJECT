@@ -25,8 +25,18 @@ import main_app.views_visitor as views_visitor
 
 from django.conf import settings
 
+# Админ-панель (используется только при режиме разработки)
+if settings.DEBUG:
+    urlpatterns = [
+
+        path('admin/', admin.site.urls),
+
+    ]
+else:
+    urlpatterns = []
+
 # Сценарий администратора музея
-urlpatterns = [
+urlpatterns += [
     # Получить все музеи или добавить новый - pt
     path('api/s-admin', views.MuseumsView.as_view()),
     # Удалить выбранный музей - pt
@@ -45,15 +55,11 @@ urlpatterns = [
     path('api/m-admin/<int:location_pk>', views.CurrentLocationView.as_view()),
     # Поменять две выбранных локации местами -pt
     path('api/swap_locations', views.SwapLocationsView.as_view()),
-    # Получить все локации -pt
-    # path('api/all_locations', views.AllLocationsView.as_view()),
 
     # Получить выбранный зал со всеми экспонатами, или изменить/удалить выбранный зал, или добавить новый экспонат -pt
     path('api/m-admin/<int:location_pk>/<int:hall_pk>', views.CurrentHallView.as_view()),
     # Поменять две выбранных зала местами -pt
     path('api/swap_halls', views.SwapHallsView.as_view()),
-    # Получить все залы -pt
-    # path('api/all_halls', views.AllHallsView.as_view()),
 
     # Получить выбранный экспонат или изменить/удалить выбранный экспонат -pt
     path('api/m-admin/<int:location_pk>/<int:hall_pk>/<int:artifact_pk>', views.CurrentArtifactView.as_view()),
@@ -61,17 +67,12 @@ urlpatterns = [
     path('api/swap_artifacts', views.SwapArtifactsView.as_view()),
     # Переместить выбранный экспонат в другой зал -pt
     path('api/relocate_artifact', views.RelocateArtifactView.as_view()),
-    # Получить все экспонаты -pt
-    # path('api/all_artifacts', views.AllArtifactsView.as_view()),
 
     # Получить все активные билеты или создать новый билет -pt
     path('api/cashier', views.AllTicketsView.as_view()),
 
     # Получить статусы текущего пользователя -pt
     path('api/user_statuses', views.UserStatusesView.as_view()),
-
-    # Вызвать метод save() у всех экспонатов (используется для переноса сервиса с IP/домена на IP/домен)
-    # path('api/update_all_qrs', views.UpdateAllQRsView.as_view()),
 
 ]
 
@@ -90,9 +91,6 @@ urlpatterns += [
     # Получить выбранный экспонат
     path('api/artifacts/<int:artifact_pk>', views_visitor.CurrentArtifactView.as_view()),
 
-    # Получить выбранный экспонат
-    # path('api/artifacts/<int:artifact_pk>', views_visitor.ArtifactsFromThisHallView.as_view()),
-
 ]
 
 # Авторизация
@@ -101,6 +99,20 @@ urlpatterns += [
     url(r'^auth/', include('djoser.urls')),
     url(r'^auth/', include('djoser.urls.jwt')),
 
+]
+
+# Для разработчиков (используется только при разработке)
+urlpatterns += [
+
+    # Получить все локации -pt
+    # path('api/all_locations', views.AllLocationsView.as_view()),
+    # Получить все залы -pt
+    # path('api/all_halls', views.AllHallsView.as_view()),
+    # Получить все экспонаты -pt
+    # path('api/all_artifacts', views.AllArtifactsView.as_view()),
+
+    # Вызвать метод save() у всех экспонатов (используется для переноса сервиса с IP/домена на IP/домен)
+    # path('api/update_all_qrs', views.UpdateAllQRsView.as_view()),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
