@@ -184,6 +184,7 @@ class LocationsMapView(APIView):
 
         if is_ticket_valid(ticket.museum.id, token):
             museum = ticket.museum
+            museum_data = MuseumSerializer(museum, context={'request': request}).data
             temp_len = len(Location.objects.filter(museum=museum))
 
             if temp_len > 1:
@@ -198,16 +199,19 @@ class LocationsMapView(APIView):
                 locations_serializer = LocationSerializer(list_of_locations, context={'request': request}, many=True)
 
                 return Response({
+                    'museum': museum_data,
                     'locations': locations_serializer.data
                 })
             elif temp_len == 1:
                 location = Location.objects.get(museum=museum)
                 locations_serializer = LocationSerializer(location, context={'request': request})
                 return Response({
+                    'museum': museum_data,
                     'locations': [locations_serializer.data]
                 })
             else:
                 return Response({
+                    'museum': museum_data,
                     'locations': []
                 })
         else:
