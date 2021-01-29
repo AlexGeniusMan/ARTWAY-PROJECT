@@ -18,11 +18,20 @@ class TicketSerializer(serializers.ModelSerializer):
         exclude = ('museum',)
 
 
+class SpecialHallSerializer(serializers.ModelSerializer):
+    class Meta:
+        depth = 2
+        model = Hall
+        fields = ('id',)
+
+
 class ArtifactSerializer(serializers.ModelSerializer):
+    hall = SpecialHallSerializer(read_only=True)
+
     class Meta:
         depth = 2
         model = Artifact
-        exclude = ('hall', 'qr_code')
+        exclude = ('qr_code',)
 
 
 class HallSerializer(serializers.ModelSerializer):
