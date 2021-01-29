@@ -82,8 +82,8 @@ class Artifact(models.Model):
 
 class Hall(models.Model):
     name = models.CharField(_("Название"), max_length=100)
-    img = models.ImageField(_("Фотография"), null=True, upload_to='halls', blank=True)
-    description = models.TextField(_("Описание"), max_length=10000, blank=True)
+    # img = models.ImageField(_("Фотография"), null=True, upload_to='halls', blank=True)
+    # description = models.TextField(_("Описание"), max_length=10000, blank=True)
 
     prev = models.IntegerField(_("Зал выше"), null=True, blank=True)
 
@@ -101,8 +101,8 @@ class Hall(models.Model):
 
 class Location(models.Model):
     name = models.CharField(_("Название"), max_length=100)
-    img = models.ImageField(_("Фотография"), null=True, upload_to='locations', blank=True)
-    description = models.TextField(_("Описание"), max_length=10000, blank=True)
+    # img = models.ImageField(_("Фотография"), null=True, upload_to='locations', blank=True)
+    # description = models.TextField(_("Описание"), max_length=10000, blank=True)
 
     prev = models.IntegerField(_("Локация выше"), null=True, blank=True)
 
