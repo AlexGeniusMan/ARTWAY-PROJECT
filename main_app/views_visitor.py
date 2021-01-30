@@ -115,16 +115,19 @@ class ArtifactsMapView(APIView):
                 artifacts_serializer = ArtifactSerializer(list_of_artifacts, context={'request': request}, many=True)
 
                 return Response({
+                    'hall': hall.name,
                     'artifacts': artifacts_serializer.data
                 })
             elif temp_len == 1:
                 artifact = Artifact.objects.get(hall=hall)
                 artifact_serializer = ArtifactSerializer(artifact, context={'request': request})
                 return Response({
+                    'hall': hall.name,
                     'artifacts': [artifact_serializer.data]
                 })
             else:
                 return Response({
+                    'hall': hall.name,
                     'artifacts': []
                 })
         else:
@@ -157,16 +160,19 @@ class HallsMapView(APIView):
 
                 halls_serializer = HallSerializer(list_of_halls, context={'request': request}, many=True)
                 return Response({
+                    'location': location.name,
                     'halls': halls_serializer.data
                 })
             elif temp_len == 1:
                 hall = Hall.objects.get(location=location)
                 halls_serializer = HallSerializer(hall, context={'request': request})
                 return Response({
+                    'location': location.name,
                     'halls': [halls_serializer.data]
                 })
             else:
                 return Response({
+                    'location': location.name,
                     'halls': []
                 })
         else:
