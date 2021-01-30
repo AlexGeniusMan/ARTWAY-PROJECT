@@ -689,8 +689,8 @@ class CurrentLocationView(APIView):
 
     def post(self, request, location_pk):
         name = request.data['name']
-        img = request.FILES['img']
-        description = request.data['description']
+        # img = request.FILES['img']
+        # description = request.data['description']
 
         try:
             hall = Hall.objects.filter(location=location_pk).get(prev=None)
@@ -698,10 +698,10 @@ class CurrentLocationView(APIView):
                 hall = Hall.objects.get(prev=hall.id)
 
             location = Location.objects.get(pk=location_pk)
-            Hall.objects.create(name=name, img=img, description=description, location=location, prev=hall.id)
+            Hall.objects.create(name=name, location=location, prev=hall.id)
         except:
             location = Location.objects.get(pk=location_pk)
-            Hall.objects.create(name=name, img=img, description=description, location=location, prev=None)
+            Hall.objects.create(name=name, location=location, prev=None)
 
         return Response(serialize_location_and_halls(request, location_pk))
 
@@ -709,11 +709,11 @@ class CurrentLocationView(APIView):
         location = Location.objects.get(pk=location_pk)
 
         location.name = request.data['name']
-        location.description = request.data['description']
-        try:
-            location.img = request.FILES['img']
-        except:
-            pass
+        # location.description = request.data['description']
+        # try:
+        #     location.img = request.FILES['img']
+        # except:
+        #     pass
         location.save()
         return Response(serialize_location_and_halls(request, location_pk))
 
@@ -790,8 +790,8 @@ class CurrentMuseumView(APIView):
 
     def post(self, request):
         name = request.data['name']
-        img = request.FILES['img']
-        description = request.data['description']
+        # img = request.FILES['img']
+        # description = request.data['description']
 
         try:
             print('im trying')
@@ -804,13 +804,13 @@ class CurrentMuseumView(APIView):
 
             # Location.objects.create(name=name, img=img, description=description, museum=request.user.museum,
             #                         prev=location.id)
-            Location(name=name, img=img, description=description, museum=request.user.museum,
+            Location(name=name, museum=request.user.museum,
                      prev=location.id).save()
         except:
             print('location NOT found')
             # Location.objects.create(name=name, img=img, description=description, museum=request.user.museum,
             #                         prev=None)
-            Location(name=name, img=img, description=description, museum=request.user.museum,
+            Location(name=name, museum=request.user.museum,
                      prev=None).save()
 
         return Response(serialize_museum_and_locations(request))
@@ -822,11 +822,11 @@ class CurrentMuseumView(APIView):
         # img_extension = img.name.split(".")[-1].lower()
 
         museum.name = request.data['name']
-        museum.description = request.data['description']
-        try:
-            museum.img = request.FILES['img']
-        except:
-            pass
+        # museum.description = request.data['description']
+        # try:
+        #     museum.img = request.FILES['img']
+        # except:
+        #     pass
         museum.save()
 
         return Response(serialize_museum_and_locations(request))
