@@ -5,16 +5,16 @@ services:
     build: ./artway
     command: gunicorn --bind 0.0.0.0:8080 project.wsgi
     volumes:
-      - static:/usr/src/ARTWAY-PROJECT/static
-      - /home/artway:/usr/src/ARTWAY-PROJECT
+      - static:/usr/src/ARTWAY/static
+      - /home/artway:/usr/src/ARTWAY
     expose:
       - 8080
   nginx:
     build: ./nginx
     command: nginx -g "daemon off;"
     volumes:
-      - static:/usr/src/ARTWAY-PROJECT/static
-      - /home/artway:/usr/src/ARTWAY-PROJECT
+      - static:/usr/src/ARTWAY/static
+      - /home/artway:/usr/src/ARTWAY
     ports:
       - 8000:80
     depends_on:
