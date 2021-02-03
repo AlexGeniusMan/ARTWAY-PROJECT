@@ -555,11 +555,11 @@ class CurrentHallView(APIView):
         hall = Hall.objects.get(pk=hall_pk)
 
         hall.name = request.data['name']
-        hall.description = request.data['description']
-        try:
-            hall.img = request.FILES['img']
-        except:
-            pass
+        # hall.description = request.data['description']
+        # try:
+        #     hall.img = request.FILES['img']
+        # except:
+        #     pass
         hall.save()
 
         return Response(self.get_hall(request, location_pk, hall_pk))
