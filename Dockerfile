@@ -1,6 +1,6 @@
 FROM python:3.8.5-alpine
 
-WORKDIR /usr/src/ARTWAY
+WORKDIR /usr/src/artway
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -14,10 +14,10 @@ RUN apk add --update nodejs nodejs-npm
 
 COPY . .
 
-WORKDIR /usr/src/ARTWAY/frontend
+WORKDIR /usr/src/artway/frontend
 RUN npm install
 RUN npm run-script build
 
-WORKDIR /usr/src/ARTWAY
+WORKDIR /usr/src/artway
 RUN pip install -r requirements.txt
 RUN python3 manage.py collectstatic --noinput
