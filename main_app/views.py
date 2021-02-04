@@ -852,13 +852,13 @@ class MuseumSuperAdminView(APIView):
             return {
                 'status': True,
                 'museum_super_admin': museum_super_admin_serializer.data,
-                # 'museum': museum_serializer.data
+                'museum': museum_serializer.data
             }
         except:
             return {
                 'status': False,
                 'museum_super_admin': {},
-                # 'museum': museum_serializer.data
+                'museum': museum_serializer.data
             }
 
     def get(self, request, museum_pk):
