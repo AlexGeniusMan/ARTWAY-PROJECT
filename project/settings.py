@@ -163,5 +163,5 @@ DJOSER = {
 }
 
 AUTH_USER_MODEL = 'main_app.User'
-# DOMAIN_NAME = '127.0.0.1:8000'
-DOMAIN_NAME = 'devgang.online'
+DOMAIN_NAME = '127.0.0.1:8000'
+# DOMAIN_NAME = 'devgang.online'
