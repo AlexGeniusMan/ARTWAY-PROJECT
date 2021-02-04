@@ -46,7 +46,9 @@ if settings.DEBUG:
         path('admin/', admin.site.urls),
     ]
 else:
-    urlpatterns = []
+    urlpatterns = [
+        path('admin/', admin.site.urls),
+    ]
 
 # Сценарий администратора музея
 urlpatterns += [
