@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   django:
-    build: ./artway
+    build: .
     command: sh -c "pip install -r requirements.txt && python3 manage.py collectstatic --noinput && gunicorn --bind 0.0.0.0:8080 project.wsgi"
     volumes:
       - static:/usr/src/artway/static
