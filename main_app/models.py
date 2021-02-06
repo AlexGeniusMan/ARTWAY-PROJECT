@@ -21,7 +21,7 @@ class Ticket(models.Model):
         verbose_name_plural = 'Билеты'
 
     def __str__(self):
-        return f'Билет {self.id}'
+        return f'Билет №{self.id}'
 
 
 class Artifact(models.Model):
@@ -43,8 +43,7 @@ class Artifact(models.Model):
         verbose_name_plural = 'Экспонаты'
 
     def __str__(self):
-        # return self.name
-        return str(self.id)
+        return f'{self.name} ({self.id})'
 
     @classmethod
     def create(cls, name, img, audio, video, description, hall, prev):
@@ -95,8 +94,7 @@ class Hall(models.Model):
         verbose_name_plural = 'Залы'
 
     def __str__(self):
-        # return self.name
-        return str(self.id)
+        return f'{self.name} ({self.id})'
 
 
 class Location(models.Model):
@@ -114,8 +112,7 @@ class Location(models.Model):
         verbose_name_plural = 'Локации'
 
     def __str__(self):
-        # return self.name
-        return str(self.id)
+        return f'{self.name} ({self.id})'
 
 
 class Museum(models.Model):
@@ -129,8 +126,7 @@ class Museum(models.Model):
         verbose_name_plural = 'Музеи'
 
     def __str__(self):
-        return self.name + ' ' + str(self.id)
-        # return str(self.id)
+        return self.name
 
 
 class User(AbstractUser):
