@@ -97,7 +97,10 @@ class ArtifactsMapView(APIView):
         token = request.data['token']
         hall_pk = request.data['hall_pk']
 
-        ticket = Ticket.objects.get(token=token)
+        try:
+            ticket = Ticket.objects.get(token=token)
+        except:
+            return Response({"error_code": 'YOUR TICKET DOES NOT EXISTS', "status": status.HTTP_403_FORBIDDEN})
 
         if is_ticket_valid(ticket.museum.id, token):
             hall = Hall.objects.get(pk=hall_pk)
@@ -143,7 +146,10 @@ class HallsMapView(APIView):
         token = request.data['token']
         location_pk = request.data['location_pk']
 
-        ticket = Ticket.objects.get(token=token)
+        try:
+            ticket = Ticket.objects.get(token=token)
+        except:
+            return Response({"error_code": 'YOUR TICKET DOES NOT EXISTS', "status": status.HTTP_403_FORBIDDEN})
 
         if is_ticket_valid(ticket.museum.id, token):
             location = Location.objects.get(pk=location_pk)
@@ -186,7 +192,11 @@ class LocationsMapView(APIView):
 
     def post(self, request):
         token = request.data['token']
-        ticket = Ticket.objects.get(token=token)
+
+        try:
+            ticket = Ticket.objects.get(token=token)
+        except:
+            return Response({"error_code": 'YOUR TICKET DOES NOT EXISTS', "status": status.HTTP_403_FORBIDDEN})
 
         if is_ticket_valid(ticket.museum.id, token):
             museum = ticket.museum
