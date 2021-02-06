@@ -248,7 +248,7 @@ class AllTicketsView(APIView):
         drawing = svg2rlg('mirea_emblem_black.svg')
         scaling_factor = 0.15
         scaled_drawing = self.scale(drawing, scaling_factor=scaling_factor)
-        renderPDF.draw(scaled_drawing, my_canvas, 400, 650)
+        renderPDF.draw(scaled_drawing, my_canvas, 450, 680)
 
         my_canvas.setFont('Arial', 18)
         my_canvas.drawString(50, 730, f'{request.user.museum}')
