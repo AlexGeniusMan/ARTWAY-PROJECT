@@ -57,6 +57,7 @@ class PrintCurrentArtifactsView(APIView):
 
         number_of_artifacts = len(list_of_artifacts)
         print(list_of_artifacts)
+        print('2')
         if print_type == 'tiny':
             i = 0
             skip = 0
@@ -130,8 +131,10 @@ class PrintCurrentArtifactsView(APIView):
                     my_canvas.setFont('Arial', 12)
                     my_canvas.rect(0, 0, 595, 842)
         elif print_type == 'large':
+            print('3')
             i = 0
             while number_of_artifacts > 0:
+                print('4')
                 drawing = svg2rlg('mirea_emblem_black.svg')
                 scaling_factor = 0.25
                 emblem = self.scale(drawing, scaling_factor=scaling_factor)
@@ -161,9 +164,10 @@ class PrintCurrentArtifactsView(APIView):
         artifacts_pk = request.data['artifacts']
         list_of_artifacts = list()
         for artifact_pk in artifacts_pk:
+            print('0')
             artifact = Artifact.objects.get(pk=artifact_pk)
             list_of_artifacts.append(artifact)
-
+        print('1')
         pdf_name = self.get_new_pdf(request, list_of_artifacts)
         return Response(pdf_name)
 
