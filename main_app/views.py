@@ -168,6 +168,21 @@ class PrintCurrentArtifactsView(APIView):
         return Response(pdf_name)
 
 
+class CheckUserEmail(APIView):
+    """
+    Checks user existing with current email
+    """
+
+    def post(self, request):
+        email = request.data['email']
+        try:
+            user = User.objects.get(email=email)
+            return Response({"status": status.HTTP_200_OK})
+        except:
+            return Response({"status": status.HTTP_404_NOT_FOUND})
+
+
+
 class UserStatusesView(APIView):
     """
     Shows user statuses

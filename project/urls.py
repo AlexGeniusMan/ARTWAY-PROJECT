@@ -88,6 +88,9 @@ urlpatterns += [
 
     # Получить статусы текущего пользователя -pt
     path('api/user_statuses', views.UserStatusesView.as_view()),
+
+    # Получить статусы текущего пользователя -pt
+    path('api/check_user_email', views.CheckUserEmail.as_view()),
 ]
 
 # Сценарий посетителя музея
