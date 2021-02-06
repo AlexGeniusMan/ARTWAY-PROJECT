@@ -190,5 +190,5 @@ DEFAULT_FROM_EMAIL = 'hockeyarena777@gmail.com'
 
 AUTH_USER_MODEL = 'main_app.User'
 
-# DOMAIN_NAME = config('DOMAIN_NAME')
-DOMAIN_NAME = config('DOMAIN_NAME_DEV')
+DOMAIN_NAME = config('DOMAIN_NAME')
+# DOMAIN_NAME = config('DOMAIN_NAME_DEV')
