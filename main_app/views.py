@@ -46,11 +46,15 @@ class PrintCurrentArtifactsView(APIView):
         return drawing
 
     def get_new_pdf(self, request, list_of_artifacts):
+        print('00')
         print_type = request.data['print_type']
+        print('01')
 
         MyFontObject = ttfonts.TTFont('Arial', 'arial.ttf')
         pdfmetrics.registerFont(MyFontObject)
+        print('02')
         fname = self.get_new_filename()
+        print('03')
         pdf_name = f'./media/prints/{fname}.pdf'
         my_canvas = canvas.Canvas(pdf_name)
         my_canvas.setFont('Arial', 12)
