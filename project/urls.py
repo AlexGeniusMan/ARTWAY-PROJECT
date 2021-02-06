@@ -89,6 +89,9 @@ urlpatterns += [
     # Получить статусы текущего пользователя
     path('api/user_statuses', views.UserStatusesView.as_view()),
 
+    # Проверить, существует ли пользователь с заданным email
+    path('api/is_user_exists', views.IsUserExistsView.as_view()),
+
     # Проверить, существует ли пользователь с данным email
     # path('api/check_user_email', views.CheckUserEmail.as_view()),
 ]

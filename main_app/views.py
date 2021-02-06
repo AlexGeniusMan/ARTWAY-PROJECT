@@ -190,6 +190,19 @@ class PrintCurrentArtifactsView(APIView):
 #             return Response({"status": status.HTTP_404_NOT_FOUND})
 
 
+class IsUserExistsView(APIView):
+    """
+    Shows whether a user exists with the current email
+    """
+
+    def post(self, request):
+        email = request.data['email']
+        try:
+            user = User.objects.get(email=email)
+            return Response({"status": status.HTTP_200_OK})
+        except:
+            return Response({"status": status.HTTP_404_NOT_FOUND})
+
 
 class UserStatusesView(APIView):
     """
