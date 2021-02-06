@@ -52,44 +52,44 @@ else:
 
 # Сценарий администратора музея
 urlpatterns += [
-    # Получить все музеи или добавить новый - pt
+    # Получить все музеи или добавить новый
     path('api/s-admin', views.MuseumsView.as_view()),
-    # Удалить выбранный музей - pt
+    # Удалить выбранный музей
     path('api/s-admin/<int:museum_pk>', views.MuseumSuperAdminView.as_view()),
 
-    # Получить музей со всеми локациями, или изменить музей, или добавить новую локацию - pt
+    # Получить музей со всеми локациями, или изменить музей, или добавить новую локацию
     path('api/m-admin', views.CurrentMuseumView.as_view()),
-    # Получить профиль супер-админа музея, а также списки админов и кассиров музея, к которому привязан супер-админ -pt
+    # Получить профиль супер-админа музея, а также списки админов и кассиров музея, к которому привязан супер-админ
     path('api/m-admin/hr-management', views.MuseumProfilesView.as_view()),
-    # Изменить/удалить выбранного администратора/кассира музея -pt
+    # Изменить/удалить выбранного администратора/кассира музея
     path('api/m-admin/hr-management/<int:user_pk>', views.MuseumProfilesView.as_view()),
-    # Получить PDF для печати со всеми выбранными экспонатами -pt
+    # Получить PDF для печати со всеми выбранными экспонатами
     path('api/m-admin/print', views.PrintCurrentArtifactsView.as_view()),
 
-    # Получить локацию со всеми её залами, или изменить/удалить выбранную локацию, или добавить новый зал -pt
+    # Получить локацию со всеми её залами, или изменить/удалить выбранную локацию, или добавить новый зал
     path('api/m-admin/<int:location_pk>', views.CurrentLocationView.as_view()),
-    # Поменять две выбранных локации местами -pt
+    # Поменять две выбранных локации местами
     path('api/swap_locations', views.SwapLocationsView.as_view()),
 
-    # Получить выбранный зал со всеми экспонатами, или изменить/удалить выбранный зал, или добавить новый экспонат -pt
+    # Получить выбранный зал со всеми экспонатами, или изменить/удалить выбранный зал, или добавить новый экспонат
     path('api/m-admin/<int:location_pk>/<int:hall_pk>', views.CurrentHallView.as_view()),
-    # Поменять две выбранных зала местами -pt
+    # Поменять две выбранных зала местами
     path('api/swap_halls', views.SwapHallsView.as_view()),
 
-    # Получить выбранный экспонат или изменить/удалить выбранный экспонат -pt
+    # Получить выбранный экспонат или изменить/удалить выбранный экспонат
     path('api/m-admin/<int:location_pk>/<int:hall_pk>/<int:artifact_pk>', views.CurrentArtifactView.as_view()),
-    # Поменять две выбранных экспоната местами -pt
+    # Поменять две выбранных экспоната местами
     path('api/swap_artifacts', views.SwapArtifactsView.as_view()),
-    # Переместить выбранный экспонат в другой зал -pt
+    # Переместить выбранный экспонат в другой зал
     path('api/relocate_artifact', views.RelocateArtifactView.as_view()),
 
-    # Получить все активные билеты или создать новый билет -pt
+    # Получить все активные билеты или создать новый билет
     path('api/cashier', views.AllTicketsView.as_view()),
 
-    # Получить статусы текущего пользователя -pt
+    # Получить статусы текущего пользователя
     path('api/user_statuses', views.UserStatusesView.as_view()),
 
-    # Получить статусы текущего пользователя -pt
+    # Проверить, существует ли пользователь с данным email
     path('api/check_user_email', views.CheckUserEmail.as_view()),
 ]
 
