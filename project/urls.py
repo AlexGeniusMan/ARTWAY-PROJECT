@@ -90,7 +90,7 @@ urlpatterns += [
     path('api/user_statuses', views.UserStatusesView.as_view()),
 
     # Проверить, существует ли пользователь с данным email
-    path('api/check_user_email', views.CheckUserEmail.as_view()),
+    # path('api/check_user_email', views.CheckUserEmail.as_view()),
 ]
 
 # Сценарий посетителя музея
