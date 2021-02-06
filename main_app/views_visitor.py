@@ -231,9 +231,17 @@ class CurrentArtifactView(APIView):
 
     def post(self, request, artifact_pk):
         token = request.data['token']
-        artifact = Artifact.objects.get(pk=artifact_pk)
-        if is_ticket_valid(artifact.hall.location.museum.id, token):
-            serializer = ArtifactSerializer(artifact, context={'request': request})
-            return Response(serializer.data)
+        ticket = Ticket.objects.get(token=token)
+        try:
+            artifact = Artifact.objects.get(pk=artifact_pk)
+        except:
+            return Response({"error_code": 'ARTIFACT DOES NOT EXISTS', "status": status.HTTP_404_NOT_FOUND})
+
+        if ticket.museum == artifact.hall.location.museum:
+            if is_ticket_valid(artifact.hall.location.museum.id, token):
+                artifact = ArtifactSerializer(artifact, context={'request': request}).data
+                return Response({"data": artifact, "status": status.HTTP_200_OK})
+            else:
+                return Response({"error_code": 'YOUR TICKET IS EXPIRED', "status": status.HTTP_403_FORBIDDEN})
         else:
-            return Response({"error_code": 'YOUR TICKET IS EXPIRED', "status": status.HTTP_403_FORBIDDEN})
+            return Response({"error_code": 'ARTIFACT DOES NOT EXISTS', "status": status.HTTP_404_NOT_FOUND})
