@@ -231,7 +231,11 @@ class CurrentArtifactView(APIView):
 
     def post(self, request, artifact_pk):
         token = request.data['token']
-        ticket = Ticket.objects.get(token=token)
+        try:
+            ticket = Ticket.objects.get(token=token)
+        except:
+            return Response({"error_code": 'YOUR TICKET DOES NOT EXISTS', "status": status.HTTP_403_FORBIDDEN})
+
         try:
             artifact = Artifact.objects.get(pk=artifact_pk)
         except:
