@@ -299,6 +299,9 @@ class AllTicketsView(APIView):
         tickets = Ticket.objects.filter(museum=request.user.museum).filter(created_at__gte=d).order_by('-created_at')
         tickets_data = list()
         for el in tickets:
+            hour = el.created_at.hour + 3
+            if hour >= 24:
+                hour = hour - 24
             ticket = {
                 'id': el.id,
                 'token': el.token,
@@ -306,7 +309,7 @@ class AllTicketsView(APIView):
                 'date_year': el.created_at.year,
                 'date_month': el.created_at.month,
                 'date_day': el.created_at.day,
-                'date_hour': el.created_at.hour,
+                'date_hour': hour,
                 'date_minute': el.created_at.minute,
                 'date_second': el.created_at.second,
             }
