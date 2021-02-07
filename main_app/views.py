@@ -858,11 +858,11 @@ class CurrentMuseumView(APIView):
         # img_extension = img.name.split(".")[-1].lower()
 
         museum.name = request.data['name']
-        # museum.description = request.data['description']
-        # try:
-        #     museum.img = request.FILES['img']
-        # except:
-        #     pass
+        museum.description = request.data['description']
+        try:
+            museum.img = request.FILES['img']
+        except:
+            pass
         museum.save()
 
         return Response(serialize_museum_and_locations(request))
