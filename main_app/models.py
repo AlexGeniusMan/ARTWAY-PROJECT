@@ -143,7 +143,7 @@ class User(AbstractUser):
     # role = models.CharField(_("Роль"), choices=ROLES, max_length=64, default='none', blank=True)
 
     museum = models.ForeignKey('Museum', on_delete=models.CASCADE, verbose_name='Музей',
-                               related_name='admins', null=True)
+                               related_name='admins', null=True, blank=True)
 
     REQUIRED_FIELDS = ['email', 'last_name', 'first_name', 'middle_name']
 
