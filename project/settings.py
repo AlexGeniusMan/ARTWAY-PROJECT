@@ -85,8 +85,8 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 
-# DB_TYPE = 'SQLite'
-DB_TYPE = 'PostrgeSQL'
+DB_TYPE = 'SQLite'
+# DB_TYPE = 'PostrgeSQL'
 
 if DB_TYPE == 'SQLite':
     DATABASES = {
@@ -192,3 +192,6 @@ AUTH_USER_MODEL = 'main_app.User'
 
 DOMAIN_NAME = config('DOMAIN_NAME')
 # DOMAIN_NAME = config('DOMAIN_NAME_DEV')
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
