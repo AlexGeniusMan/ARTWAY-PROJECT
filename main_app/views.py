@@ -302,7 +302,7 @@ class AllTicketsView(APIView):
             ticket = {
                 'id': el.id,
                 'token': el.token,
-                'pdf': f'https://{DOMAIN_NAME}/media/tickets/{el.pdf.name}',
+                'pdf': f'https://{DOMAIN_NAME}/media/{el.pdf.name}',
                 'date_year': el.created_at.year,
                 'date_month': el.created_at.month,
                 'date_day': el.created_at.day,
