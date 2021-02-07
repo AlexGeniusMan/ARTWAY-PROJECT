@@ -872,6 +872,7 @@ class CurrentMuseumView(APIView):
 
         museum.name = request.data['name']
         museum.description = request.data['description']
+        museum.ticket_lifetime = request.data['ticket_lifetime']
         try:
             museum.img = request.FILES['img']
         except:

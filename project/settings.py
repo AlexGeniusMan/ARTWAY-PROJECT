@@ -85,8 +85,8 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 
-DB_TYPE = 'SQLite'
-# DB_TYPE = 'PostrgeSQL'
+# DB_TYPE = 'SQLite'
+DB_TYPE = 'PostrgeSQL'
 
 if DB_TYPE == 'SQLite':
     DATABASES = {
@@ -163,8 +163,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
