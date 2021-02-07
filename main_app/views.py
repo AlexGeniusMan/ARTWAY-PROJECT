@@ -297,8 +297,21 @@ class AllTicketsView(APIView):
     def get_tickets(self, request):
         d = datetime.now() - timedelta(hours=request.user.museum.ticket_lifetime)
         tickets = Ticket.objects.filter(museum=request.user.museum).filter(created_at__gte=d).order_by('-created_at')
-        tickets_serializer = TicketSerializer(tickets, context={'request': request}, many=True)
-        return tickets_serializer.data
+        tickets_data = list()
+        for el in tickets:
+            ticket = {
+                'id': el.id,
+                'token': el.token,
+                'pdf': f'https://{DOMAIN_NAME}/media/tickets/{el.pdf.name}',
+                'date_year': el.created_at.year,
+                'date_month': el.created_at.month,
+                'date_day': el.created_at.day,
+                'date_hour': el.created_at.hour,
+                'date_minute': el.created_at.minute,
+                'date_second': el.created_at.second,
+            }
+            tickets_data.append(ticket)
+        return tickets_data
 
     def get(self, request):
         return Response(self.get_tickets(request))
