@@ -51,11 +51,52 @@ DB_PASSWORD=<your_db_user_password>
 
 `python manage.py runserver`
 
+Done! Project launched!
+
 ## Deploying project to prod. (Ubuntu example)
 
 1. Create new directory for project
 
 `cd /home`
 `mkdir artway`
+`cd artway`
 
 2. Clone project
+
+`git clone <repo_name> .`
+
+4. Create new PostgreSQL database
+
+5. Create `.env` file in the directory named `project` and add your secret data to it
+
+```
+SECRET_KEY=<your_secret_key>
+DOMAIN_NAME_DEV=127.0.0.1:8000
+DOMAIN_NAME=<your_prod_domain_name_if_exists>
+EMAIL_HOST_PASSWORD=<your_email_app_password>
+DB_NAME=<your_db_name>
+DB_USER=<your_db_user_name>
+DB_PASSWORD=<your_db_user_password>
+```
+
+6. Change environment variables for new database in docker-compose.yml
+
+```
+environment:
+      - POSTGRES_USER=artway_user
+      - POSTGRES_PASSWORD=P98KVAWdkmrgi324
+      - POSTGRES_DB=artway_db
+```
+
+3. Move docker-compose.yml and nginx directory to `/home`
+
+`mv docker-compose.yml ..`
+
+`mv nginx ..`
+
+5. Run docker compose
+
+`cd /home`
+`docker-compose up -d --build`
+
+Done! Project launched!
