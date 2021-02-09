@@ -7,24 +7,22 @@ https://github.com/Zayac11/ARTWAY-FRONTEND
 All API documentation is on the "Wiki" page of this GitHub repository
 
 ## Launching project locally
+# Git and Python 3.8.5 must be installed
 1. Clone project
 
 `git clone <repo_name> .`
 
 2. Create new virtual environment and then activate it
 
-```
-python3 -m venv venv`
+`python3 -m venv venv`
 
-source venv/bin/activate
-```
+`source venv/bin/activate`
 
 3. Install dependencies
 
 `pip install -r requirements.txt`
 
 4. Create new PostgreSQL database
-
 
 5. Create `.env` file in the directory named `project` and add your secret data to it
 
@@ -42,7 +40,6 @@ DB_PASSWORD=<your_db_user_password>
 
 `python manage.py makemigrations`
 
-
 7. Apply them.
 
 `python manage.py migrate`
@@ -53,7 +50,8 @@ DB_PASSWORD=<your_db_user_password>
 
 Done! Project launched!
 
-## Deploying project to prod. (Ubuntu example)
+## Deploying project to prod.
+# Git, Docker and Docker Compose must be installed
 
 1. Create new directory for project
 
