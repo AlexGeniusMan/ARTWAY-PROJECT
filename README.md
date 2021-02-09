@@ -51,4 +51,11 @@ DB_PASSWORD=<your_db_user_password>
 
 `python manage.py runserver`
 
-## Deploying project to prod.
+## Deploying project to prod. (Ubuntu example)
+
+1. Create new directory for project
+
+`cd /home`
+`mkdir artway`
+
+2. Clone project
