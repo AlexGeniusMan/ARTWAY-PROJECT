@@ -13,18 +13,20 @@ All API documentation is on the "Wiki" page of this GitHub repository
 
 2. Create new virtual environment and then activate it
 
-`python3 -m venv venv`
+```
+python3 -m venv venv`
 
-`source venv/bin/activate`
+source venv/bin/activate
+```
 
-2. Install dependencies
+3. Install dependencies
 
 `pip install -r requirements.txt`
 
-3. Create new PostgreSQL database
+4. Create new PostgreSQL database
 
 
-4. Create `.env` file in the directory named `project` and add your secret data to it
+5. Create `.env` file in the directory named `project` and add your secret data to it
 
 ```
 SECRET_KEY=<your_secret_key>
@@ -36,8 +38,17 @@ DB_USER=<your_db_user_name>
 DB_PASSWORD=<your_db_user_password>
 ```
 
-5. Make migrations
+6. Make migrations
 
 `python manage.py makemigrations`
+
+
+7. Apply them.
+
+`python manage.py migrate`
+
+8. Start the development server
+
+`python manage.py runserver`
 
 ## Deploying project to prod.
