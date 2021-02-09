@@ -86,15 +86,23 @@ environment:
       - POSTGRES_DB=artway_db
 ```
 
-3. Move docker-compose.yml and nginx directory to `/home`
+7. Move docker-compose.yml and nginx directory to `/home`
 
 `mv docker-compose.yml ..`
 
 `mv nginx ..`
 
-5. Run docker compose
+8. Run docker compose
 
 `cd /home`
 `docker-compose up -d --build`
+
+9. Make migrations
+
+`docker-compose exec django python manage.py makemigrations --noinput`
+
+10. Apply them
+
+`docker-compose exec django python manage.py migrate --noinput`
 
 Done! Project launched!
