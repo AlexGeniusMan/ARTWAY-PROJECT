@@ -7,7 +7,7 @@ https://github.com/Zayac11/ARTWAY-FRONTEND
 All API documentation is on the "Wiki" page of this GitHub repository
 
 ## Launching project locally
-### Git and Python 3.8.5 must be installed
+#### Git and Python 3.8.5 must be installed
 1. Clone project
 
 `git clone <repo_name> .`
@@ -51,7 +51,7 @@ DB_PASSWORD=<your_db_user_password>
 Done! Project launched!
 
 ## Deploying project to prod.
-### Git, Docker and Docker Compose must be installed
+#### Git, Docker and Docker Compose must be installed
 
 1. Create new directory for project
 
