@@ -53,31 +53,31 @@ else:
 # Сценарий администратора музея
 urlpatterns += [
     # Получить все музеи или добавить новый
-    path('api/s-admin', views.MuseumsView.as_view()),
+    path('api/s_admin', views.MuseumsView.as_view()),
     # Удалить выбранный музей
-    path('api/s-admin/<int:museum_pk>', views.MuseumSuperAdminView.as_view()),
+    path('api/s_admin/<int:museum_pk>', views.MuseumSuperAdminView.as_view()),
 
     # Получить музей со всеми локациями, или изменить музей, или добавить новую локацию
-    path('api/m-admin', views.CurrentMuseumView.as_view()),
+    path('api/m_admin', views.CurrentMuseumView.as_view()),
     # Получить профиль супер-админа музея, а также списки админов и кассиров музея, к которому привязан супер-админ
-    path('api/m-admin/hr-management', views.MuseumProfilesView.as_view()),
+    path('api/m_admin/hr_management', views.MuseumProfilesView.as_view()),
     # Изменить/удалить выбранного администратора/кассира музея
-    path('api/m-admin/hr-management/<int:user_pk>', views.MuseumProfilesView.as_view()),
+    path('api/m_admin/hr_management/<int:user_pk>', views.MuseumProfilesView.as_view()),
     # Получить PDF для печати со всеми выбранными экспонатами
-    path('api/m-admin/print', views.PrintCurrentArtifactsView.as_view()),
+    path('api/m_admin/print', views.PrintCurrentArtifactsView.as_view()),
 
     # Получить локацию со всеми её залами, или изменить/удалить выбранную локацию, или добавить новый зал
-    path('api/m-admin/<int:location_pk>', views.CurrentLocationView.as_view()),
+    path('api/m_admin/<int:location_pk>', views.CurrentLocationView.as_view()),
     # Поменять две выбранных локации местами
     path('api/swap_locations', views.SwapLocationsView.as_view()),
 
     # Получить выбранный зал со всеми экспонатами, или изменить/удалить выбранный зал, или добавить новый экспонат
-    path('api/m-admin/<int:location_pk>/<int:hall_pk>', views.CurrentHallView.as_view()),
+    path('api/m_admin/<int:location_pk>/<int:hall_pk>', views.CurrentHallView.as_view()),
     # Поменять две выбранных зала местами
     path('api/swap_halls', views.SwapHallsView.as_view()),
 
     # Получить выбранный экспонат или изменить/удалить выбранный экспонат
-    path('api/m-admin/<int:location_pk>/<int:hall_pk>/<int:artifact_pk>', views.CurrentArtifactView.as_view()),
+    path('api/m_admin/<int:location_pk>/<int:hall_pk>/<int:artifact_pk>', views.CurrentArtifactView.as_view()),
     # Поменять две выбранных экспоната местами
     path('api/swap_artifacts', views.SwapArtifactsView.as_view()),
     # Переместить выбранный экспонат в другой зал
