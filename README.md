@@ -49,7 +49,7 @@ DB_PASSWORD=<your_db_user_password>
 
 > Done! Project launched!
 
-## Deploying project to prod.
+## Deploying project to production
 #### Git, Docker and Docker Compose must be installed
 
 1. Create new directory for project
