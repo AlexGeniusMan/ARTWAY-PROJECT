@@ -1,8 +1,7 @@
 # ARTWAY-PROJECT
 Core backend service for open-source "ArtWay" project for RTUITLab
 
-Frontend source code:
-https://github.com/Zayac11/ARTWAY-FRONTEND
+> Frontend source code: https://github.com/Zayac11/ARTWAY-FRONTEND
 
 All API documentation is on the "Wiki" page of this GitHub repository
 
@@ -48,7 +47,7 @@ DB_PASSWORD=<your_db_user_password>
 
 `python manage.py runserver`
 
-Done! Project launched!
+> Done! Project launched!
 
 ## Deploying project to prod.
 #### Git, Docker and Docker Compose must be installed
@@ -105,4 +104,4 @@ environment:
 
 `docker-compose exec django python manage.py migrate --noinput`
 
-Done! Project launched!
+> Done! Project launched!
