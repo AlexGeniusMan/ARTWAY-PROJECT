@@ -46,22 +46,16 @@ class PrintCurrentArtifactsView(APIView):
         return drawing
 
     def get_new_pdf(self, request, list_of_artifacts):
-        print('00')
         print_type = request.data['print_type']
-        print('01')
 
         MyFontObject = ttfonts.TTFont('Arial', 'arial.ttf')
         pdfmetrics.registerFont(MyFontObject)
-        print('02')
         fname = self.get_new_filename()
-        print('03')
         pdf_name = f'./media/prints/{fname}.pdf'
         my_canvas = canvas.Canvas(pdf_name)
         my_canvas.setFont('Arial', 12)
 
         number_of_artifacts = len(list_of_artifacts)
-        print(list_of_artifacts)
-        print('2')
         if print_type == 'tiny':
             i = 0
             skip = 0
@@ -135,10 +129,8 @@ class PrintCurrentArtifactsView(APIView):
                     my_canvas.setFont('Arial', 12)
                     my_canvas.rect(0, 0, 595, 842)
         elif print_type == 'large':
-            print('3')
             i = 0
             while number_of_artifacts > 0:
-                print('4')
                 drawing = svg2rlg('mirea_emblem_black.svg')
                 scaling_factor = 0.25
                 emblem = self.scale(drawing, scaling_factor=scaling_factor)
@@ -168,10 +160,8 @@ class PrintCurrentArtifactsView(APIView):
         artifacts_pk = request.data['artifacts']
         list_of_artifacts = list()
         for artifact_pk in artifacts_pk:
-            print('0')
             artifact = Artifact.objects.get(pk=artifact_pk)
             list_of_artifacts.append(artifact)
-        print('1')
         pdf_name = self.get_new_pdf(request, list_of_artifacts)
         return Response(pdf_name)
 
@@ -576,11 +566,9 @@ class CurrentHallView(APIView):
             prev = artifact.id
         except:
             prev = None
-        print(prev)
         aaa = Artifact.create(name=name, img=img, audio=audio, video=video, description=description, hall=hall,
                               prev=prev)
         aaa.save()
-        print(aaa)
         return Response(serialize_hall_and_artifacts(request, hall_pk))
 
     def put(self, request, location_pk, hall_pk):
@@ -808,18 +796,13 @@ class CurrentMuseumView(APIView):
         name = request.data['name']
 
         try:
-            print('im trying')
             location = Location.objects.filter(museum=request.user.museum).get(prev=None)
-            print('location found')
-            print(location)
             for i in range(len(Location.objects.filter(museum=request.user.museum)) - 1):
-                print(i)
                 location = Location.objects.get(prev=location.id)
 
             Location(name=name, museum=request.user.museum,
                      prev=location.id).save()
         except:
-            print('location NOT found')
             Location(name=name, museum=request.user.museum,
                      prev=None).save()
 
@@ -908,9 +891,7 @@ class MuseumSuperAdminView(APIView):
 
     def delete(self, request, museum_pk):
         users = User.objects.filter(museum=museum_pk).exclude(pk=request.user.id)
-        print(users)
         for user in users:
-            print(user)
             if user.groups.filter(name='museum_super_admins').exists():
                 user.delete()
                 return Response(self.get_museum_super_admin(request, museum_pk))
