@@ -1,31 +1,31 @@
 import random
 import string
 from datetime import timedelta
-from django.db.models import Q
+# from django.db.models import Q
 from django.utils.datetime_safe import datetime
 from rest_framework import status
-from rest_framework.generics import CreateAPIView, GenericAPIView
+# from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.response import Response
-from django.views.generic.base import View
+# from django.views.generic.base import View
 from rest_framework.views import APIView
-from django.http import HttpResponse
-from project.settings import MEDIA_ROOT, DOMAIN_NAME
-from .permissions import *
+# from django.http import HttpResponse
+# from project.settings import MEDIA_ROOT, DOMAIN_NAME
+# from .permissions import *
 from .serializers import *
-import os
-from .models import User
-from rest_framework.permissions import BasePermission, IsAuthenticated
-from django.contrib.auth.models import Group
-import segno
-from svglib.svglib import svg2rlg
-from reportlab.graphics import renderPDF
-from reportlab.pdfgen import canvas
+# import os
+# from .models import User
+# from rest_framework.permissions import BasePermission, IsAuthenticated
+# from django.contrib.auth.models import Group
+# import segno
+# from svglib.svglib import svg2rlg
+# from reportlab.graphics import renderPDF
+# from reportlab.pdfgen import canvas
 # import matplotlib.pyplot as plt
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Paragraph, PageBreak
-from svglib.svglib import svg2rlg
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase import ttfonts
+# from reportlab.lib.styles import getSampleStyleSheet
+# from reportlab.platypus import SimpleDocTemplate, Paragraph, PageBreak
+# from svglib.svglib import svg2rlg
+# from reportlab.pdfbase import pdfmetrics
+# from reportlab.pdfbase import ttfonts
 # from PyPDF2 import PdfFileMerger
 
 
