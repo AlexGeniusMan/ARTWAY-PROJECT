@@ -7,7 +7,6 @@ class IsServiceSuperAdmin(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
-        print(request.user.groups.filter(name='service_super_admins').exists())
         return request.user.groups.filter(name='service_super_admins').exists()
 
 
@@ -17,7 +16,6 @@ class IsMuseumSuperAdmin(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
-        print(request.user.groups.filter(name='museum_super_admins').exists())
         return request.user.groups.filter(name='museum_super_admins').exists()
 
 
@@ -27,7 +25,6 @@ class IsMuseumAdmin(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
-        print(request.user.groups.filter(name='museum_admins').exists())
         return request.user.groups.filter(name='museum_admins').exists()
 
 
@@ -37,5 +34,4 @@ class IsMuseumCashier(permissions.BasePermission):
     """
 
     def has_permission(self, request, view):
-        print(request.user.groups.filter(name='museum_cashiers').exists())
         return request.user.groups.filter(name='museum_cashiers').exists()
