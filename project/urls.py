@@ -17,7 +17,6 @@ from django.contrib import admin
 from django.conf.urls import url
 from django.conf import settings
 from django.urls import path, include
-from .yasg import urlpatterns as doc_url
 from django.conf.urls.static import static
 import main_app.views as views
 import main_app.views_visitor as views_visitor
@@ -40,15 +39,10 @@ schema_view = get_schema_view(
    permission_classes=(permissions.AllowAny,),
 )
 
-# Админ-панель (используется только при режиме разработки)
-if settings.DEBUG:
-    urlpatterns = [
-        path('admin/', admin.site.urls),
-    ]
-else:
-    urlpatterns = [
-        path('admin/', admin.site.urls),
-    ]
+# Админ-панель
+urlpatterns = [
+    path('admin/', admin.site.urls),
+]
 
 # Сценарий администратора музея
 urlpatterns += [
@@ -91,9 +85,6 @@ urlpatterns += [
 
     # Проверить, существует ли пользователь с заданным email
     path('api/is_user_exists', views.IsUserExistsView.as_view()),
-
-    # Проверить, существует ли пользователь с данным email
-    # path('api/check_user_email', views.CheckUserEmail.as_view()),
 ]
 
 # Сценарий посетителя музея
@@ -121,14 +112,14 @@ urlpatterns += [
 if settings.DEBUG:
     urlpatterns += [
         # Получить все локации -pt
-        # path('api/all_locations', views.AllLocationsView.as_view()),
+        path('api/all_locations', views.AllLocationsView.as_view()),
         # Получить все залы -pt
-        # path('api/all_halls', views.AllHallsView.as_view()),
+        path('api/all_halls', views.AllHallsView.as_view()),
         # Получить все экспонаты -pt
-        # path('api/all_artifacts', views.AllArtifactsView.as_view()),
+        path('api/all_artifacts', views.AllArtifactsView.as_view()),
 
         # Вызвать метод save() у всех экспонатов (используется для переноса сервиса с IP/домена на IP/домен)
-        # path('api/update_all_qrs', views.UpdateAllQRsView.as_view()),
+        path('api/update_all_qrs', views.UpdateAllQRsView.as_view()),
 
         url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
         url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
@@ -137,5 +128,4 @@ if settings.DEBUG:
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-# urlpatterns += doc_url
 urlpatterns.append(url(r'^', views.ReactAppView.as_view()))
