@@ -1,13 +1,12 @@
 # ARTWAY-PROJECT
 Core backend service for open-source "ArtWay" project for RTUITLab
 
-Frontend source code:
-https://github.com/Zayac11/ARTWAY-FRONTEND
+> Frontend source code: https://github.com/Zayac11/ARTWAY-FRONTEND
 
 All API documentation is on the "Wiki" page of this GitHub repository
 
 ## Launching project locally
-### Git and Python 3.8.5 must be installed
+#### Git and Python 3.8.5 must be installed
 1. Clone project
 
 `git clone <repo_name> .`
@@ -48,10 +47,10 @@ DB_PASSWORD=<your_db_user_password>
 
 `python manage.py runserver`
 
-Done! Project launched!
+> Done! Project launched!
 
-## Deploying project to prod.
-### Git, Docker and Docker Compose must be installed
+## Deploying project to production
+#### Git, Docker and Docker Compose must be installed
 
 1. Create new directory for project
 
@@ -86,15 +85,23 @@ environment:
       - POSTGRES_DB=artway_db
 ```
 
-3. Move docker-compose.yml and nginx directory to `/home`
+7. Move docker-compose.yml and nginx directory to `/home`
 
 `mv docker-compose.yml ..`
 
 `mv nginx ..`
 
-5. Run docker compose
+8. Run docker compose
 
 `cd /home`
 `docker-compose up -d --build`
 
-Done! Project launched!
+9. Make migrations
+
+`docker-compose exec django python manage.py makemigrations --noinput`
+
+10. Apply them
+
+`docker-compose exec django python manage.py migrate --noinput`
+
+> Done! Project launched!
