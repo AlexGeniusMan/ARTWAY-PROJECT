@@ -119,7 +119,7 @@ if settings.DEBUG:
         path('api/all_artifacts', views.AllArtifactsView.as_view()),
 
         # Вызвать метод save() у всех экспонатов (используется для переноса сервиса с IP/домена на IP/домен)
-        path('api/update_all_qrs', views.UpdateAllQRsView.as_view()),
+        # path('api/update_all_qrs', views.UpdateAllQRsView.as_view()),
 
         url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
         url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

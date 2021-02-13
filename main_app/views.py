@@ -176,20 +176,6 @@ class PrintCurrentArtifactsView(APIView):
         return Response(pdf_name)
 
 
-# class CheckUserEmail(APIView):
-#     """
-#     Checks user existing with current email
-#     """
-#
-#     def post(self, request):
-#         email = request.data['email']
-#         try:
-#             user = User.objects.get(email=email)
-#             return Response({"status": status.HTTP_200_OK})
-#         except:
-#             return Response({"status": status.HTTP_404_NOT_FOUND})
-
-
 class IsUserExistsView(APIView):
     """
     Shows whether a user exists with the current email
@@ -545,7 +531,6 @@ def serialize_hall_and_artifacts(request, hall_pk):
             'hall': hall_serializer.data,
             'artifacts': [artifact_serializer.data]
         }
-        return True
     else:
         return {
             'hall': hall_serializer.data,
@@ -588,13 +573,8 @@ class CurrentHallView(APIView):
             artifact = Artifact.objects.filter(hall=hall_pk).get(prev=None)
             for i in range(len(Artifact.objects.filter(hall=hall_pk)) - 1):
                 artifact = Artifact.objects.get(prev=artifact.id)
-
-            print(artifact.id)
-            # Artifact.objects.create(name=name, img=img, audio=audio, description=description, hall=hall,
-            #                         prev=artifact.id)
             prev = artifact.id
         except:
-            # Artifact.objects.create(name=name, img=img, audio=audio, description=description, hall=hall, prev=None)
             prev = None
         print(prev)
         aaa = Artifact.create(name=name, img=img, audio=audio, video=video, description=description, hall=hall,
@@ -607,11 +587,6 @@ class CurrentHallView(APIView):
         hall = Hall.objects.get(pk=hall_pk)
 
         hall.name = request.data['name']
-        # hall.description = request.data['description']
-        # try:
-        #     hall.img = request.FILES['img']
-        # except:
-        #     pass
         hall.save()
 
         return Response(self.get_hall(request, location_pk, hall_pk))
@@ -741,8 +716,6 @@ class CurrentLocationView(APIView):
 
     def post(self, request, location_pk):
         name = request.data['name']
-        # img = request.FILES['img']
-        # description = request.data['description']
 
         try:
             hall = Hall.objects.filter(location=location_pk).get(prev=None)
@@ -761,17 +734,8 @@ class CurrentLocationView(APIView):
         location = Location.objects.get(pk=location_pk)
 
         location.name = request.data['name']
-        # location.description = request.data['description']
-        # try:
-        #     location.img = request.FILES['img']
-        # except:
-        #     pass
         location.save()
         return Response(serialize_location_and_halls(request, location_pk))
-
-        # location = Location.objects.get(pk=location_pk)
-        # serializer = LocationSerializer(location, context={'request': request})
-        # return Response(serializer.data)
 
     def delete(self, request, location_pk):
         delete_location(request, location_pk)
@@ -842,8 +806,6 @@ class CurrentMuseumView(APIView):
 
     def post(self, request):
         name = request.data['name']
-        # img = request.FILES['img']
-        # description = request.data['description']
 
         try:
             print('im trying')
@@ -854,14 +816,10 @@ class CurrentMuseumView(APIView):
                 print(i)
                 location = Location.objects.get(prev=location.id)
 
-            # Location.objects.create(name=name, img=img, description=description, museum=request.user.museum,
-            #                         prev=location.id)
             Location(name=name, museum=request.user.museum,
                      prev=location.id).save()
         except:
             print('location NOT found')
-            # Location.objects.create(name=name, img=img, description=description, museum=request.user.museum,
-            #                         prev=None)
             Location(name=name, museum=request.user.museum,
                      prev=None).save()
 
@@ -869,9 +827,6 @@ class CurrentMuseumView(APIView):
 
     def put(self, request):
         museum = Museum.objects.get(pk=request.user.museum.id)
-
-        # img = request.FILES['img']
-        # img_extension = img.name.split(".")[-1].lower()
 
         museum.name = request.data['name']
         museum.description = request.data['description']
@@ -952,8 +907,6 @@ class MuseumSuperAdminView(APIView):
         return Response(self.get_museum_super_admin(request, museum_pk))
 
     def delete(self, request, museum_pk):
-
-        # users = User.objects.filter(museum=museum_pk).exclude(pk=request.user.id)
         users = User.objects.filter(museum=museum_pk).exclude(pk=request.user.id)
         print(users)
         for user in users:
