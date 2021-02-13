@@ -6,7 +6,6 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         depth = 2
         model = User
-        # fields = ('last_name', 'first_name', 'middle_name')
         fields = ('id', 'username', 'last_name', 'first_name', 'middle_name')
 
 
@@ -14,7 +13,6 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         depth = 2
         model = Ticket
-        # exclude = ('token', 'museum')
         exclude = ('museum',)
 
 
@@ -49,29 +47,7 @@ class LocationSerializer(serializers.ModelSerializer):
 
 
 class MuseumSerializer(serializers.ModelSerializer):
-    # locations = LocationSerializer(read_only=True, many=True)
-
     class Meta:
         depth = 2
         model = Museum
         fields = '__all__'
-
-# class AllArtifactsSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         depth = 2
-#         model = Artifact
-#         exclude = ('description', 'audio', 'qr_code')
-#
-#
-# class ArtifactSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         depth = 2
-#         model = Artifact
-#         exclude = ('qr_code',)
-#
-#
-# class QRCodeSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         depth = 2
-#         model = Artifact
-#         fields = ('qr_code',)
