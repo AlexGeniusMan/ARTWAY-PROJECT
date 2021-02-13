@@ -3,8 +3,8 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 import qrcode
-from io import BytesIO
-from django.core.files import File
+# from io import BytesIO
+# from django.core.files import File
 from PIL import Image
 
 
@@ -81,8 +81,6 @@ class Artifact(models.Model):
 
 class Hall(models.Model):
     name = models.CharField(_("Название"), max_length=100)
-    # img = models.ImageField(_("Фотография"), null=True, upload_to='halls', blank=True)
-    # description = models.TextField(_("Описание"), max_length=10000, blank=True)
 
     prev = models.IntegerField(_("Зал выше"), null=True, blank=True)
 
@@ -99,8 +97,6 @@ class Hall(models.Model):
 
 class Location(models.Model):
     name = models.CharField(_("Название"), max_length=100)
-    # img = models.ImageField(_("Фотография"), null=True, upload_to='locations', blank=True)
-    # description = models.TextField(_("Описание"), max_length=10000, blank=True)
 
     prev = models.IntegerField(_("Локация выше"), null=True, blank=True)
 
@@ -139,8 +135,6 @@ class User(AbstractUser):
     last_name = models.CharField(_("Фамилия"), max_length=50)
     first_name = models.CharField(_("Имя"), max_length=50)
     middle_name = models.CharField(_("Отчество"), max_length=50, blank=True)
-
-    # role = models.CharField(_("Роль"), choices=ROLES, max_length=64, default='none', blank=True)
 
     museum = models.ForeignKey('Museum', on_delete=models.CASCADE, verbose_name='Музей',
                                related_name='admins', null=True, blank=True)
