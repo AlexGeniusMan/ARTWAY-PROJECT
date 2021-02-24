@@ -9,7 +9,8 @@ All API documentation is on the "Wiki" page of this GitHub repository
 #### Git and Python 3.8.5 must be installed
 1. Clone project
 
-`git clone <repo_name> .`
+`git clone <repo_name> artway`
+`cd artway`
 
 2. Create new virtual environment and then activate it
 
