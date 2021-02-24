@@ -85,8 +85,8 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 
-# DB_TYPE = 'SQLite'
-DB_TYPE = 'PostrgeSQL'
+DB_TYPE = 'SQLite'
+# DB_TYPE = 'PostrgeSQL'
 
 if DB_TYPE == 'SQLite':
     DATABASES = {

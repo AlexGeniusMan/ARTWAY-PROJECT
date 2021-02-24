@@ -4,8 +4,16 @@ from django.utils.translation import gettext, gettext_lazy as _
 from django.contrib.auth.admin import UserAdmin
 
 
+# class ArtifactLinkAdminInlineAdmin(admin.TabularInline):
+#     model = ArtifactLink
+#     extra = 0
+
+
 class ArtifactAdmin(admin.ModelAdmin):
     search_fields = ('name',)
+    # inlines = [
+    #     ArtifactLinkAdminInlineAdmin,
+    # ]
 
 
 class CustomUserAdmin(UserAdmin):

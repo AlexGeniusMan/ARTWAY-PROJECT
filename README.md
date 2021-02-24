@@ -105,3 +105,7 @@ environment:
 `docker-compose exec django python manage.py migrate --noinput`
 
 > Done! Project launched!
+
+
+
+This project was made by Dev.gang.

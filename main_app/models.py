@@ -26,7 +26,11 @@ class Ticket(models.Model):
 
 class Artifact(models.Model):
     name = models.CharField(_("Название"), max_length=100)
-    img = models.ImageField(_("Фотография"), null=True, upload_to='artifacts/photos', blank=True)
+    img_1 = models.ImageField(_("Фотография #1"), null=True, upload_to='artifacts/photos', blank=True)
+    img_2 = models.ImageField(_("Фотография #2"), null=True, upload_to='artifacts/photos', blank=True)
+    img_3 = models.ImageField(_("Фотография #3"), null=True, upload_to='artifacts/photos', blank=True)
+    img_4 = models.ImageField(_("Фотография #4"), null=True, upload_to='artifacts/photos', blank=True)
+    img_5 = models.ImageField(_("Фотография #5"), null=True, upload_to='artifacts/photos', blank=True)
     audio = models.FileField(_("Аудио"), upload_to='artifacts/audios', blank=True)
     video = models.CharField(_("Ссылка на видео"), max_length=1000, blank=True)
     description = models.TextField(_("Описание"), max_length=10000, blank=True)
@@ -46,9 +50,25 @@ class Artifact(models.Model):
         return f'{self.name} ({self.id})'
 
     @classmethod
-    def create(cls, name, img, audio, video, description, hall, prev):
-        book = cls(name=name, img=img, audio=audio, video=video, description=description, hall=hall, prev=prev)
-        return book
+    def create(cls, name, description, hall, prev,
+               img_1,
+               img_2,
+               img_3,
+               img_4,
+               img_5,
+               audio,
+               video,
+               ):
+        artifact = cls(name=name, description=description, hall=hall, prev=prev,
+                       img_1=img_1,
+                       img_2=img_2,
+                       img_3=img_3,
+                       img_4=img_4,
+                       img_5=img_5,
+                       audio=audio,
+                       video=video
+                       )
+        return artifact
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -77,6 +97,17 @@ class Artifact(models.Model):
     #     self.img_mini = 'Products/' + fname
     #     print(self.img_mini)
     #     super().save(*args, **kwargs)
+
+
+# class ArtifactLink(models.Model):
+#     name = models.CharField(_("Название ссылки"), max_length=50)
+#     link = models.CharField(_("Ссылка"), max_length=1000)
+#     artifact = models.ForeignKey('Artifact', on_delete=models.CASCADE, verbose_name='Экспонат',
+#                                  related_name='links', null=True, blank=True)
+#
+#     class Meta:
+#         verbose_name = 'Ссылка'
+#         verbose_name_plural = 'Ссылки'
 
 
 class Hall(models.Model):

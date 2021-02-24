@@ -23,8 +23,16 @@ class SpecialHallSerializer(serializers.ModelSerializer):
         fields = ('id',)
 
 
+# class ArtifactLinkSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         depth = 2
+#         model = ArtifactLink
+#         exclude = ('id', 'artifact')
+
+
 class ArtifactSerializer(serializers.ModelSerializer):
     hall = SpecialHallSerializer(read_only=True)
+    # links = ArtifactLinkSerializer(read_only=True, many=True)
 
     class Meta:
         depth = 2
