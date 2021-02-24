@@ -5,7 +5,7 @@ Core backend service for open-source "ArtWay" project for RTUITLab
 
 All API documentation is on the "Wiki" page of this GitHub repository
 
-## Launching project locally
+## Launching project locally (Windows 10)
 #### Git and Python 3.8.5 must be installed
 1. Clone project
 
@@ -17,11 +17,7 @@ All API documentation is on the "Wiki" page of this GitHub repository
 
 `python -m venv venv`
 
-Windows:
 `venv\Scripts\activate`
-
-Ubuntu:
-`source venv/bin/activate`
 
 3. Install dependencies
 
@@ -55,13 +51,15 @@ DB_PASSWORD=<your_db_user_password>
 
 > Done! Project launched!
 
-## Deploying project to production
+## Deploying project to production (Ubuntu 20.04 LTS)
 #### Git, Docker and Docker Compose must be installed
 
 1. Create new directory for project
 
 `cd /home`
+
 `mkdir artway`
+
 `cd artway`
 
 2. Clone project
