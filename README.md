@@ -10,12 +10,17 @@ All API documentation is on the "Wiki" page of this GitHub repository
 1. Clone project
 
 `git clone <repo_name> artway`
+
 `cd artway`
 
 2. Create new virtual environment and then activate it
 
 `python -m venv venv`
 
+Windows:
+`venv\Scripts\activate`
+
+Ubuntu:
 `source venv/bin/activate`
 
 3. Install dependencies
