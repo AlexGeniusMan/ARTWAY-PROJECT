@@ -14,7 +14,7 @@ All API documentation is on the "Wiki" page of this GitHub repository
 
 2. Create new virtual environment and then activate it
 
-`python3 -m venv venv`
+`python -m venv venv`
 
 `source venv/bin/activate`
 
