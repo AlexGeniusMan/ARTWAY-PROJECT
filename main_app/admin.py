@@ -23,7 +23,7 @@ class CustomUserAdmin(UserAdmin):
         (_('Основная информация'),
          {'fields': ('last_name', 'first_name', 'middle_name', 'museum')}),
         (_('Права доступа'), {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        (_('Другое'), {'fields': ('last_login', 'date_joined', 'priority')}),
+        (_('Другое'), {'fields': ('last_login', 'date_joined')}),
     )
     add_fieldsets = (
         (None, {
