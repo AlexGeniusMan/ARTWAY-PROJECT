@@ -435,35 +435,35 @@ class CurrentArtifactView(APIView):
         artifact.name = request.data['name']
         artifact.description = request.data['description']
         try:
-            if request.data['img_1'] == '':
+            if request.data['img_1'] == 'null':
                 artifact.img_1 = None
             else:
                 artifact.img_1 = request.FILES['img_1']
         except:
             pass
         try:
-            if request.data['img_2'] == '':
+            if request.data['img_2'] == 'null':
                 artifact.img_2 = None
             else:
                 artifact.img_2 = request.FILES['img_2']
         except:
             pass
         try:
-            if request.data['img_3'] == '':
+            if request.data['img_3'] == 'null':
                 artifact.img_3 = None
             else:
                 artifact.img_3 = request.FILES['img_3']
         except:
             pass
         try:
-            if request.data['img_4'] == '':
+            if request.data['img_4'] == 'null':
                 artifact.img_4 = None
             else:
                 artifact.img_4 = request.FILES['img_4']
         except:
             pass
         try:
-            if request.data['img_5'] == '':
+            if request.data['img_5'] == 'null':
                 artifact.img_5 = None
             else:
                 artifact.img_5 = request.FILES['img_5']
@@ -471,35 +471,35 @@ class CurrentArtifactView(APIView):
             pass
 
         try:
-            if request.data['audio_1'] == '':
+            if request.data['audio_1'] == 'null':
                 artifact.audio_1 = None
             else:
                 artifact.audio_1 = request.FILES['audio_1']
         except:
             pass
         try:
-            if request.data['audio_2'] == '':
+            if request.data['audio_2'] == 'null':
                 artifact.audio_2 = None
             else:
                 artifact.audio_2 = request.FILES['audio_2']
         except:
             pass
         try:
-            if request.data['audio_3'] == '':
+            if request.data['audio_3'] == 'null':
                 artifact.audio_3 = None
             else:
                 artifact.audio_3 = request.FILES['audio_3']
         except:
             pass
         try:
-            if request.data['audio_4'] == '':
+            if request.data['audio_4'] == 'null':
                 artifact.audio_4 = None
             else:
                 artifact.audio_4 = request.FILES['audio_4']
         except:
             pass
         try:
-            if request.data['audio_5'] == '':
+            if request.data['audio_5'] == 'null':
                 artifact.audio_5 = None
             else:
                 artifact.audio_5 = request.FILES['audio_5']
@@ -511,10 +511,18 @@ class CurrentArtifactView(APIView):
         # except:
         #     pass
 
-        try:
-            artifact.video = request.data['video']
-        except:
-            pass
+        artifact.link_name_1 = request.data['link_name_1']
+        artifact.link_name_2 = request.data['link_name_2']
+        artifact.link_name_3 = request.data['link_name_3']
+        artifact.link_name_4 = request.data['link_name_4']
+        artifact.link_name_5 = request.data['link_name_5']
+
+        artifact.link_value_1 = request.data['link_value_1']
+        artifact.link_value_2 = request.data['link_value_2']
+        artifact.link_value_3 = request.data['link_value_3']
+        artifact.link_value_4 = request.data['link_value_4']
+        artifact.link_value_5 = request.data['link_value_5']
+
         artifact.save()
 
         return Response(self.get_artifact(request, location_pk, hall_pk, artifact_pk))
@@ -665,8 +673,50 @@ class CurrentHallView(APIView):
         except:
             audio_5 = None
 
+        try:
+            link_name_1 = request.data['link_name_1']
+        except:
+            link_name_1 = None
+        try:
+            link_name_2 = request.data['link_name_2']
+        except:
+            link_name_2 = None
+        try:
+            link_name_3 = request.data['link_name_3']
+        except:
+            link_name_3 = None
+        try:
+            link_name_4 = request.data['link_name_4']
+        except:
+            link_name_4 = None
+        try:
+            link_name_5 = request.data['link_name_5']
+        except:
+            link_name_5 = None
+
+        try:
+            link_value_1 = request.data['link_value_1']
+        except:
+            link_value_1 = None
+        try:
+            link_value_2 = request.data['link_value_2']
+        except:
+            link_value_2 = None
+        try:
+            link_value_3 = request.data['link_value_3']
+        except:
+            link_value_3 = None
+        try:
+            link_value_4 = request.data['link_value_4']
+        except:
+            link_value_4 = None
+        try:
+            link_value_5 = request.data['link_value_5']
+        except:
+            link_value_5 = None
+
         # audio = request.FILES['audio']
-        video = request.data['video']
+        # video = request.data['video']
         description = request.data['description']
         hall = Hall.objects.get(pk=hall_pk)
 
@@ -688,7 +738,16 @@ class CurrentHallView(APIView):
                               audio_3=audio_3,
                               audio_4=audio_4,
                               audio_5=audio_5,
-                              video=video
+                              link_name_1=link_name_1,
+                              link_name_2=link_name_2,
+                              link_name_3=link_name_3,
+                              link_name_4=link_name_4,
+                              link_name_5=link_name_5,
+                              link_value_1=link_value_1,
+                              link_value_2=link_value_2,
+                              link_value_3=link_value_3,
+                              link_value_4=link_value_4,
+                              link_value_5=link_value_5,
                               )
         aaa.save()
         return Response(serialize_hall_and_artifacts(request, hall_pk))

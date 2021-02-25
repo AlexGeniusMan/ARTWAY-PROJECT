@@ -39,7 +39,17 @@ class Artifact(models.Model):
     audio_4 = models.FileField(_("Аудио #4"), upload_to='artifacts/audios', blank=True)
     audio_5 = models.FileField(_("Аудио #5"), upload_to='artifacts/audios', blank=True)
 
-    video = models.CharField(_("Ссылка на видео"), max_length=1000, blank=True)
+    link_name_1 = models.CharField(_("Название ссылки #1"), max_length=50, blank=True)
+    link_name_2 = models.CharField(_("Название ссылки #2"), max_length=50, blank=True)
+    link_name_3 = models.CharField(_("Название ссылки #3"), max_length=50, blank=True)
+    link_name_4 = models.CharField(_("Название ссылки #4"), max_length=50, blank=True)
+    link_name_5 = models.CharField(_("Название ссылки #5"), max_length=50, blank=True)
+
+    link_value_1 = models.CharField(_("Ссылка #1"), max_length=1000, blank=True)
+    link_value_2 = models.CharField(_("Ссылка #2"), max_length=1000, blank=True)
+    link_value_3 = models.CharField(_("Ссылка #3"), max_length=1000, blank=True)
+    link_value_4 = models.CharField(_("Ссылка #4"), max_length=1000, blank=True)
+    link_value_5 = models.CharField(_("Ссылка #5"), max_length=1000, blank=True)
 
     description = models.TextField(_("Описание"), max_length=10000, blank=True)
 
@@ -69,7 +79,16 @@ class Artifact(models.Model):
                audio_3,
                audio_4,
                audio_5,
-               video,
+               link_name_1,
+               link_name_2,
+               link_name_3,
+               link_name_4,
+               link_name_5,
+               link_value_1,
+               link_value_2,
+               link_value_3,
+               link_value_4,
+               link_value_5,
                ):
         artifact = cls(name=name, description=description, hall=hall, prev=prev,
                        img_1=img_1,
@@ -82,7 +101,16 @@ class Artifact(models.Model):
                        audio_3=audio_3,
                        audio_4=audio_4,
                        audio_5=audio_5,
-                       video=video
+                       link_name_1=link_name_1,
+                       link_name_2=link_name_2,
+                       link_name_3=link_name_3,
+                       link_name_4=link_name_4,
+                       link_name_5=link_name_5,
+                       link_value_1=link_value_1,
+                       link_value_2=link_value_2,
+                       link_value_3=link_value_3,
+                       link_value_4=link_value_4,
+                       link_value_5=link_value_5,
                        )
         return artifact
 
