@@ -41,9 +41,11 @@ DB_PASSWORD=<your_db_user_password>
 
 `python manage.py makemigrations`
 
-7. Apply them.
-
 `python manage.py migrate`
+
+7. Create superuser
+
+`python manage.py createsuperuser`
 
 8. Start the development server
 
