@@ -13,7 +13,7 @@ All API documentation is on the "Wiki" page of this GitHub repository
 
 `cd artway`
 
-2. Create new virtual environment and then activate it
+2. Create new virtual environment and activate it
 
 `python -m venv venv`
 
