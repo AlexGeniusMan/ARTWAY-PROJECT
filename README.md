@@ -98,6 +98,7 @@ environment:
 8. Run docker compose
 
 `cd /home`
+
 `docker-compose up -d --build`
 
 9. Make migrations
