@@ -13,7 +13,7 @@ All API documentation is on the "Wiki" page of this GitHub repository
 
 `cd artway`
 
-2. Create new virtual environment and then activate it
+2. Create new virtual environment and activate it
 
 `python -m venv venv`
 
@@ -41,9 +41,11 @@ DB_PASSWORD=<your_db_user_password>
 
 `python manage.py makemigrations`
 
-7. Apply them.
-
 `python manage.py migrate`
+
+7. Create superuser
+
+`python manage.py createsuperuser`
 
 8. Start the development server
 
@@ -98,6 +100,7 @@ environment:
 8. Run docker compose
 
 `cd /home`
+
 `docker-compose up -d --build`
 
 9. Make migrations
