@@ -26,13 +26,21 @@ class Ticket(models.Model):
 
 class Artifact(models.Model):
     name = models.CharField(_("Название"), max_length=100)
+
     img_1 = models.ImageField(_("Фотография #1"), null=True, upload_to='artifacts/photos', blank=True)
     img_2 = models.ImageField(_("Фотография #2"), null=True, upload_to='artifacts/photos', blank=True)
     img_3 = models.ImageField(_("Фотография #3"), null=True, upload_to='artifacts/photos', blank=True)
     img_4 = models.ImageField(_("Фотография #4"), null=True, upload_to='artifacts/photos', blank=True)
     img_5 = models.ImageField(_("Фотография #5"), null=True, upload_to='artifacts/photos', blank=True)
-    audio = models.FileField(_("Аудио"), upload_to='artifacts/audios', blank=True)
+
+    audio_1 = models.FileField(_("Аудио #1"), upload_to='artifacts/audios', blank=True)
+    audio_2 = models.FileField(_("Аудио #2"), upload_to='artifacts/audios', blank=True)
+    audio_3 = models.FileField(_("Аудио #3"), upload_to='artifacts/audios', blank=True)
+    audio_4 = models.FileField(_("Аудио #4"), upload_to='artifacts/audios', blank=True)
+    audio_5 = models.FileField(_("Аудио #5"), upload_to='artifacts/audios', blank=True)
+
     video = models.CharField(_("Ссылка на видео"), max_length=1000, blank=True)
+
     description = models.TextField(_("Описание"), max_length=10000, blank=True)
 
     qr_code = models.ImageField(_('QR code'), upload_to='artifacts/qrs', blank=True)
@@ -56,7 +64,11 @@ class Artifact(models.Model):
                img_3,
                img_4,
                img_5,
-               audio,
+               audio_1,
+               audio_2,
+               audio_3,
+               audio_4,
+               audio_5,
                video,
                ):
         artifact = cls(name=name, description=description, hall=hall, prev=prev,
@@ -65,7 +77,11 @@ class Artifact(models.Model):
                        img_3=img_3,
                        img_4=img_4,
                        img_5=img_5,
-                       audio=audio,
+                       audio_1=audio_1,
+                       audio_2=audio_2,
+                       audio_3=audio_3,
+                       audio_4=audio_4,
+                       audio_5=audio_5,
                        video=video
                        )
         return artifact

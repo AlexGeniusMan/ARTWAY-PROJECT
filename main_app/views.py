@@ -470,12 +470,47 @@ class CurrentArtifactView(APIView):
         except:
             pass
 
-
-
         try:
-            artifact.audio = request.FILES['audio']
+            if request.data['audio_1'] == '':
+                artifact.audio_1 = None
+            else:
+                artifact.audio_1 = request.FILES['audio_1']
         except:
             pass
+        try:
+            if request.data['audio_2'] == '':
+                artifact.audio_2 = None
+            else:
+                artifact.audio_2 = request.FILES['audio_2']
+        except:
+            pass
+        try:
+            if request.data['audio_3'] == '':
+                artifact.audio_3 = None
+            else:
+                artifact.audio_3 = request.FILES['audio_3']
+        except:
+            pass
+        try:
+            if request.data['audio_4'] == '':
+                artifact.audio_4 = None
+            else:
+                artifact.audio_4 = request.FILES['audio_4']
+        except:
+            pass
+        try:
+            if request.data['audio_5'] == '':
+                artifact.audio_5 = None
+            else:
+                artifact.audio_5 = request.FILES['audio_5']
+        except:
+            pass
+
+        # try:
+        #     artifact.audio_1 = request.FILES['audio_1']
+        # except:
+        #     pass
+
         try:
             artifact.video = request.data['video']
         except:
@@ -609,7 +644,28 @@ class CurrentHallView(APIView):
         except:
             img_5 = None
 
-        audio = request.FILES['audio']
+        try:
+            audio_1 = request.FILES['audio_1']
+        except:
+            audio_1 = None
+        try:
+            audio_2 = request.FILES['audio_2']
+        except:
+            audio_2 = None
+        try:
+            audio_3 = request.FILES['audio_3']
+        except:
+            audio_3 = None
+        try:
+            audio_4 = request.FILES['audio_4']
+        except:
+            audio_4 = None
+        try:
+            audio_5 = request.FILES['audio_5']
+        except:
+            audio_5 = None
+
+        # audio = request.FILES['audio']
         video = request.data['video']
         description = request.data['description']
         hall = Hall.objects.get(pk=hall_pk)
@@ -627,7 +683,11 @@ class CurrentHallView(APIView):
                               img_3=img_3,
                               img_4=img_4,
                               img_5=img_5,
-                              audio=audio,
+                              audio_1=audio_1,
+                              audio_2=audio_2,
+                              audio_3=audio_3,
+                              audio_4=audio_4,
+                              audio_5=audio_5,
                               video=video
                               )
         aaa.save()
