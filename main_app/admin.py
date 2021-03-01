@@ -2,7 +2,11 @@ from django.contrib import admin
 from .models import *
 from django.utils.translation import gettext, gettext_lazy as _
 from django.contrib.auth.admin import UserAdmin
+from django.contrib.admin import AdminSite
 
+# AdminSite.index_title = 'DATA BASE ADMINISTRATION'
+AdminSite.site_title = 'ArtWay'
+AdminSite.site_header = 'ArtWay'
 
 # class ArtifactLinkAdminInlineAdmin(admin.TabularInline):
 #     model = ArtifactLink
