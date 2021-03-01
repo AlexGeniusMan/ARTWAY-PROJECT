@@ -1073,7 +1073,8 @@ class MuseumSuperAdminView(APIView):
     def delete(self, request, museum_pk):
         users = User.objects.filter(museum=museum_pk).exclude(pk=request.user.id)
         for user in users:
-            if user.groups.filter(name='museum_super_admins').exists():
+            if user.groups.filter(name='museum_super_admins').exists() or user.groups.filter(
+                    name='museum_admins').exists() or user.groups.filter(name='museum_cashiers').exists():
                 user.delete()
                 return Response(self.get_museum_super_admin(request, museum_pk))
         return Response(
@@ -1218,7 +1219,7 @@ class ReactAppView(View):
         except:
             return HttpResponse(
                 """
-                index.html not found ! build your React app !!
+                File index.html not found ! Build your React app !
                 """,
                 status=501,
             )
